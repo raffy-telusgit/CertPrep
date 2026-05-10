@@ -2,146 +2,846 @@
   "examId": "gcp-pcde",
   "version": 0,
   "placeholder": true,
-  "generatedAt": "2026-05-08",
+  "generatedAt": "2026-05-10",
   "questions": [
     {
-      "id": "gcppcde-ph-001",
-      "question": "Placeholder question 1 about CI/CD pipeline design. Which placeholder pipeline approach is recommended?",
+      "id": "gcppcde-sre-principles-001",
+      "question": "Your team runs a payment processing service. The SLO for request latency is 99.5% of requests complete within 200ms, measured over a 30-day rolling window. Currently 98.8% of requests meet the latency target. What is the correct description of your current error budget status?",
       "options": [
-        "Placeholder Pipeline A",
-        "Placeholder Pipeline B",
-        "Placeholder Pipeline C",
-        "Placeholder Pipeline D"
-      ],
-      "correctAnswers": [2],
-      "explanation": "Placeholder explanation: Pipeline C follows GitOps best practices for GCP. Pipeline A does not support rollback capabilities.",
-      "category": "Bootstrapping and maintaining a Google Cloud organization",
-      "difficulty": "medium"
-    },
-    {
-      "id": "gcppcde-ph-002",
-      "question": "Placeholder question 2 about deployment. Which TWO placeholder deployment strategies minimize downtime?",
-      "options": [
-        "Placeholder Deployment Strategy 1",
-        "Placeholder Deployment Strategy 2",
-        "Placeholder Deployment Strategy 3",
-        "Placeholder Deployment Strategy 4"
-      ],
-      "correctAnswers": [0, 3],
-      "explanation": "Placeholder explanation: Strategies 1 and 4 enable zero-downtime deployments. Strategy 2 requires a maintenance window.",
-      "category": "Building and implementing CI/CD pipelines",
-      "difficulty": "hard"
-    },
-    {
-      "id": "gcppcde-ph-003",
-      "question": "Placeholder question 3 about site reliability. Which placeholder SLO configuration is correct?",
-      "options": [
-        "Placeholder SLO Config A",
-        "Placeholder SLO Config B",
-        "Placeholder SLO Config C",
-        "Placeholder SLO Config D"
-      ],
-      "correctAnswers": [1],
-      "explanation": "Placeholder explanation: Config B properly defines the error budget. Config A sets an unrealistic SLO target.",
-      "category": "Implementing service monitoring strategies",
-      "difficulty": "easy"
-    },
-    {
-      "id": "gcppcde-ph-004",
-      "question": "Placeholder question 4 about optimizing performance. Which placeholder optimization technique is most effective?",
-      "options": [
-        "Placeholder Optimization 1",
-        "Placeholder Optimization 2",
-        "Placeholder Optimization 3",
-        "Placeholder Optimization 4"
+        "The error budget is 0.5% total; you have consumed 0.7% so the budget is exhausted by 0.2%",
+        "The error budget is 0.5% total; you have consumed 0.7% so the budget is in deficit by 40%",
+        "The error budget is 1.2% total; you have consumed 0.5% so 58% of budget remains",
+        "The error budget is 0.5% total; you have consumed 0.7% so the budget is in deficit and 140% has been consumed"
       ],
       "correctAnswers": [3],
-      "explanation": "Placeholder explanation: Optimization 4 addresses the root bottleneck. Optimization 1 improves a non-bottleneck and provides no benefit.",
-      "category": "Optimizing service performance",
+      "explanation": "The error budget is 100% - 99.5% = 0.5% allowed failures. Currently 100% - 98.8% = 1.2% of requests fail, meaning 1.2% / 0.5% = 240% of the budget has been consumed -- the budget is in deficit at 140% over. Option A incorrectly states the math. Option C inverts the SLO and budget figures. Option B uses the right numbers but understates severity.",
+      "category": "Applying site reliability engineering principles to a service",
       "difficulty": "medium"
     },
     {
-      "id": "gcppcde-ph-005",
-      "question": "Placeholder question 5 about incident management. Which placeholder incident response process is correct?",
+      "id": "gcppcde-sre-principles-002",
+      "question": "An SRE team is designing SLIs for a public-facing REST API. Which of the following is the BEST SLI to measure availability for this service?",
       "options": [
-        "Placeholder Incident Process A",
-        "Placeholder Incident Process B",
-        "Placeholder Incident Process C",
-        "Placeholder Incident Process D"
+        "CPU utilization averaged across all serving instances",
+        "The proportion of HTTP requests that return a 2xx or 3xx status code out of all requests received",
+        "The number of 5xx responses per minute reported by Cloud Monitoring",
+        "The percentage of time the load balancer health check passes"
       ],
-      "correctAnswers": [0],
-      "explanation": "Placeholder explanation: Process A follows proper incident management procedures. Process B skips the mitigation step.",
-      "category": "Managing incidents",
+      "correctAnswers": [1],
+      "explanation": "A well-formed availability SLI is a ratio: (successful requests) / (total requests). Using HTTP 2xx/3xx status codes directly reflects the user-visible outcome. CPU utilization is a resource metric, not a user-facing signal. Raw counts of 5xx per minute are not a ratio and are hard to set meaningful objectives on. Health check uptime measures infrastructure liveness, not actual request success.",
+      "category": "Applying site reliability engineering principles to a service",
       "difficulty": "easy"
     },
     {
-      "id": "gcppcde-ph-006",
-      "question": "Placeholder question 6 about CI/CD. This hard placeholder tests advanced pipeline security.",
+      "id": "gcppcde-sre-principles-003",
+      "question": "Your error budget for the current month is 80% consumed with 10 days remaining. Your product team wants to push a large refactoring release this week. As the SRE lead, what is the MOST appropriate action?",
       "options": [
-        "Placeholder Pipeline Security A",
-        "Placeholder Pipeline Security B",
-        "Placeholder Pipeline Security C",
-        "Placeholder Pipeline Security D"
+        "Approve the release immediately because 20% of budget remains",
+        "Implement an error budget freeze and block all non-critical changes until the budget resets",
+        "Meet with the product team, discuss the risk, consider deferring the release or requiring a staged rollout with tight rollback criteria",
+        "Increase the SLO target to create more error budget headroom"
       ],
       "correctAnswers": [2],
-      "explanation": "Placeholder explanation: Security C implements supply chain security best practices. Security A does not validate artifact provenance.",
-      "category": "Building and implementing CI/CD pipelines",
+      "explanation": "With 80% consumed and 10 days left, the remaining budget is tight. The right SRE response is a data-driven conversation with stakeholders: assess the risk of the release, consider a staged rollout, and agree on rollback triggers. A full freeze (option B) is appropriate only at or past 100% consumption. Approving immediately ignores real risk. Raising the SLO target makes the problem worse, not better.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-004",
+      "question": "Which statement BEST describes the relationship between an SLA, an SLO, and an SLI?",
+      "options": [
+        "The SLA is the internal reliability target, the SLO is the contractual commitment, and the SLI is the measured metric",
+        "The SLI is the measured metric, the SLO is the internal reliability target set tighter than the SLA, and the SLA is the external contractual commitment",
+        "The SLO and SLA are identical; the SLI is a monitoring alert threshold",
+        "The SLI is defined in the SLA, and the SLO is a subset of the SLI"
+      ],
+      "correctAnswers": [1],
+      "explanation": "SLI (Service Level Indicator) is the raw measured signal, such as request latency. SLO (Service Level Objective) is the internal target for that signal, deliberately set tighter than the SLA to preserve an error budget buffer before customer commitments are breached. The SLA (Service Level Agreement) is the external, contractual commitment with financial or legal consequences. Option A swaps SLA and SLO roles.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-principles-005",
+      "question": "A new microservice is about to launch. Your team needs to define a latency SLO. Which approach BEST follows SRE best practices?",
+      "options": [
+        "Set the SLO at 100% of requests under 50ms to ensure the highest possible quality",
+        "Use historical p99 latency data from a similar service as a baseline, adjust based on user expectations, then tighten gradually after launch",
+        "Ask the business team to define the latency target without any engineering input",
+        "Set the SLO equal to the SLA in the customer contract from day one"
+      ],
+      "correctAnswers": [1],
+      "explanation": "SRE best practice is to base initial SLOs on real data (comparable services, load tests, user research) and start slightly looser, tightening as you build confidence. A 100% SLO is operationally impossible to sustain and eliminates all error budget. Business-only input ignores technical constraints. Setting the SLO equal to the SLA leaves no buffer, meaning any SLO miss immediately breaches contractual terms.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-006",
+      "question": "An operations team spends 4 hours every Monday manually exporting database query logs to Cloud Storage, then running a script to generate a usage report. This task has been unchanged for 18 months. According to SRE principles, how should this work be classified and what should the team do?",
+      "options": [
+        "This is overhead work; it should be delegated to a junior team member",
+        "This is toil; the team should automate it to eliminate the manual effort",
+        "This is project work; it should be tracked in the product roadmap",
+        "This is toil; it should be eliminated by discontinuing the report entirely"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Toil is manual, repetitive, automatable work that scales linearly with service growth and provides no enduring value beyond completing the immediate task. The correct SRE response is to automate toil, not just delegate it or eliminate the underlying business need. Discontinuing the report without a business decision is out of scope for the SRE. Project work, by contrast, improves systems and does not need to be done repeatedly.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-principles-007",
+      "question": "Your team's SRE charter caps toil at 50% of each engineer's time. A recent survey shows engineers are spending 65% of their time on toil. Choose TWO actions that BEST address this situation.",
+      "options": [
+        "Hire more SREs to absorb the extra toil",
+        "Identify the highest-volume repetitive tasks and build automation to replace them",
+        "Raise the toil cap to 70% to match current reality",
+        "Allocate explicit project time to automation work and track toil reduction as a team goal"
+      ],
+      "correctAnswers": [1, 3],
+      "explanation": "The SRE model requires actively eliminating toil, not just absorbing or accepting it. Identifying the costliest manual tasks and automating them directly reduces toil volume. Allocating protected project time ensures automation work actually gets done instead of being crowded out. Hiring more people to do more toil scales the problem rather than solving it. Raising the cap normalizes an unhealthy situation and contradicts SRE principles.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-008",
+      "question": "A senior SRE is evaluating whether a specific task qualifies as toil. Which characteristic is MOST definitive in classifying work as toil?",
+      "options": [
+        "The task takes more than one hour to complete",
+        "The task is performed by an on-call engineer during an incident",
+        "The task is manual, repetitive, and could be automated with no loss of value",
+        "The task is not documented in the runbook"
+      ],
+      "correctAnswers": [2],
+      "explanation": "The canonical SRE definition of toil requires work to be: manual, repetitive, automatable, tactical (not strategic), and devoid of enduring value. Duration and performer are not defining criteria -- a 10-minute daily task is still toil. Incident response tasks may be manual but are situational, not repetitive in the same way. Lack of documentation is a process issue, not a toil classification.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-principles-009",
+      "question": "Your team has an SLO for a checkout service: 99.9% availability over 30 days, meaning you have approximately 43.2 minutes of allowed downtime per month. An incident last week consumed 38 minutes of downtime. Your error budget is now 88% consumed. You have a planned maintenance window scheduled for this Friday that historically takes 30 minutes. What should you do?",
+      "options": [
+        "Proceed with the maintenance window as planned; the SLO will reset at month end",
+        "Cancel the maintenance window and wait until the next calendar month",
+        "Postpone or reduce the maintenance window, or implement changes that allow zero-downtime maintenance to avoid breaching the SLO",
+        "Update the SLO to 99.5% availability to create more budget for the maintenance window"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Proceeding with a 30-minute maintenance window when only 5.2 minutes of budget remain (43.2 - 38 = 5.2) would burn approximately 580% of remaining budget, breaching the SLO. The correct action is to defer the window or engineer zero-downtime techniques (rolling restarts, blue-green). Simply waiting for the month to reset is often not acceptable and does not address the underlying design gap. Weakening the SLO is a business decision, not a unilateral engineering one.",
+      "category": "Applying site reliability engineering principles to a service",
       "difficulty": "hard"
     },
     {
-      "id": "gcppcde-ph-007",
-      "question": "Placeholder question 7 about monitoring. Which TWO placeholder monitoring configurations are needed?",
+      "id": "gcppcde-sre-principles-010",
+      "question": "A team is implementing SLO monitoring in Google Cloud Monitoring. They want to receive an alert when they are on track to exhaust their monthly error budget within the next 6 hours. Which alerting strategy BEST achieves this?",
       "options": [
-        "Placeholder Monitoring Config 1",
-        "Placeholder Monitoring Config 2",
-        "Placeholder Monitoring Config 3",
-        "Placeholder Monitoring Config 4"
+        "Alert when the instantaneous error rate exceeds the SLO threshold for 5 consecutive minutes",
+        "Alert using a multi-window, multi-burn-rate alert: a fast burn (1-hour window) AND a slow burn (6-hour window) both showing budget burn rates above defined thresholds",
+        "Alert when the 30-day error budget consumption exceeds 90%",
+        "Alert when Cloud Monitoring detects any 5xx error on the service"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Multi-window burn rate alerting is the recommended approach from the SRE Workbook. A fast burn window (e.g., 1 hour) catches sudden spikes, while a slow burn window (e.g., 6 hours) catches gradual degradation, both required to fire together to reduce false positives. Alerting on raw error rate alone generates too many false positives. A 90% consumption alert fires too late for immediate remediation. Alerting on any single 5xx is far too noisy.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-011",
+      "question": "A team is performing capacity planning for a new service launching in 3 months. They expect 10,000 requests per second at peak. Their current test environment handles 1,200 RPS per instance. Choose TWO approaches that BEST support accurate capacity planning for this launch.",
+      "options": [
+        "Deploy to production first and scale reactively as traffic grows",
+        "Conduct load tests in a staging environment that mirrors production topology, modeling peak traffic patterns",
+        "Use Cloud Monitoring to observe CPU utilization on existing services as a proxy",
+        "Perform load testing and measure resource utilization per instance, then project instance counts and set up autoscaling with appropriate minimums and maximums"
+      ],
+      "correctAnswers": [1, 3],
+      "explanation": "Accurate capacity planning requires controlled load testing in a representative environment (option B) to understand actual throughput limits, combined with per-instance resource profiling to calculate how many instances are needed and configure autoscaling properly (option D). Reactive scaling in production risks SLO breaches on launch day. CPU of unrelated services is not a valid proxy for a new service with different characteristics.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-012",
+      "question": "You are designing a load test for a GCP-hosted service before a major marketing campaign. Which factors are MOST important to include in the load test design?",
+      "options": [
+        "Test only average expected traffic, not peak traffic, to avoid over-provisioning",
+        "Model realistic traffic patterns including peak load, ramp-up duration, geographic distribution, and simulate the actual request mix (reads vs writes)",
+        "Use production traffic data directly by duplicating live requests to the staging environment",
+        "Focus exclusively on database query performance since that is usually the bottleneck"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A representative load test must mirror realistic traffic including peak scenarios (the campaign spike), ramp profiles, geographic spread (to test CDN and regional backends), and the actual request composition. Testing only averages will miss breaking points. Duplicating live production traffic to staging risks data contamination and is operationally unsafe. Focusing only on the database ignores network, caching, and application layers that may also saturate.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-013",
+      "question": "Your organization runs a seasonal e-commerce platform on GKE. Peak traffic occurs during a 4-week holiday window and is 8x normal load. Which capacity planning approach is MOST appropriate?",
+      "options": [
+        "Over-provision by 8x year-round to guarantee capacity at all times",
+        "Use Cluster Autoscaler and Horizontal Pod Autoscaler configured with accurate metrics, pre-warm node pools before the holiday window, and use load testing to validate headroom",
+        "Rely entirely on GKE autopilot to scale automatically without any pre-planning",
+        "Request a GCP quota increase 24 hours before the holiday window begins"
+      ],
+      "correctAnswers": [1],
+      "explanation": "For predictable seasonal spikes, the best approach combines autoscaling with proactive pre-warming. Cluster Autoscaler and HPA handle normal variation; pre-warming node pools avoids cold-start latency on the actual peak day. Load testing validates the autoscaling configuration. Year-round 8x over-provisioning is extremely wasteful. Autopilot alone cannot scale fast enough from a cold state for an 8x spike. Quota requests take days to process, not 24 hours.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-014",
+      "question": "A service team is preparing a Production Readiness Review (PRR) before launching a new data pipeline service. Which documents and checks MUST be included in the PRR to meet SRE launch standards?",
+      "options": [
+        "Only the architecture diagram and cost estimate",
+        "SLOs with defined SLIs, runbooks for common failure modes, alerting configuration, capacity plan, and on-call escalation path",
+        "Unit test coverage report and CI/CD pipeline configuration only",
+        "Security penetration test results and GDPR compliance attestation only"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A Production Readiness Review evaluates operational readiness, not just technical correctness. It must cover: defined SLOs/SLIs so the team knows what 'good' means, runbooks so on-call engineers know how to respond, alerts so failures are detected, a capacity plan so the service can handle expected load, and escalation paths so incidents reach the right people. Architecture and cost are inputs but alone are insufficient. Test coverage and security are important but are separate review gates.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-015",
+      "question": "During a Production Readiness Review, the SRE reviewer finds that the development team has defined SLOs but has no runbooks and no alerting configured. The launch is scheduled in 5 days. What is the BEST course of action?",
+      "options": [
+        "Approve the launch because SLOs are defined and can be monitored retroactively",
+        "Block the launch, provide a checklist of missing items (runbooks, alerts), and set a hard re-review date within 5 days",
+        "Launch the service with a 2-week grace period to add runbooks and alerts post-launch",
+        "Transfer on-call responsibility to the development team permanently until they complete the PRR items"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The PRR is a gate for operational safety. Launching without runbooks or alerts means the on-call team cannot detect or respond to failures, making the SLO impossible to uphold. The right action is to block launch with clear, actionable remediation steps and a timeline. A grace period after launch is dangerous because incidents do not wait for documentation. Transferring on-call to the dev team is a short-term workaround, not a resolution of the safety gap.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-016",
+      "question": "Your team is decommissioning a legacy API endpoint that is still receiving about 2% of production traffic. Clients of this endpoint have not responded to deprecation notices. What is the MOST appropriate decommissioning approach?",
+      "options": [
+        "Shut down the endpoint immediately because notices were already sent",
+        "Implement a sunset header in responses, redirect traffic to the new endpoint where possible, work with client teams directly, and use a canary approach to route a small percentage of traffic to a 410 Gone response before full shutdown",
+        "Keep the endpoint running indefinitely to avoid any disruption",
+        "Require all client teams to sign an acknowledgment form before proceeding with decommissioning"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Safe decommissioning follows a gradual, observable process: sunset headers notify clients via the response itself, redirection handles clients that can be migrated automatically, direct outreach handles unresponsive teams, and a canary 410 approach lets you observe who breaks before full shutdown. Immediate shutdown risks unexpected downstream outages. Keeping it forever defers technical debt. Acknowledgment forms are administrative hurdles but do not actually complete the decommissioning.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-017",
+      "question": "A team wants to decommission a GCP Cloud SQL database that is no longer used by any active service, according to dependency documentation. Before deleting the database, what MUST the team do?",
+      "options": [
+        "Delete the database immediately since the documentation confirms no dependencies",
+        "Verify with active connection metrics in Cloud Monitoring, take a final backup, and document the decommissioning in the change management system before deletion",
+        "Rename the database and wait 24 hours to see if any errors appear",
+        "Move the database to a cheaper instance type and archive it permanently"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Documentation is often stale. Before deleting any database, you must verify with live telemetry (Cloud Monitoring connection counts, slow query logs) that no current traffic exists. A final backup protects against data loss if something was missed. Change management documentation ensures traceability. Renaming and waiting 24 hours is not sufficient -- some clients have retry logic or batch jobs that run less frequently. Archiving a no-longer-needed database wastes storage and perpetuates the cost.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-018",
+      "question": "Your SRE team uses a blameless postmortem process. A postmortem for a recent 45-minute outage has been drafted. The draft identifies a specific engineer by name as the cause: 'The outage was caused by John's misconfiguration.' What should the postmortem facilitator do?",
+      "options": [
+        "Keep the engineer's name because accountability is important for learning",
+        "Rewrite the finding to describe the systemic conditions that made the misconfiguration possible, such as insufficient change validation tooling or unclear runbook guidance",
+        "Remove the postmortem from the shared repository to protect the engineer's privacy",
+        "Replace the engineer's name with 'the on-call engineer' but otherwise keep the same framing"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Blameless postmortems focus on systems, processes, and conditions that enabled a failure, not on individual fault. A misconfiguration by one engineer points to gaps in tooling (e.g., no linting for config changes), training, or process (e.g., no peer review for high-risk changes). Simply anonymizing the name while keeping the blame framing (option D) still implies individual failure. Removing the document eliminates organizational learning. The goal is to find actionable system improvements.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-019",
+      "question": "After a 3-hour production outage, a postmortem identifies 12 action items. Six weeks later, only 2 have been completed. Which approach BEST ensures postmortem action items are resolved?",
+      "options": [
+        "Add all action items to a team wiki page and rely on engineers to self-assign",
+        "Assign each action item an owner, a due date, and a priority level, track them in a project management tool linked from the postmortem, and review progress in weekly SRE syncs",
+        "Schedule a follow-up postmortem meeting in 6 weeks to assess completion",
+        "Close action items that are older than 30 days to keep the backlog clean"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Postmortem action items that are untracked are rarely completed. Best practice is to assign explicit owners, deadlines, and priorities, integrate them into the team's existing issue-tracking workflow, and review regularly. A wiki page with no ownership creates diffusion of responsibility. A single follow-up meeting 6 weeks later is too infrequent to catch drift. Closing old items without resolution means the underlying risk persists.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-020",
+      "question": "Which of the following elements should ALWAYS appear in a blameless postmortem document? Choose TWO.",
+      "options": [
+        "A timeline of events during the incident with timestamps",
+        "The names of all engineers who were on-call during the incident for future reference",
+        "A clear description of customer and business impact",
+        "A blame-free analysis assigning fault percentages to each team involved"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Every postmortem must include a factual timeline (so the team can understand what happened and when) and a customer/business impact statement (so the organization understands severity and can prioritize remediation). Engineer names as accountability references perpetuate blame culture. Fault percentages per team are antithetical to blameless culture and create inter-team conflict rather than systemic learning.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-principles-021",
+      "question": "A severity 1 incident is declared for a complete outage of your customer-facing checkout service. The incident commander needs to establish a communication channel immediately. Which action BEST follows incident management best practices?",
+      "options": [
+        "Send individual Slack messages to each stakeholder as you discover new information",
+        "Open a dedicated incident channel, bridge call, or war room; post regular structured status updates on a predictable cadence; and designate a communications lead to handle external stakeholder updates",
+        "Focus entirely on technical resolution first; communicate only once the incident is resolved",
+        "Email the VP of Engineering with a detailed technical root cause analysis every 15 minutes"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Incident communication requires a single, dedicated channel (chat room or bridge call) so all responders share the same information. Regular structured updates (every 15-30 minutes) keep stakeholders informed without fragmenting the incident response team. A communications lead frees the incident commander and technical responders to focus on mitigation. Individual messages scatter information. Communicating only post-resolution leaves stakeholders blind during the outage.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-022",
+      "question": "During an active incident, an engineer suggests a change to a production configuration that might fix the issue but has not been tested. The incident commander is under pressure to restore service. What is the BEST course of action?",
+      "options": [
+        "Apply the change immediately because restoring service is the top priority",
+        "Evaluate the risk of the change, communicate the intent to all responders, apply the change with monitoring, and be prepared to roll back immediately if the situation worsens",
+        "Reject any untested changes during an incident under all circumstances",
+        "Escalate the decision to the on-call manager and wait for approval before acting"
+      ],
+      "correctAnswers": [1],
+      "explanation": "During incidents, untested changes sometimes need to be made to restore service, but they must be applied with discipline: communicate to responders so everyone is aware, monitor the effect, and have rollback ready. Applying blindly without communication risks compounding the incident if the change makes things worse. Rejecting all untested changes can unnecessarily prolong outages. Waiting for manager approval introduces delay that may be unacceptable in a Sev1 situation, though high-risk changes should be flagged.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-023",
+      "question": "Your organization uses a severity classification system for incidents. A database replica falls behind by 30 seconds on a service where read queries serve non-critical reporting dashboards, and the dashboard shows stale data. Writes to the primary are unaffected. Which severity level is MOST appropriate?",
+      "options": [
+        "Severity 1 (critical): all database incidents are automatically Sev1",
+        "Severity 3 (minor degradation): a non-critical feature is impaired but core service functionality is unaffected",
+        "Severity 2 (major degradation): the data pipeline is partially broken",
+        "No incident needs to be declared; this is expected behavior"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Severity classification is based on user impact, not the type of component affected. Stale data on non-critical reporting dashboards while core writes are healthy is a minor degradation (Sev3 in most frameworks). Automatically escalating all database incidents to Sev1 causes alert fatigue and misdirects incident responders. Calling it no incident at all means no tracking or resolution. Sev2 would imply major user impact, which is not the case here.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-024",
+      "question": "Your team's on-call rotation is experiencing high burnout. Engineers are being paged 15-20 times per night shift, but only 30% of pages require human action. What is the PRIMARY cause and the BEST corrective action?",
+      "options": [
+        "The team needs more engineers to share the paging load",
+        "Alert fatigue from over-alerting; audit and tune alerts so that each alert is actionable, has a defined response, and symptom-based alerts replace cause-based alerts",
+        "The monitoring system is broken and needs to be replaced with a new vendor",
+        "Enable alert grouping so that all pages are combined into a single nightly email digest"
+      ],
+      "correctAnswers": [1],
+      "explanation": "When 70% of pages require no human action, the root cause is over-alerting and poor alert quality -- the hallmark of alert fatigue. The fix is alert hygiene: each alert must be actionable, map to a documented response, and fire on user-visible symptoms rather than low-level resource metrics. Adding more engineers just distributes the fatigue. Replacing the monitoring system does not fix the underlying alert design. Grouping pages into a digest eliminates the ability to respond in real time.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-025",
+      "question": "An SRE team wants to reduce alert fatigue. Choose TWO practices that MOST effectively reduce the volume of non-actionable alerts.",
+      "options": [
+        "Delete all alerts and rely on user-reported incidents",
+        "Convert cause-based alerts (e.g., CPU > 80%) into symptom-based alerts (e.g., request error rate > 1%)",
+        "Implement alert deduplication and use burn-rate-based SLO alerts instead of threshold-based alerts",
+        "Increase the alert threshold for all metrics by 20% across the board"
       ],
       "correctAnswers": [1, 2],
-      "explanation": "Placeholder explanation: Configs 2 and 3 together provide full-stack monitoring. Config 1 only monitors infrastructure.",
-      "category": "Implementing service monitoring strategies",
+      "explanation": "Symptom-based alerting (option B) fires only when user experience is degraded, not when a low-level metric spikes without impact. Burn-rate SLO alerts (option C) with deduplication fire only when error budget is being consumed at a rate that threatens the SLO, reducing noise significantly. Deleting all alerts creates blind spots. Blanket 20% threshold increases may silence important alerts and is not a principled approach.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-026",
+      "question": "Your team is designing an on-call rotation for a globally distributed service with engineers in the US, Europe, and APAC. Which on-call design BEST minimizes engineer burnout while maintaining 24/7 coverage?",
+      "options": [
+        "Assign one senior engineer as the single on-call contact globally, available 24/7",
+        "Use a follow-the-sun rotation where each regional team is on-call during their business hours, with clear handoff procedures and escalation paths between regions",
+        "Require all engineers to be on-call simultaneously and respond to whoever replies first",
+        "Only provide on-call coverage during US business hours and set user expectations accordingly"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Follow-the-sun on-call rotation distributes on-call load across time zones so each regional team handles incidents during their waking hours. This maximizes response quality and minimizes the sleep disruption that causes burnout. A single global on-call engineer quickly burns out. Concurrent on-call creates confusion about ownership. US-hours-only coverage is incompatible with a globally distributed service SLA.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-principles-027",
+      "question": "An escalation policy for a GCP-hosted service needs to be configured in PagerDuty. Which escalation policy design BEST follows SRE incident management best practices?",
+      "options": [
+        "Page the VP of Engineering first so high-priority decisions can be made quickly",
+        "Page the primary on-call engineer; if unacknowledged within 5 minutes, page the secondary; if still unacknowledged, page the incident commander; use service-specific escalation based on the affected service",
+        "Send all alerts to a shared team email list so anyone can respond",
+        "Page all team members simultaneously to maximize the chance of a fast response"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A well-designed escalation policy starts with the most appropriate first responder (primary on-call), uses time-bound escalation to ensure coverage if the primary is unavailable, and escalates to an incident commander for high-severity unresolved issues. Paging leadership first bypasses technical responders and wastes leadership time for minor incidents. Shared email lists have no accountability and are slow. Paging everyone simultaneously creates confusion about who owns the response.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-028",
+      "question": "Your organization mandates that all on-call engineers participate in a weekly postmortem review meeting. Attendance has been poor and meeting length has grown to 3 hours. Engineers report the meetings are not useful. How should you restructure the knowledge-sharing process?",
+      "options": [
+        "Make attendance mandatory under penalty of performance review",
+        "Shorten the review to high-impact incidents only, publish all postmortems in a shared repository accessible to the whole org, and add a brief summary to the engineering newsletter",
+        "Cancel the meeting and have each engineer write their own incident summary",
+        "Limit postmortem attendance to senior engineers only"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Effective knowledge sharing is timely, accessible, and low-friction. Limiting live review to high-impact incidents respects engineers' time. A shared postmortem repository allows asynchronous learning. A newsletter summary reaches teams who were not directly involved. Mandatory attendance under threat does not address the underlying uselessness of the meeting. Individual summaries are siloed and do not scale. Restricting to senior engineers prevents junior growth and limits perspectives.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-029",
+      "question": "A production incident results in a 2-hour outage. The postmortem identifies three contributing root causes: a missing timeout configuration, an outdated runbook, and a monitoring gap. Which action items are MOST important to prioritize?",
+      "options": [
+        "Write a blog post about the incident for the engineering blog to share learnings externally",
+        "Add the timeout configuration immediately, update the runbook with current procedures, and add the missing monitoring alert -- all within two weeks with assigned owners",
+        "Schedule a meeting to discuss the incident at the next quarterly review",
+        "Reassign the service ownership to a different team with more experience"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Postmortem action items should be concrete, assigned, and time-bound. Fixing the timeout and monitoring gap closes technical vulnerabilities. Updating the runbook improves operational readiness. Two-week timelines with owners create accountability. A blog post may eventually be appropriate but does not prevent recurrence. Quarterly reviews are too slow for safety-critical fixes. Reassigning ownership does not address the technical root causes and penalizes a team without fixing the systems.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-principles-030",
+      "question": "A cloud-native service has been running for 18 months. The SRE team conducts a quarterly SLO review and finds the service has consumed less than 1% of its error budget every month. What is the SRE-recommended interpretation of this data?",
+      "options": [
+        "The service is performing perfectly; no changes are needed",
+        "The SLO may be too loose; consider tightening it to drive reliability improvements, or invest the excess budget in accelerating feature velocity",
+        "The engineering team should be commended and the budget surplus should be carried over to the next quarter",
+        "Immediately add more features to consume the unused error budget"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Consistently consuming near-zero error budget signals that the SLO is likely too conservative relative to actual service capability. SRE principles suggest two responses: tighten the SLO to reflect achievable reliability and push for improvements, or explicitly direct the investment capacity into feature velocity since reliability headroom exists. Error budget does not 'carry over' -- it resets per measurement window. Adding features purely to burn budget is backwards; features should be prioritized by value.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-031",
+      "question": "Your organization's SLA with enterprise customers guarantees 99.9% monthly availability (approximately 43.2 minutes downtime per month). Your internal SLO is set at 99.95%. Why is the internal SLO intentionally higher than the SLA?",
+      "options": [
+        "To make the engineering team work harder and reduce complacency",
+        "To create a buffer so that breaching the internal SLO triggers remediation before the external SLA is violated, protecting the company from financial penalties",
+        "The SLA and SLO must always be the same number to avoid confusion",
+        "Setting the SLO higher than the SLA is a mistake and should be corrected"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The deliberate gap between the internal SLO (99.95%) and external SLA (99.9%) creates a safety buffer. When the team breaches the SLO, they take action before the SLA is violated, preventing customer-facing consequences and financial penalties. This buffer is a core design principle in SRE, not a mistake. It is not about motivation; it is about building in operational reaction time. Having SLO = SLA means any reliability incident immediately becomes a contractual breach.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-principles-032",
+      "question": "A startup's mobile app backend currently has no defined SLOs. The CEO asks the engineering lead to set SLOs. The service handles user authentication and social feed rendering. Which set of SLIs is MOST appropriate to build SLOs on?",
+      "options": [
+        "Number of lines of code deployed per week and number of GitHub pull requests merged",
+        "Authentication request success rate, authentication request p99 latency, and feed rendering success rate",
+        "Total monthly AWS bill and database storage utilization",
+        "Number of daily active users and monthly revenue"
+      ],
+      "correctAnswers": [1],
+      "explanation": "SLIs must measure user-facing reliability signals for each critical user journey. Authentication success rate and latency directly reflect whether users can log in, and feed success rate reflects whether the core feature works. These map directly to user experience. Code deployment velocity and PR counts are developer productivity metrics. Cloud costs and storage are operational cost metrics. DAU and revenue are business outcomes, not reliability indicators.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-principles-033",
+      "question": "Your team is configuring SLO monitoring using Google Cloud Monitoring's built-in SLO feature. You need to define a request-based SLO for a Cloud Run service. What information is REQUIRED to create the SLO configuration?",
+      "options": [
+        "The GCP billing account ID and project budget alert thresholds",
+        "The monitored resource type, the SLI metric (good requests / total requests), the SLO target percentage, and the rolling window period",
+        "The service name, deployment region, and container image digest only",
+        "The Cloud Armor security policy name and VPC firewall rule IDs"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Google Cloud Monitoring's SLO feature requires: a monitored resource (to scope which service is measured), a good/total request ratio metric (defining the SLI), the target percentage (the SLO threshold), and the measurement window (e.g., 30-day rolling). Billing account details are irrelevant to SLO configuration. Deployment configuration details like image digests are not SLO inputs. Network security configuration is unrelated to SLO setup.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-034",
+      "question": "An engineering team has just completed a successful launch. Three days after launch, the service is consuming error budget at 10x the normal rate due to an unexpected traffic pattern. The error budget will be exhausted in 2 days at this rate. What is the MOST appropriate immediate response?",
+      "options": [
+        "Wait until the error budget is fully exhausted before declaring an incident",
+        "Declare an incident, investigate the root cause of the abnormal error pattern, implement mitigations, and evaluate whether a feature freeze is warranted to stop budget burn",
+        "Increase the SLO window from 30 days to 90 days to give more time",
+        "Notify customers that the SLA will be breached next week"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A 10x burn rate consuming the budget in 2 days is an active incident, not a future planning concern. Declaring an incident initiates structured response: investigation, mitigation, and decision-making about a feature freeze (stopping new changes to prevent further degradation). Waiting for full exhaustion means the SLO is already breached before action is taken. Changing the SLO window does not fix the underlying problem. Notifying customers about SLA breach is premature and should only happen if breach is imminent and unavoidable.",
+      "category": "Applying site reliability engineering principles to a service",
       "difficulty": "hard"
     },
     {
-      "id": "gcppcde-ph-008",
-      "question": "Placeholder question 8 about performance. Which placeholder caching strategy reduces latency?",
+      "id": "gcppcde-sre-principles-035",
+      "question": "Your team wants to implement effective runbooks for on-call engineers. Which runbook design principles BEST reduce mean time to resolution (MTTR)?",
       "options": [
-        "Placeholder Cache Strategy A",
-        "Placeholder Cache Strategy B",
-        "Placeholder Cache Strategy C",
-        "Placeholder Cache Strategy D"
-      ],
-      "correctAnswers": [0],
-      "explanation": "Placeholder explanation: Cache Strategy A reduces database load by caching at the right layer. Strategy B caches too aggressively and causes stale data.",
-      "category": "Optimizing service performance",
-      "difficulty": "medium"
-    },
-    {
-      "id": "gcppcde-ph-009",
-      "question": "Placeholder question 9 about org management. Which placeholder org policy prevents this security issue?",
-      "options": [
-        "Placeholder Org Policy 1",
-        "Placeholder Org Policy 2",
-        "Placeholder Org Policy 3",
-        "Placeholder Org Policy 4"
-      ],
-      "correctAnswers": [3],
-      "explanation": "Placeholder explanation: Org Policy 4 blocks the vulnerable configuration. Policies 1 and 2 apply at the wrong scope.",
-      "category": "Bootstrapping and maintaining a Google Cloud organization",
-      "difficulty": "medium"
-    },
-    {
-      "id": "gcppcde-ph-010",
-      "question": "Placeholder question 10 about incident response. This hard placeholder tests post-incident analysis.",
-      "options": [
-        "Placeholder PIR Action A",
-        "Placeholder PIR Action B",
-        "Placeholder PIR Action C",
-        "Placeholder PIR Action D"
+        "Write runbooks as comprehensive theoretical explanations of how the service works",
+        "Structure runbooks as decision trees with specific diagnostic commands, expected outputs, and escalation criteria for each failure mode",
+        "Store runbooks in individual engineers' local files so they can customize them",
+        "Update runbooks only during quarterly reviews to avoid frequent changes"
       ],
       "correctAnswers": [1],
-      "explanation": "Placeholder explanation: PIR Action B identifies the underlying systemic issue. Action A only addresses the symptom.",
-      "category": "Managing incidents",
+      "explanation": "Effective runbooks are operational guides, not educational documents. Decision trees with specific commands, expected outputs, and clear escalation triggers allow an on-call engineer (who may be unfamiliar with the service) to diagnose and mitigate quickly, directly reducing MTTR. Theoretical explanations are too slow to navigate under pressure. Runbooks must be centrally stored and version-controlled. Quarterly updates mean runbooks drift from reality as systems change; they should be updated after each incident that reveals a gap.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-036",
+      "question": "A newly formed SRE team wants to establish a knowledge-sharing culture. They have postmortems but no process for disseminating learnings across teams. Choose TWO actions that BEST establish a sustainable knowledge-sharing culture.",
+      "options": [
+        "Require all engineers to memorize every postmortem from the past 3 years",
+        "Create a searchable postmortem repository accessible to all engineering teams and link to it from service documentation",
+        "Conduct quarterly 'chaos engineering days' where random services are taken offline to test readiness",
+        "Hold monthly cross-team SRE review sessions where high-impact postmortem learnings are shared with discussion"
+      ],
+      "correctAnswers": [1, 3],
+      "explanation": "A searchable postmortem repository (option B) enables asynchronous learning at scale -- engineers can search for known failure patterns before debugging. Monthly cross-team review sessions (option D) enable synchronous knowledge transfer and build relationships across teams. Memorizing every postmortem is impractical and misses the goal of accessible, contextual knowledge. Chaos engineering days are a reliability testing practice, not a knowledge-sharing mechanism.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-037",
+      "question": "During a Sev1 incident, the incident commander asks: 'What do we know for certain vs. what are we hypothesizing?' An engineer responds by confidently asserting a root cause without data to back it. How should the incident commander handle this?",
+      "options": [
+        "Accept the hypothesis and immediately implement the proposed fix",
+        "Ask the engineer to provide the specific metrics, logs, or traces from Cloud Logging or Cloud Monitoring that support the hypothesis before acting on it",
+        "Dismiss the engineer from the incident call for not being prepared",
+        "Escalate to the VP of Engineering to arbitrate the technical disagreement"
+      ],
+      "correctAnswers": [1],
+      "explanation": "During incidents, decisions should be grounded in observable data. The incident commander should require engineers to cite specific evidence from Cloud Monitoring dashboards, Cloud Logging queries, or distributed traces before acting on a hypothesis. Acting on unvalidated guesses can compound the incident. Dismissing the engineer is counterproductive. Escalating to leadership for a technical data dispute wastes response time.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-038",
+      "question": "Your SRE team needs to define a latency SLI for a search service. The engineering lead suggests using average latency. An SRE argues for p99 latency. Which is CORRECT and why?",
+      "options": [
+        "Average latency is better because it is simpler to calculate and monitor",
+        "p99 latency is better because it captures the experience of the tail of users who have the worst experience, which averages mask",
+        "Both should be used together as a combined metric and averaged for the SLI",
+        "Neither is appropriate; only error rate should be used as a latency SLI"
+      ],
+      "correctAnswers": [1],
+      "explanation": "SRE best practice strongly prefers percentile latency (p99 or p99.9) over average latency for SLIs because averages are heavily influenced by fast requests and can hide that 1% of users experience very long tail latencies. p99 latency directly represents the experience of the slowest 1% of users. The Google SRE Book explicitly recommends percentiles over averages for latency SLIs. Error rate is a separate SLI, not a substitute for latency.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-039",
+      "question": "A team is planning to sunset a major API version (v2) and replace it with v3. They have 200 known external API consumers. What decommissioning process BEST balances business continuity with technical progress?",
+      "options": [
+        "Announce v3 and set a hard shutdown date of 30 days for all v2 consumers",
+        "Run v2 and v3 simultaneously indefinitely with no sunset plan",
+        "Announce a 6-month deprecation period with versioned sunset headers in API responses, provide a migration guide, offer a migration support channel, monitor v2 traffic to track remaining consumers, and communicate milestones at 90, 60, and 30 days before sunset",
+        "Block new consumer registrations to v2 immediately and force all existing consumers to migrate within 1 week"
+      ],
+      "correctAnswers": [2],
+      "explanation": "A responsible API decommissioning plan provides sufficient migration time (6 months is standard for external consumers), uses technical mechanisms (sunset headers) to automate notice, provides resources to help consumers migrate, monitors adoption to know when it is safe to proceed, and communicates proactively at key milestones. A 30-day deadline for 200 consumers is unrealistic. Running both versions forever accumulates tech debt. Forcing migration in 1 week will break dependent services.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-040",
+      "question": "After a major incident, the postmortem shows that the MTTD (mean time to detect) was 47 minutes because no alert fired. The incident was detected by a customer complaint. What should the team prioritize to prevent this in the future?",
+      "options": [
+        "Add more engineers to the on-call rotation to improve manual monitoring coverage",
+        "Implement a symptom-based SLO alert in Cloud Monitoring that fires when error budget burn rate indicates an SLO breach is imminent, ensuring automated detection within minutes",
+        "Set up a customer complaint tracking system to capture future reports faster",
+        "Switch from Cloud Monitoring to a third-party monitoring vendor"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A 47-minute MTTD with no alert represents a monitoring gap. The fix is to add a symptom-based SLO burn rate alert in Cloud Monitoring that fires automatically when user-facing error rates degrade. This drives MTTD down to minutes. Adding more humans to manually watch dashboards does not scale and does not address the monitoring gap. Faster customer complaint collection is reactive, not proactive. Switching vendors does not fix the underlying absence of SLO alerting configuration.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-041",
+      "question": "Your team has a service with a 99.5% availability SLO measured over 30 days. In the current month (30 days), the service was unavailable for 4 hours. How much error budget was consumed, and what percentage of the budget remains?",
+      "options": [
+        "4 hours out of 3.6 hours total budget = 111% consumed, budget is in deficit",
+        "4 hours out of 7.2 hours total budget = 55.6% consumed, 44.4% remains",
+        "4 hours out of 43.2 hours total budget = 9.3% consumed, 90.7% remains",
+        "4 hours out of 14.4 hours total budget = 27.8% consumed, 72.2% remains"
+      ],
+      "correctAnswers": [0],
+      "explanation": "For a 99.5% SLO over 30 days (43,200 minutes), the allowed downtime is 0.5% x 43,200 = 216 minutes = 3.6 hours. With 4 hours (240 minutes) of actual downtime, the budget is exhausted: 240/216 = 111% consumed, meaning the budget is in deficit and the SLO has already been breached this month. Options B, C, and D use incorrect budget calculations based on other SLO percentages.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-042",
+      "question": "A development team is resistant to participating in on-call rotations for the service they built, arguing that operations is the SRE team's job. What is the BEST way to address this from an SRE culture perspective?",
+      "options": [
+        "Agree with the development team; SREs should own all on-call responsibilities",
+        "Escalate to HR to enforce mandatory on-call participation",
+        "Explain that SRE teams support services but development teams retain operational accountability for their services; use a shared on-call model where dev teams shadow on-call first, then take primary on-call once they reach operational maturity",
+        "Have the SRE team take on full on-call responsibilities without involving developers"
+      ],
+      "correctAnswers": [2],
+      "explanation": "SRE culture requires that development teams maintain operational accountability for their services -- 'you build it, you run it' is a core principle. SREs provide expertise, tooling, and support, but are not a permanent buffer that shields developers from operational consequences. A shadow on-call model lets developers learn before taking primary responsibility. Full SRE ownership without developer involvement removes the incentive to build reliable software and creates unsustainable toil for SREs.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-043",
+      "question": "You are setting up Cloud Monitoring alerting for a microservice. You want to alert on high latency but only when it is impacting a significant number of users, not just isolated slow requests. Which alert configuration BEST achieves this?",
+      "options": [
+        "Alert when any single request exceeds 500ms latency",
+        "Alert when the p99 request latency exceeds the SLO threshold for a sustained period (e.g., 5 minutes), using a rolling window in Cloud Monitoring",
+        "Alert when the average latency exceeds 200ms at any point",
+        "Alert when the total request count drops below 100 per minute"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Using p99 latency over a sustained rolling window (5+ minutes) filters out isolated slow requests and fires only when a persistent tail latency issue is affecting a statistically significant portion of users. A single-request alert fires on every outlier, generating extreme noise. Average latency can hide tail problems and fires too early on minor fluctuations. Request count drop alerts on a different symptom entirely and would not catch latency degradation.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-044",
+      "question": "A team is conducting a launch readiness review for a new GCP service. The service will handle 50,000 RPS at peak. Choose TWO checks that are MOST critical to include in the launch readiness review.",
+      "options": [
+        "Verify that the engineering team's salary budget has been approved for the on-call rotation",
+        "Confirm that load tests have validated the service handles 50,000 RPS with acceptable latency and error rates, and that autoscaling is configured to handle the peak traffic",
+        "Verify that GCP quota limits in the target regions support the expected resource consumption at peak load",
+        "Confirm that the service homepage has been reviewed by the design team"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "For a high-traffic service, two critical launch readiness checks are: (1) validated load test results showing the service can sustain the expected peak, with autoscaling configured correctly; and (2) GCP quota verification to ensure regional resource limits (Compute Engine vCPUs, Cloud Run instances, etc.) are sufficient. Salary budget is an HR concern, not an operational readiness check. UI design review is a product quality concern separate from launch readiness.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-045",
+      "question": "An SRE is writing a postmortem for an incident where a misconfigured Terraform deployment caused a 45-minute partial outage. The draft states: 'Root cause: human error during Terraform apply.' What is wrong with this root cause statement, and how should it be corrected?",
+      "options": [
+        "Nothing is wrong; human error is a valid root cause in postmortems",
+        "The statement identifies a symptom, not a root cause. A better statement identifies why the misconfiguration was possible: for example, no pre-apply plan review process, no automated validation of Terraform configs, or no staging environment test",
+        "The statement should name the specific engineer who ran the Terraform apply command",
+        "Human error cannot be listed as a cause in blameless postmortems; it should be removed entirely"
+      ],
+      "correctAnswers": [1],
+      "explanation": "'Human error' is a symptom, not a root cause, because it stops investigation at the individual level rather than asking why the system allowed the error to occur. The real root cause is the absence of safeguards: no mandatory plan review (Terraform plan before apply), no automated config validation (Terraform validate, OPA policies), or no staging environment. These are system-level failures that can be addressed with process and tooling changes.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-046",
+      "question": "Your organization has a service with a 99.99% monthly availability SLO. The error budget is approximately 4.3 minutes per month. A routine weekly maintenance task requires a 10-minute restart of one of three serving replicas. How should this be handled?",
+      "options": [
+        "Accept the SLO breach because maintenance is unavoidable",
+        "Negotiate a lower SLO with stakeholders since 99.99% is operationally impractical for a service requiring maintenance",
+        "Redesign the maintenance procedure to use rolling restarts so no single restart causes user-visible downtime, preserving the error budget",
+        "Skip maintenance entirely to preserve the error budget"
+      ],
+      "correctAnswers": [2],
+      "explanation": "A 99.99% SLO demands zero-downtime maintenance procedures. The correct engineering response is to redesign the restart procedure to use rolling restarts (restarting one replica at a time while others serve traffic), making maintenance invisible to users. This preserves the error budget without sacrificing operational hygiene. Accepting the breach violates the SLO. Negotiating a lower SLO should only happen if the reliability target is genuinely unachievable, not because current procedures are suboptimal. Skipping maintenance creates technical debt and reliability risk.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-047",
+      "question": "An SRE team conducts an annual toil audit. They find that certificate renewal, log rotation, and database vacuum operations are all triggered manually via tickets. Which automation tool on GCP is MOST appropriate to eliminate this toil?",
+      "options": [
+        "Cloud Run: deploy a containerized API to perform each task on demand",
+        "Cloud Scheduler with Cloud Functions: schedule recurring maintenance tasks to run automatically on a defined cron schedule",
+        "BigQuery: store task execution logs and query them weekly",
+        "Cloud Build: use CI/CD pipelines to trigger manual tasks"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Scheduler with Cloud Functions is the canonical GCP solution for automating recurring operational tasks. Cloud Scheduler provides cron-based scheduling, and Cloud Functions provides the serverless execution environment for each task. This eliminates the manual ticket trigger entirely. Cloud Run is appropriate for API-driven on-demand tasks, not scheduled automation. BigQuery is a data analytics tool, not a task automation platform. Cloud Build is a CI/CD tool for software builds, not for operational maintenance scheduling.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-048",
+      "question": "Your organization's on-call engineers frequently receive pages at 2 AM for issues that turn out to be known, self-healing transient errors that resolve within 3 minutes. Choose TWO approaches that BEST address this without creating monitoring blind spots.",
+      "options": [
+        "Delete the alerts triggering the 2 AM pages entirely",
+        "Add a minimum duration condition to the alert so it only fires if the condition persists for 5 minutes or more, filtering out self-resolving transient errors",
+        "Change the alert notification channel from PagerDuty to email for these specific alert types, routing them for next-business-day review",
+        "Add alert annotations documenting the self-healing behavior and expected resolution time, so on-call engineers can confirm resolution without escalating"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Adding a minimum duration (alert fires only after 5 minutes, longer than the 3-minute self-healing window) prevents pages for errors that resolve before human action is needed (option B). Routing these low-urgency known errors to email for next-business-day review prevents sleep disruption while retaining visibility (option C). Deleting the alerts entirely creates a monitoring blind spot if the error stops self-healing. Documentation alone (option D) does not prevent the page from firing.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-049",
+      "question": "Your team's error budget policy specifies that when 100% of the error budget is consumed, a complete feature freeze is enacted. The current month's budget was just exhausted due to a series of incidents. A critical security patch needs to be deployed. What should happen?",
+      "options": [
+        "The security patch must wait until next month when the budget resets",
+        "Security patches are exempt from the feature freeze by policy; deploy the patch through the normal change management process with extra validation",
+        "Violate the error budget policy silently and deploy the patch without documentation",
+        "Cancel the feature freeze policy because it is blocking critical work"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Error budget policies should include explicit exemptions for security patches and critical safety fixes. These changes are not optional and the risk of not deploying typically exceeds the risk of deploying during a high-burn period. The patch should still go through normal change management (review, staging validation) and be documented as a policy exemption. Silently violating policy undermines trust in the process. Canceling the policy entirely removes the protection the error budget is designed to provide.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-050",
+      "question": "A team is performing post-incident documentation after a Sev2 incident. The incident lasted 90 minutes and impacted 15% of users. The team wants to share the learnings broadly. What is the MOST effective format for organization-wide knowledge sharing?",
+      "options": [
+        "A 30-slide PowerPoint presentation sent to the all-hands distribution list",
+        "A structured postmortem with: impact summary, timeline, contributing factors, root cause, action items with owners and deadlines, and a 'lessons learned' section; published in the shared postmortem repository and summarized in the engineering newsletter",
+        "A private Slack message to the 3 engineers who were involved",
+        "A verbal summary presented only at the next team meeting"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Effective organization-wide knowledge sharing requires a structured, written, permanent record. A structured postmortem in a searchable repository allows all current and future engineers to find and learn from it. An engineering newsletter summary pushes the key learnings to people who would not actively search. PowerPoint presentations are hard to search and not retained long-term. Private messages silo knowledge. Verbal-only summaries are ephemeral and not accessible to future team members.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-principles-051",
+      "question": "During a Production Readiness Review, the reviewer asks: 'What happens when your primary Cloud Spanner region goes down?' The development team responds: 'We have not tested that scenario.' What is the MOST appropriate PRR outcome?",
+      "options": [
+        "Approve the launch because regional Spanner failures are unlikely",
+        "Block the launch until the team has tested and documented the failover behavior, including RTO and RPO, and added monitoring for cross-region health",
+        "Approve the launch with a 30-day action item to test failover",
+        "Suggest the team use Cloud SQL instead, which is more resilient to regional failures"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A PRR must validate that the team understands and has tested failure modes for their critical dependencies. Launching without knowing the failover behavior of the primary database means the on-call team has no playbook if the scenario occurs. The correct outcome is to block launch until failover is tested, RTO/RPO are documented, and monitoring is in place. A 30-day post-launch action item is insufficient for a critical failure mode. Recommending a different database is out of scope for a PRR and may be architecturally inappropriate.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-052",
+      "question": "Your team is defining SLOs for a batch data processing pipeline that runs nightly. The pipeline processes 1 million records per night. Which SLI is MOST appropriate for this type of service?",
+      "options": [
+        "Request latency p99, measured in milliseconds per request",
+        "Proportion of nightly pipeline runs that complete successfully within the defined time window (e.g., before 6 AM), and proportion of records processed correctly out of total records",
+        "Number of Compute Engine instances used during the pipeline run",
+        "Cost per record processed in US dollars"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Batch pipeline SLIs differ from request-driven service SLIs. The relevant quality signals are: did the pipeline complete on time (completion rate within time window) and did it process records correctly (data quality / error rate). Request latency is not meaningful for a batch job. Instance count is an infrastructure metric, not a quality signal. Cost per record is a business efficiency metric, not a reliability indicator.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-053",
+      "question": "An SRE team is interviewing candidates for an on-call SRE role. One candidate says: 'During incidents, I always implement the fastest possible fix, even if it might break something else, to get service restored quickly.' What is the PROBLEM with this approach?",
+      "options": [
+        "There is no problem; speed is the primary goal in incident response",
+        "Fast fixes without risk assessment can transform a single incident into a multi-system failure; incident response must balance speed with safety, communicating changes and being prepared to roll back",
+        "The candidate should only implement fixes that have been approved in a change management ticket",
+        "The candidate should delegate all fix decisions to the incident commander rather than taking action"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Unconstrained speed in incident response is dangerous. Applying a rushed untested change can compound an incident (a 'thundering herd' fix, for example, can redirect traffic to an already-overloaded backend). SRE incident management requires a balance: move quickly but communicate changes to the team, monitor the effect, and be ready to roll back. Option C describes a bureaucratic process that is too slow for live incidents. Option D misunderstands the incident commander role -- technical responders take actions, they don't just report.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-054",
+      "question": "Your organization runs a multi-tenant SaaS platform on GCP. You need to measure service availability separately for each tenant because they have different SLAs. Which Cloud Monitoring approach BEST enables this?",
+      "options": [
+        "Create a single global SLO that averages availability across all tenants",
+        "Use custom metrics with tenant-ID labels, and create separate SLO configurations per tenant or per tenant tier in Cloud Monitoring",
+        "Deploy separate GCP projects for each tenant and monitor each independently",
+        "Use Cloud Billing reports to track tenant uptime"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Monitoring supports custom metrics with labels, enabling per-tenant SLI measurement using a single instrumented service. Separate SLO configurations can then be created per tenant or per tier using filtered views of these labeled metrics. A global averaged SLO is meaningless for individual tenant SLA compliance. Separate GCP projects for each tenant is an architectural decision that may not be appropriate and does not solve the SLO measurement problem in isolation. Cloud Billing is a cost tool, not a reliability measurement tool.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-055",
+      "question": "Your SRE team wants to conduct a disaster recovery drill for a critical service that runs on GKE in a single GCP region. The service has no multi-region failover. Choose TWO actions that BEST prepare the team for a regional failure scenario.",
+      "options": [
+        "Document a manual failover runbook for spinning up the service in a secondary region, including all dependencies and DNS failover steps",
+        "Assume GCP regions never fail and skip DR planning",
+        "Conduct a tabletop exercise simulating the regional failure scenario, walking through the runbook step by step to identify gaps",
+        "Migrate the service to a multi-region architecture before testing any DR scenarios"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "DR preparation requires both documented procedures and validated execution. A manual failover runbook (option A) gives the team a concrete procedure to follow. A tabletop exercise (option C) validates the runbook by walking through it without actually taking down production, identifying gaps in documentation, dependencies, or ownership. Assuming GCP regions never fail ignores published GCP incident history. Multi-region architecture is the long-term solution but does not prepare the current team for the near-term risk.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-056",
+      "question": "A service has an SLO of 99.9% availability over 30 days. In week 3 of the month, an outage consumes 35 of the 43.2-minute budget. The team proposes a risky schema migration for week 4. Choose TWO steps the team MUST take before proceeding with the migration.",
+      "options": [
+        "Calculate the remaining error budget and determine whether the migration's risk profile is acceptable given the 8.2 minutes of remaining budget",
+        "Proceed immediately since the migration was already scheduled",
+        "Prepare a detailed rollback plan that can be executed within the remaining error budget if the migration causes errors",
+        "Request that the SLO be suspended for the duration of the migration window"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "With only 8.2 minutes of error budget remaining (43.2 - 35), the team must (1) explicitly evaluate whether the migration risk is compatible with the remaining budget -- if the migration historically takes 15 minutes on staging, the budget will be exhausted; and (2) prepare a rollback plan that can be executed quickly enough to stay within remaining budget. Proceeding as planned ignores the budget constraint. Suspending the SLO is a business decision requiring stakeholder agreement, not an operational shortcut.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-principles-057",
+      "question": "Your team is designing a new SLO review cadence. How frequently should SLOs be formally reviewed, and what should trigger an out-of-cycle review?",
+      "options": [
+        "SLOs should be reviewed once at service launch and never changed",
+        "SLOs should be reviewed quarterly as standard cadence; out-of-cycle reviews should be triggered by: a major architecture change, a sustained period of near-zero budget consumption, or repeated SLO breaches",
+        "SLOs should be reviewed daily based on the previous day's metrics",
+        "SLOs only need to be reviewed when the SLA contract is renegotiated"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Quarterly SLO reviews are the SRE-recommended cadence for most services, allowing trends to be visible while not being so frequent as to be burdensome. Out-of-cycle reviews are warranted when the system changes significantly (making the SLO stale), when the service consistently runs far under budget (suggesting the SLO is too loose), or when the service consistently breaches (suggesting the SLO is too tight or the service needs reliability investment). Static SLOs become irrelevant as services evolve. Daily reviews are operationally excessive.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-058",
+      "question": "An incident is resolved after 2 hours. The incident commander wants to ensure the postmortem is high quality. Which timeline for completing the postmortem BEST follows SRE best practices?",
+      "options": [
+        "The postmortem should be completed within 24-48 hours of incident resolution while details are fresh",
+        "The postmortem can wait until the end of the quarter when there is dedicated time for documentation",
+        "The postmortem should be written during the incident itself to save time",
+        "Postmortems are only required for Sev1 incidents; Sev2 and below do not need postmortems"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Postmortems should be completed within 24-48 hours of resolution because memory of the precise sequence of events, the diagnostic steps taken, and the exact impact fades quickly. High-quality postmortems require accurate timelines, which become unreliable after more than a few days. Quarterly documentation is too delayed to be accurate or timely for action items. Writing during the incident compromises the incident response itself. Most SRE teams conduct postmortems for Sev1 and Sev2 incidents as a minimum standard.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-principles-059",
+      "question": "Your team is experiencing 'postmortem fatigue' -- too many postmortems, none of which produce lasting change. Choose TWO root causes that MOST commonly explain why postmortems fail to drive improvement.",
+      "options": [
+        "Action items from postmortems are not tracked, assigned, or followed up in any systematic way",
+        "Postmortems are written too quickly after incidents",
+        "The postmortem process does not identify specific, actionable remediation steps -- only general observations like 'improve monitoring'",
+        "Postmortems are shared too widely across the organization"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Postmortems fail to drive change for two main reasons: untracked action items with no ownership (option A) mean the improvements are never implemented; and vague action items like 'improve monitoring' (option C) provide no actionable direction -- 'add a burn-rate alert for the checkout service SLO in Cloud Monitoring by [date], owned by [engineer]' is actionable. Writing postmortems quickly after incidents is actually recommended (fresher memory). Wide sharing is beneficial, not harmful.",
+      "category": "Applying site reliability engineering principles to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-principles-060",
+      "question": "Your GCP-based service has a 99.95% availability SLO. Your error budget policy states that if more than 50% of the monthly budget is consumed in the first week, a mandatory incident review meeting must be convened. In week 1, the service had 11 minutes of downtime. The 30-day budget is approximately 21.6 minutes. What is the correct assessment and action?",
+      "options": [
+        "11 minutes is within budget; no action needed until the end of the month",
+        "11 minutes out of 21.6 minutes = 50.9% of budget consumed in week 1; the 50% threshold has been crossed, so the mandatory incident review meeting must be convened",
+        "The budget resets weekly; week 1 consumed only 11 of 5.4 weekly minutes, which is within a single-week budget",
+        "11 minutes is below the SLO threshold of 21.6 minutes so the SLO has not been breached; no review is needed"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The 30-day error budget for 99.95% availability is 0.05% of 43,200 minutes = 21.6 minutes. With 11 minutes consumed in week 1, that is 11/21.6 = 50.9% of the monthly budget consumed in roughly 25% of the month. This exceeds the 50% early-consumption threshold in the error budget policy, triggering the mandatory incident review. Error budgets do not reset weekly -- the 30-day rolling measurement applies. While the SLO has not yet been breached, the policy trigger exists precisely to intervene before a breach occurs.",
+      "category": "Applying site reliability engineering principles to a service",
       "difficulty": "hard"
     }
   ]

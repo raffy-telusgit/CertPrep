@@ -26,7 +26,8 @@
       "Bash(tee \"C:/Users/User/Documents/projects/certificationExams/test_output.txt\")",
       "Bash(bash --version)",
       "Bash(jq --version)",
-      "Bash(bash /c/Users/User/.claude/statusline-command.sh)"
+      "Bash(bash /c/Users/User/.claude/statusline-command.sh)",
+      "Bash(git push *)"
     ]
   }
 }

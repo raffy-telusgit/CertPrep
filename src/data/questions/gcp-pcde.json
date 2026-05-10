@@ -843,6 +843,216 @@
       "explanation": "The 30-day error budget for 99.95% availability is 0.05% of 43,200 minutes = 21.6 minutes. With 11 minutes consumed in week 1, that is 11/21.6 = 50.9% of the monthly budget consumed in roughly 25% of the month. This exceeds the 50% early-consumption threshold in the error budget policy, triggering the mandatory incident review. Error budgets do not reset weekly -- the 30-day rolling measurement applies. While the SLO has not yet been breached, the policy trigger exists precisely to intervene before a breach occurs.",
       "category": "Applying site reliability engineering principles to a service",
       "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-001",
+      "question": "A developer pushes a commit to the main branch of a Cloud Source Repositories repository. Which Cloud Build trigger type should you configure to automatically start a build for every push to main?",
+      "options": [
+        "Pub/Sub trigger subscribed to the repo topic",
+        "Push-to-branch trigger with the branch pattern set to ^main$",
+        "Manual trigger invoked by the developer after each push",
+        "Webhook trigger pointing to the repository URL"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A push-to-branch trigger fires automatically whenever a matching branch receives a commit, making it the correct choice for continuous integration on the main branch. Manual triggers require a human action each time. Pub/Sub and webhook triggers are designed for event-driven pipelines from external systems, not for direct repository branch activity.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-002",
+      "question": "Your team uses GitHub as its source control system. You want Cloud Build to run integration tests on every pull request before it can be merged. Which trigger type and setting combination achieves this?",
+      "options": [
+        "Push-to-tag trigger with a tag pattern matching the PR branch name",
+        "Pull request trigger configured on the target branch pattern, with comment control disabled so any contributor can trigger builds",
+        "Pull request trigger configured on the target branch pattern, with comment control enabled to require an owner to post a comment before the build fires for external contributors",
+        "Manual trigger run by the reviewer after inspecting the diff"
+      ],
+      "correctAnswers": [2],
+      "explanation": "A pull request trigger fires when a PR targets the specified branch. Enabling comment control prevents untrusted forks from running builds automatically, which is a security best practice recommended by Google for open or semi-open repositories. Disabling comment control is convenient but exposes build minutes to arbitrary contributors. Push-to-tag triggers do not fire on pull request events.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-003",
+      "question": "Your organization wants to trigger a Cloud Build pipeline whenever a message is published to a specific Pub/Sub topic by an upstream data pipeline. Which trigger type should you use?",
+      "options": [
+        "Push-to-branch trigger on the repository holding the pipeline code",
+        "Pub/Sub trigger subscribed to the upstream topic, with substitution variables populated from the message payload",
+        "Webhook trigger that the upstream pipeline must call over HTTPS",
+        "Manual trigger invoked by an operator after the upstream pipeline completes"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A Pub/Sub trigger natively subscribes to a topic and launches a build when a message arrives, making it the correct choice for event-driven integration between systems. Substitution variables can be extracted from the message body to parameterize the build. Webhook triggers require an outbound HTTP call, adding coupling to the upstream system. Push-to-branch triggers only respond to source control events.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-004",
+      "question": "A security team requires that certain Cloud Build triggers can only be started by an authorized human engineer, never automatically. They also need a full audit trail in Cloud Logging showing who started each build and when. Which approach satisfies both requirements?",
+      "options": [
+        "Configure a push-to-branch trigger but protect the branch with required reviewers so a human must approve the merge",
+        "Use a manual trigger; engineers invoke it via the Cloud Console or gcloud CLI, and Cloud Audit Logs record the identity and timestamp of each invocation",
+        "Configure a Pub/Sub trigger and restrict the topic publisher role to a service account used only by engineers",
+        "Delete the trigger after each use and recreate it for the next authorized run"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Manual triggers in Cloud Build require an explicit invocation and never fire automatically. Every invocation is recorded in Cloud Audit Logs with the caller identity, satisfying the audit requirement. Branch protection adds a review gate but still fires the build automatically on merge. Restricting a Pub/Sub topic publisher still allows automation via scripts, which may not meet the 'human only' requirement.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-005",
+      "question": "You are writing a cloudbuild.yaml for a Go service. The build must: (1) run unit tests, (2) build a container image, and (3) push the image to Artifact Registry only if tests pass. Which cloudbuild.yaml structure correctly enforces this order?",
+      "options": [
+        "Define all three as steps in parallel using the waitFor: ['-'] field on each step",
+        "Define three sequential steps in order; by default each step waits for the previous one, so the push step only runs if prior steps succeed",
+        "Define the push step first so the image exists before tests run",
+        "Use a single step that chains all commands with || so later commands run even if earlier ones fail"
+      ],
+      "correctAnswers": [1],
+      "explanation": "In cloudbuild.yaml, steps without an explicit waitFor field execute sequentially in order, and a non-zero exit code from any step halts the build. Placing the test step before the build and push steps ensures the push only happens after a passing test run. Using || in a single shell step masks failures, violating the requirement. Parallel steps using waitFor: ['-'] would run all three simultaneously regardless of results.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-006",
+      "question": "A cloudbuild.yaml uses the built-in substitution $_DEPLOY_ENV to differentiate staging and production builds. Which TWO statements about Cloud Build substitutions are correct? (Choose TWO)",
+      "options": [
+        "User-defined substitutions must start with an underscore followed by an uppercase letter, e.g. $_MY_VAR",
+        "The built-in substitution $PROJECT_ID is available in every build without configuration and resolves to the project running the build",
+        "Substitution values are resolved at build queue time, so a value set after the build is queued will not be reflected",
+        "Substitutions can only be used in the args field of a step, not in the env or dir fields"
+      ],
+      "correctAnswers": [0, 1],
+      "explanation": "User-defined substitutions must be named with a leading underscore and uppercase letters (e.g., $_DEPLOY_ENV), which distinguishes them from built-in substitutions. $PROJECT_ID is one of several built-in substitutions automatically provided by Cloud Build. Substitution values are resolved when the build starts, not after queuing. Substitutions can be used in args, env, dir, and other string fields within a step.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-007",
+      "question": "After a successful Cloud Build run, your team needs the compiled binary artifact stored durably so it can be downloaded for debugging, independent of the container image. How do you configure cloudbuild.yaml to save build artifacts to Cloud Storage?",
+      "options": [
+        "Add an artifacts section with an objects block specifying the Cloud Storage bucket and glob path for the binary",
+        "Add a final step that runs gsutil cp to copy the binary; artifacts are not a native feature of cloudbuild.yaml",
+        "Set the logsBucket field to the target bucket; logs and artifacts share the same destination",
+        "Mount a Cloud Storage FUSE bucket as a volume in the build step to write directly"
+      ],
+      "correctAnswers": [0],
+      "explanation": "cloudbuild.yaml supports a top-level artifacts section where you declare objects with a location (gs:// bucket path) and paths (glob). Cloud Build uploads matching files after the build completes, and they appear in the build's artifact manifest. Using gsutil cp in a step works but bypasses the native artifact tracking that makes files linkable from the build record. logsBucket controls only build logs, not artifacts.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-008",
+      "question": "Your organization mandates that all Cloud Build steps use only approved base images stored internally, and no step may pull from Docker Hub. You also need to set a global environment variable ENVIRONMENT=production visible to every step without repeating it. Which pair of cloudbuild.yaml features satisfies both requirements?",
+      "options": [
+        "Set the name field of each step to your Artifact Registry path, and use the top-level options.env list to declare global environment variables",
+        "Use the images field at the top level to whitelist Docker Hub images, and set environment variables in each step individually",
+        "Set the logsBucket to block external image pulls, and use substitutions instead of environment variables",
+        "Configure a build trigger filter that rejects steps with Docker Hub image references, and use a secret manager secret for the environment value"
+      ],
+      "correctAnswers": [0],
+      "explanation": "In cloudbuild.yaml, the name field of each step specifies the container image to run; pointing it to your Artifact Registry ensures no Docker Hub images are pulled. The top-level options.env list defines environment variables that are injected into every step, avoiding repetition. The images field is for publishing final images, not whitelisting sources. Substitutions are for parameterizing values, not for injecting runtime environment variables globally.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-009",
+      "question": "Your team is migrating container images from Container Registry to Artifact Registry. Which statement correctly describes a key operational difference between the two services?",
+      "options": [
+        "Artifact Registry supports only Docker images; Container Registry supports Helm charts and npm packages",
+        "Artifact Registry supports multiple format repositories (Docker, Maven, npm, Python, etc.) within a single project and region, while Container Registry supports only Docker images",
+        "Container Registry is the newer service and is preferred for all new workloads on Google Cloud",
+        "Artifact Registry and Container Registry share the same storage bucket; they differ only in the API endpoint"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Artifact Registry is the successor to Container Registry and supports multiple artifact formats including Docker images, Maven, npm, Python, Go, and Helm charts in regionally-scoped repositories. Container Registry supports only Docker images and is in maintenance mode. They use separate storage backends; Container Registry stores images in Cloud Storage buckets while Artifact Registry uses its own managed storage.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-010",
+      "question": "A security auditor requires that every container image stored in Artifact Registry be automatically scanned for known OS and language-package vulnerabilities, with no manual step. How do you enable this?",
+      "options": [
+        "Enable the Container Analysis API and turn on automatic scanning in the Artifact Registry repository settings; scans run on every push",
+        "Schedule a daily Cloud Build job that runs trivy against each image in the repository",
+        "Configure a Binary Authorization policy that blocks deployment but does not scan images",
+        "Enable VPC Service Controls on the project; this implicitly activates vulnerability scanning"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Artifact Registry integrates with Container Analysis to provide on-push vulnerability scanning. Once the Container Analysis API is enabled and scanning is turned on for the repository, every newly pushed image is scanned automatically and findings appear as Occurrences in the Container Analysis API. Binary Authorization enforces attestations at deploy time but does not scan images. VPC Service Controls restrict API access perimeters and have no effect on vulnerability scanning.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-011",
+      "question": "You are setting up access control for an Artifact Registry Docker repository. A Cloud Build service account in project A must be able to push images, and a GKE node service account in project B must be able to pull images. Which TWO IAM bindings are required? (Choose TWO)",
+      "options": [
+        "Grant the Cloud Build service account from project A the roles/artifactregistry.writer role on the Artifact Registry repository in project A",
+        "Grant the GKE node service account from project B the roles/artifactregistry.reader role on the Artifact Registry repository in project A",
+        "Grant the Cloud Build service account from project A the roles/storage.objectCreator role on the GCS bucket backing Artifact Registry",
+        "Grant the GKE node service account from project B the roles/container.developer role in project B"
+      ],
+      "correctAnswers": [0, 1],
+      "explanation": "roles/artifactregistry.writer grants push (write) access to a repository and is the correct role for the Cloud Build service account that publishes images. roles/artifactregistry.reader grants pull (read) access and is the correct role for the GKE node service account in the consuming project. Artifact Registry does not use GCS buckets, so storage roles are irrelevant. roles/container.developer is a GKE cluster administration role unrelated to image registry access.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-012",
+      "question": "A financial services company requires that all container images deployed to production carry a cryptographic attestation confirming they passed a security scan and were built by an approved Cloud Build pipeline. After pushing a signed image to Artifact Registry, what GCP mechanism enforces that only attested images are deployed to GKE?",
+      "options": [
+        "Artifact Registry tag immutability, which prevents image tags from being overwritten",
+        "Binary Authorization, which evaluates attestations at pod admission time and blocks any image that lacks a valid attestation from a trusted attestor",
+        "Cloud Armor policies applied to the GKE ingress, which inspect image metadata before allowing traffic",
+        "Container Analysis Occurrences, which automatically block deployment if a CRITICAL vulnerability is found"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Binary Authorization is Google Cloud's deploy-time admission controller for GKE. It evaluates attestations stored in Container Analysis against a policy and rejects pods that reference images without valid attestations signed by a configured trusted attestor. Tag immutability prevents tag mutation but does not enforce attestations. Cloud Armor operates at the network/HTTP layer and has no visibility into image metadata. Container Analysis records findings but does not directly block Kubernetes deployments.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-013",
+      "question": "Your organization runs Cloud Build pipelines that must reach internal services hosted on a VPC, including a private Artifact Registry mirror and an on-premises test database connected via Cloud VPN. The default public Cloud Build pool cannot reach these resources. What is the correct solution?",
+      "options": [
+        "Add firewall rules to allow Cloud Build's public IP ranges into the VPC",
+        "Create a Cloud Build private pool peered to the VPC that hosts the private resources; build jobs running on the private pool can reach VPC-internal addresses",
+        "Enable Private Google Access on the VPC subnet; this allows Cloud Build to connect to VPC resources",
+        "Deploy a proxy VM in the VPC and route all build traffic through it using cloudbuild.yaml step environment variables"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Build private pools are dedicated worker pools that can be VPC-peered to your network, giving build steps direct access to RFC 1918 addresses inside the VPC including private Artifact Registry mirrors, Cloud SQL instances, and on-premises resources reached via VPN or Interconnect. The default pool shares public infrastructure and cannot reach private VPC resources. Private Google Access enables VMs without external IPs to reach Google APIs, not the reverse situation. A proxy VM introduces operational overhead and is not the recommended pattern.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-014",
+      "question": "Your security team requires that Cloud Build workers for regulated workloads never have internet egress -- all traffic must stay within Google's network or route to approved internal endpoints. You have provisioned a private pool. Which configuration enforces no-internet-egress on that pool?",
+      "options": [
+        "Set the privatePoolV1Config.networkConfig.egressOption to NO_PUBLIC_EGRESS when creating or updating the private pool",
+        "Apply a VPC firewall rule with deny-all egress on the VPC; private pool workers automatically inherit it",
+        "Enable VPC Service Controls on the project; this blocks all internet egress from compute resources including Cloud Build",
+        "Set the cloudbuild.yaml top-level option timeout to a low value to limit outbound connection attempts"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Cloud Build private pools expose a networkConfig.egressOption field. Setting it to NO_PUBLIC_EGRESS configures the worker pool so that all traffic is routed through the peered VPC and no direct internet egress is permitted. VPC firewall deny-all egress rules apply to VM instances in the VPC but private pool workers reside in a Google-managed tenant project and are not directly governed by customer firewall rules unless traffic routes through the peered network. VPC Service Controls restricts API access at the project boundary but does not block internet egress from compute workers.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-015",
+      "question": "A team provisions a Cloud Build private pool to build container images that are pushed to a private Artifact Registry repository in the same VPC. After setup, builds fail because the workers cannot resolve the Artifact Registry hostname. What is the most likely cause and fix?",
+      "options": [
+        "The private pool's machine type is too small to run DNS resolution; upgrade to a larger machine type",
+        "Private Google Access is not enabled on the VPC subnet used for private pool peering, so the workers cannot resolve and reach Google API endpoints over internal addresses; enable Private Google Access on that subnet",
+        "The Artifact Registry repository is in the wrong region; move it to match the private pool region",
+        "Cloud Build private pools do not support Artifact Registry; use Container Registry instead"
+      ],
+      "correctAnswers": [1],
+      "explanation": "When a Cloud Build private pool is peered to a VPC, the workers use the customer VPC's DNS and routing. Private Google Access must be enabled on the subnet so that instances (and peered workers) can reach Google APIs such as Artifact Registry using internal IP addresses without traversing the internet. Without Private Google Access, DNS resolution for *.pkg.dev fails or routes incorrectly and push/pull operations time out. Machine type and region do not affect DNS resolution. Artifact Registry is fully supported with private pools.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
     }
   ]
 }

@@ -54,7 +54,7 @@ test.describe('Welcome screen exam badges', () => {
     { ariaLabel: 'Select Azure Solutions Architect Expert', id: 'az-305' },
     { ariaLabel: 'Select Security, Compliance & Identity', id: 'sc-900' },
     { ariaLabel: 'Select GCP Professional Cloud Architect', id: 'gcp-pca' },
-    { ariaLabel: 'Select GCP Professional DevOps Engineer', id: 'gcp-pcde' },
+    { ariaLabel: 'Select GCP Professional Cloud DevOps Engineer', id: 'gcp-pcde' },
     { ariaLabel: 'Select GCP Professional Cloud Developer', id: 'gcp-pcd' },
     { ariaLabel: 'Select AWS Solutions Architect Professional', id: 'aws-sap' },
     { ariaLabel: 'Select AWS DevOps Engineer Professional', id: 'aws-dop' },

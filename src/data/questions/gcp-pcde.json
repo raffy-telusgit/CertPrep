@@ -1053,6 +1053,216 @@
       "explanation": "When a Cloud Build private pool is peered to a VPC, the workers use the customer VPC's DNS and routing. Private Google Access must be enabled on the subnet so that instances (and peered workers) can reach Google APIs such as Artifact Registry using internal IP addresses without traversing the internet. Without Private Google Access, DNS resolution for *.pkg.dev fails or routes incorrectly and push/pull operations time out. Machine type and region do not affect DNS resolution. Artifact Registry is fully supported with private pools.",
       "category": "Building and implementing CI/CD pipelines for a service",
       "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-016",
+      "question": "Your team is adopting Google Cloud Deploy to manage progressive delivery of a containerized service to three environments: dev, staging, and production. You need to ensure that a release cannot proceed to production without an authorized manager explicitly approving the rollout. Which Cloud Deploy feature should you configure?",
+      "options": [
+        "Set a deploy timeout on the production target so the rollout pauses and waits for manual intervention",
+        "Enable requireApproval: true on the production target definition in the delivery pipeline; a rollout to that target will wait in PENDING_APPROVAL state until approved via the console or gcloud",
+        "Create a Cloud Build approval step that runs a gcloud deploy rollouts approve command before promoting",
+        "Configure an Automation resource with the repair rollout action on the production target"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Deploy targets support a requireApproval field. When set to true, any rollout advancing to that target enters PENDING_APPROVAL state and cannot proceed until an authorized user with the clouddeploy.approver role approves it via the console, gcloud, or the API. Deploy timeouts affect how long a rollout attempt runs, not whether it starts. A Cloud Build step calling gcloud approve would require the pipeline to already be in progress and creates a circular dependency. Automation resources handle repair and promotion logic but do not implement human approval gates.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-017",
+      "question": "A release was successfully deployed to the staging target in a Cloud Deploy delivery pipeline. You now want to advance it to the production target. Which command promotes the release to the next target in the pipeline sequence?",
+      "options": [
+        "gcloud deploy releases create --delivery-pipeline=my-pipeline --to-target=production",
+        "gcloud deploy rollouts create --release=my-release --delivery-pipeline=my-pipeline --to-target=production",
+        "gcloud deploy releases promote --release=my-release --delivery-pipeline=my-pipeline --to-target=production",
+        "gcloud deploy targets advance --target=production --delivery-pipeline=my-pipeline --release=my-release"
+      ],
+      "correctAnswers": [2],
+      "explanation": "gcloud deploy releases promote advances an existing release from its current stage to the next target in the pipeline, optionally overriding the target with --to-target. A release is created once and then promoted through targets; gcloud deploy releases create would generate a new release rather than advancing the existing one. gcloud deploy rollouts create is not a valid command for promotion. There is no gcloud deploy targets advance subcommand.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-018",
+      "question": "Your organization uses Cloud Deploy with a delivery pipeline that has three targets: dev, staging, and production. After a bad production deploy you need to immediately roll back to the previously deployed release version on the production target. What is the correct approach?",
+      "options": [
+        "Delete the current rollout resource; Cloud Deploy will automatically redeploy the previous release",
+        "Use gcloud deploy releases promote to advance the previous release from staging to production again",
+        "Use gcloud deploy rollouts rollback to create a new rollout on the production target that redeploys the last successful release",
+        "Manually apply the previous Kubernetes manifests with kubectl apply to bypass Cloud Deploy"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Cloud Deploy provides a built-in rollback capability via gcloud deploy rollouts rollback, which creates a new rollout on the specified target that redeploys the previously successful release. This keeps the full audit trail intact and respects approval gates. Deleting a rollout resource does not trigger redeployment. Re-promoting from staging is slower and may deploy a different version than what was last successful in production. Applying manifests directly with kubectl bypasses Cloud Deploy's tracking and approval mechanisms.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-019",
+      "question": "You are modeling a Cloud Deploy delivery pipeline that must deploy a service to five regional GKE clusters simultaneously, rather than sequentially. How should you configure the pipeline to achieve parallel deployment to all five regions at once?",
+      "options": [
+        "List all five cluster targets in a single stages entry using the targetId field; Cloud Deploy deploys them in parallel",
+        "Create a parallel deployment stage using the parallelDeployment block and list all five targets within it",
+        "Define a single stage that references a multi-target containing all five regional cluster targets; Cloud Deploy rolls out to all child targets in parallel",
+        "Create five separate delivery pipelines, one per region, and invoke them simultaneously from Cloud Build"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Cloud Deploy supports multi-targets, which are logical groupings of multiple physical targets. When a pipeline stage references a multi-target, Cloud Deploy creates a child rollout for each physical target and runs them in parallel. Listing targets directly in a stages entry is not valid syntax. There is no parallelDeployment block in Cloud Deploy's schema. Using five separate pipelines creates tracking overhead and loses the unified release model.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-020",
+      "question": "A Cloud Deploy pipeline deploys to a GKE target. You want Cloud Deploy to automatically verify the deployment succeeded by running a custom verification job after each rollout, and to mark the rollout FAILED if the verification exits non-zero. Which Cloud Deploy feature enables this?",
+      "options": [
+        "Configure a postdeploy action in the pipeline stage that runs a Cloud Build trigger after each rollout",
+        "Define a verify block in the deployParameters of the target with a container image that runs the health check",
+        "Enable verify: true in the delivery pipeline stage and provide a skaffold verify configuration with the test container commands",
+        "Create a Cloud Monitoring alerting policy that transitions the rollout state to FAILED when error rate exceeds a threshold"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Cloud Deploy integrates with Skaffold's verify feature. When verify: true is set in a pipeline stage, Cloud Deploy runs the skaffold verify phase after deployment, which executes user-defined test containers or commands. If any verify job exits non-zero, Cloud Deploy marks the rollout as FAILED and stops further promotion. A postdeploy Cloud Build trigger is an external mechanism that does not feed back into rollout state. The deployParameters block configures runtime values for manifests, not verification. Cloud Monitoring alerting policies cannot directly change rollout state.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-021",
+      "question": "You are deploying a new version of a stateless API service on Cloud Run. You want to shift 10% of traffic to the new revision immediately, monitor error rates for 30 minutes, and only then route all traffic to the new revision. Which deployment strategy should you use?",
+      "options": [
+        "Blue/green deployment: deploy the new revision with 100% traffic, then switch the blue environment to green after validation",
+        "Canary deployment: deploy the new revision with 10% traffic weight using a Cloud Run traffic split, then gradually increase to 100% after validation",
+        "Rolling update: configure maxSurge and maxUnavailable on the Cloud Run service to gradually replace instances",
+        "In-place deployment: update the existing revision's container image URL without changing traffic routing"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A canary deployment routes a small percentage of real traffic to the new version so you can validate behavior with limited blast radius before full rollout. Cloud Run natively supports traffic splits by revision, making this straightforward to implement. Blue/green swaps 100% of traffic at once, which does not match the incremental validation requirement. Cloud Run revisions are immutable and do not use maxSurge/maxUnavailable rolling parameters (those are Kubernetes constructs). In-place image update would create a new revision but without controlled traffic splitting.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-022",
+      "question": "Your team runs a GKE workload and wants to implement a blue/green deployment so that you can instantly switch all traffic back to the previous version if issues arise after a release. Which TWO Kubernetes resources are central to implementing blue/green deployments on GKE?",
+      "options": [
+        "A Kubernetes Service whose selector is updated to point to the green Deployment once validation passes",
+        "A HorizontalPodAutoscaler that scales down the blue Deployment after traffic shifts to green",
+        "Two separate Deployments (blue and green) running concurrently with distinct label selectors",
+        "A PodDisruptionBudget on the blue Deployment to prevent it from being deleted during the switch"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Blue/green on GKE relies on two parallel Deployments (blue = current, green = new) each with distinct pod labels. A single Kubernetes Service acts as the traffic entry point; its label selector is updated atomically to point to the green Deployment when you are ready to cut over, and reverted to blue for instant rollback. HorizontalPodAutoscaler and PodDisruptionBudget are supporting resources that may be used but are not the core mechanism of a blue/green switch.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-023",
+      "question": "You are deploying a GKE Deployment with 20 replicas. You configure a rolling update strategy with maxSurge: 2 and maxUnavailable: 0. What is the effect of these settings during an update?",
+      "options": [
+        "Up to 2 old pods may be terminated before new pods are ready, but no extra pods beyond 20 are created",
+        "At most 2 new pods are created at a time; no old pods are terminated until the new pods pass readiness checks; total pod count may temporarily reach 22",
+        "All 20 pods are replaced simultaneously, then 2 new pods are added to reach 22 total",
+        "maxUnavailable: 0 causes the update to fail because there must always be at least one unavailable slot for new pods"
+      ],
+      "correctAnswers": [1],
+      "explanation": "With maxUnavailable: 0, Kubernetes will not terminate any old pods until replacement pods are ready, ensuring zero availability loss. maxSurge: 2 allows up to 2 extra pods above the desired count to be created at a time during the update, so the cluster temporarily runs up to 22 pods while each batch of 2 is replaced. This is a safe, zero-downtime rolling update at the cost of briefly requiring extra node capacity. Option A reverses the roles of the two parameters. Options C and D are incorrect descriptions of rolling update behavior.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-024",
+      "question": "Your team deploys an App Engine Standard service. You want to implement a canary release by sending 5% of traffic to a new version while keeping 95% on the current version, with the ability to roll back instantly. Which App Engine feature allows this?",
+      "options": [
+        "Deploy the new version and use traffic splitting to assign 5% of traffic to it by version ID; revert by re-splitting all traffic to the old version",
+        "Use App Engine flexible environment, which supports Kubernetes-style rolling updates with traffic percentages",
+        "Set the new version as the default with 5% serving allocation; App Engine will automatically increase it based on error rates",
+        "Deploy the new version to a separate App Engine service and use Cloud Load Balancing to split traffic 95/5 between services"
+      ],
+      "correctAnswers": [0],
+      "explanation": "App Engine Standard supports traffic splitting at the version level, allowing you to allocate specific percentages of incoming requests to different deployed versions of the same service. Setting 5% to the new version and 95% to the existing version is exactly a canary pattern. Rollback is instant by re-assigning 100% traffic to the old version. App Engine Standard and Flexible are separate environments with different capabilities; Standard directly supports version-level traffic splitting. App Engine does not auto-scale traffic based on error rates. Using a separate service and load balancer is unnecessary complexity.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-025",
+      "question": "You are using Cloud Deploy to deploy a GKE service with a canary strategy. The pipeline is configured with a canaryDeployment block specifying percentages [25, 50, 75, 100]. During the 50% phase, your monitoring dashboard shows the new version's error rate has spiked to 8%. What is the BEST action to take using Cloud Deploy?",
+      "options": [
+        "Manually edit the Kubernetes Deployment resource to set replicas for the canary to zero",
+        "Use gcloud deploy rollouts rollback to revert the rollout on that target, which will restore the previous stable version",
+        "Wait for the 75% phase to begin, then initiate rollback from the console",
+        "Delete the Cloud Deploy release and redeploy the previous release from source control"
+      ],
+      "correctAnswers": [1],
+      "explanation": "When a canary rollout is in progress and metrics indicate a problem, the correct Cloud Deploy action is gcloud deploy rollouts rollback, which creates a new rollout targeting the last known good release on that target. This cleanly reverses the canary and restores stable traffic. Manually editing Kubernetes resources bypasses Cloud Deploy's tracking and can leave the pipeline in an inconsistent state. Waiting for the 75% phase would expose more users to the failing version. Deleting the release loses audit history and is more disruptive than a targeted rollback.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-026",
+      "question": "Your team needs to choose a deployment strategy for a GKE service that: (1) produces zero downtime during deploys, (2) requires no extra cluster capacity beyond the normal replica count, and (3) allows instant rollback by restoring the previous Deployment spec. Which TWO statements correctly characterize a blue/green strategy versus a rolling update strategy in this context?",
+      "options": [
+        "Blue/green requires running two full Deployments simultaneously and therefore needs extra cluster capacity; rolling updates can achieve zero downtime with maxUnavailable: 0 but require only maxSurge extra capacity",
+        "Rolling updates do not support instant rollback; once pods are replaced they cannot be restored without redeploying",
+        "Blue/green enables instant rollback by flipping the Service selector back to the blue Deployment, with no pod restart required",
+        "Rolling updates with maxUnavailable: 0 and maxSurge: 0 produce zero downtime with no extra capacity required"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Blue/green keeps both the old (blue) and new (green) Deployments running simultaneously, which requires roughly double the pod capacity during the transition window. However, rollback is instant -- simply flip the Service selector back to the blue Deployment without restarting any pods. Rolling updates with maxSurge can achieve near-zero downtime but do not provide the same instant rollback path; Kubernetes rolling update history does allow kubectl rollout undo, but pods must restart. Setting both maxSurge and maxUnavailable to 0 is invalid and will be rejected by the API.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-027",
+      "question": "Your Cloud Build pipeline builds a Node.js application. Each build downloads hundreds of npm packages and takes 8 minutes, but the package.json rarely changes. You want to dramatically reduce build time using caching. Which approach is MOST effective for this workload?",
+      "options": [
+        "Increase the Cloud Build machine type to n1-highcpu-32 so npm install completes faster",
+        "Store the node_modules directory in a Cloud Storage cache bucket and restore it at the start of each build using gsutil; skip npm install if package-lock.json is unchanged",
+        "Use kaniko with --cache=true so that each npm install layer is pushed to Artifact Registry and reused on subsequent builds",
+        "Split the build into two Cloud Build triggers: one for dependency installation and one for the application build"
+      ],
+      "correctAnswers": [1],
+      "explanation": "For dependency-heavy workloads like Node.js, caching the node_modules directory in a Cloud Storage bucket and restoring it when package-lock.json has not changed eliminates redundant npm installs. Cloud Build supports this pattern natively via the volumes and artifacts.objects configuration or with explicit gsutil cp steps. Kaniko layer caching is effective for Docker image layer reuse but does not help with npm dependency resolution outside of a Dockerfile RUN layer. Increasing machine type speeds up compute but does not reduce network-bound dependency downloads. Splitting into two triggers adds complexity without solving the core caching problem.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-028",
+      "question": "Your team builds Docker container images in Cloud Build using kaniko instead of the standard Docker daemon. You want to enable layer caching so that unchanged Dockerfile layers are reused across builds. Which TWO arguments must you pass to the kaniko executor to enable remote layer caching backed by Artifact Registry?",
+      "options": [
+        "--cache=true to enable layer caching",
+        "--cache-repo=REGION-docker.pkg.dev/PROJECT/REPO to specify the Artifact Registry repository used to store and retrieve cached layers",
+        "--snapshot-mode=redo to force layer re-evaluation even when cache hits occur",
+        "--no-push to prevent the final image from being pushed after a cached build"
+      ],
+      "correctAnswers": [0, 1],
+      "explanation": "Kaniko's remote layer caching requires two flags: --cache=true to activate caching behavior, and --cache-repo pointing to an OCI-compatible registry such as Artifact Registry where cached layers are stored and retrieved. Together they allow kaniko to push intermediate layers to the cache repo and pull them on subsequent builds when Dockerfile instructions have not changed, substantially reducing build times. --snapshot-mode=redo disables caching effectiveness by forcing re-snapshots. --no-push prevents the final image from being pushed, which is the opposite of what a caching build pipeline needs.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-029",
+      "question": "Your CI/CD pipeline runs unit tests, integration tests, and a smoke test suite in Cloud Build. Integration tests require a live database. The pipeline is slow because integration tests run on every commit, even when only frontend TypeScript files changed. What is the BEST strategy to reduce pipeline duration while maintaining safety?",
+      "options": [
+        "Remove integration tests from the pipeline and run them manually before each release",
+        "Run integration tests only in a separate nightly pipeline and remove them from the commit-triggered pipeline entirely",
+        "Use Cloud Build's includedFiles filter on the integration test trigger so it only fires when backend source files or schema files change; keep unit tests and smoke tests on every commit",
+        "Parallelize all three test stages by running them in separate Cloud Build steps with no waitFor dependencies"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Cloud Build trigger configuration supports includedFiles and ignoredFiles glob patterns. By restricting the integration test trigger to backend source files and database schema files, you avoid running expensive database-backed tests when only frontend code changes, directly reducing pipeline duration. Unit tests and smoke tests remain on every commit for fast feedback. Removing integration tests entirely from the commit pipeline increases the risk of merging broken backend changes. Running integration tests only nightly delays detection of regressions. Parallelizing tests helps with wall-clock time but does not eliminate redundant test runs triggered by irrelevant file changes.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-030",
+      "question": "Your team wants to add a load test stage to the CI/CD pipeline that runs against a staging environment after every successful deployment. The load test should block promotion to production if the p99 latency exceeds 500ms under a 200 requests-per-second load. Which combination of tools and pipeline actions BEST implements this requirement?",
+      "options": [
+        "Run a Cloud Scheduler job after each deployment to trigger a load test Cloud Run job; export results to BigQuery and check them manually before approving promotion",
+        "Add a Cloud Build step that runs a load testing tool (such as k6 or Locust) against the staging URL, parses the p99 latency from the output, and fails the step with a non-zero exit code if the threshold is exceeded; configure the Cloud Deploy pipeline to run this as a postdeploy action that blocks promotion on failure",
+        "Configure a Cloud Monitoring SLO with a p99 latency objective and rely on the SLO burn rate alert to notify engineers to stop promotion manually",
+        "Run the load test as a Cloud Build step with waitFor: ['-'] so it executes in parallel with the deployment and does not block promotion"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The correct approach embeds the load test as a pipeline step that produces a deterministic pass/fail signal. Running a load test tool (k6, Locust, or similar) in Cloud Build, checking p99 latency programmatically, and exiting non-zero on threshold breach gives the pipeline a hard gate. When configured as a Cloud Deploy postdeploy action, a non-zero exit fails the rollout verification and blocks automatic promotion to production. Cloud Scheduler introduces asynchrony and manual review, which does not provide an automated gate. An SLO burn rate alert is reactive and requires manual intervention rather than automated blocking. Using waitFor: ['-'] would run the test in parallel with deployment, potentially checking latency before the deployment is stable and not blocking promotion.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
     }
   ]
 }

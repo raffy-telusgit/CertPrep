@@ -933,13 +933,13 @@
       "options": [
         "Azure Backup",
         "Azure Resource Manager templates (ARM templates) or Bicep files",
-        "Azure Active Directory B2C",
+        "Microsoft Entra External ID",
         "Azure Service Health"
       ],
       "correctAnswers": [
         1
       ],
-      "explanation": "ARM templates and Bicep files define infrastructure as code, allowing organizations to deploy identical, repeatable Azure environments automatically. This reduces human error from manual configuration, supports version control of infrastructure, and enables consistent deployments across dev, test, and production. Azure Backup protects data. Azure AD B2C handles consumer identity. Service Health provides infrastructure status updates.",
+      "explanation": "ARM templates and Bicep files define infrastructure as code, allowing organizations to deploy identical, repeatable Azure environments automatically. This reduces human error from manual configuration, supports version control of infrastructure, and enables consistent deployments across dev, test, and production. Azure Backup protects data. Microsoft Entra External ID handles consumer identity. Service Health provides infrastructure status updates.",
       "category": "Cloud Concepts",
       "difficulty": "medium"
     },
@@ -1607,7 +1607,7 @@
     },
     {
       "id": "az900-architecture-020",
-      "question": "A company has four departments and wants to ensure each department has its own billing statement while sharing the same Azure Active Directory tenant. Which approach meets this requirement?",
+      "question": "A company has four departments and wants to ensure each department has its own billing statement while sharing the same Microsoft Entra ID tenant. Which approach meets this requirement?",
       "options": [
         "Create four Management Groups, one per department",
         "Create four Resource Groups, one per department",
@@ -3049,7 +3049,7 @@
       "options": [
         "Virtual Network (VNet) with a subnet",
         "Network Interface Card (NIC)",
-        "Azure Active Directory group for VM admins",
+        "Microsoft Entra ID group for VM admins",
         "A Resource Group to contain the VM"
       ],
       "correctAnswers": [
@@ -3087,7 +3087,9 @@
         "Total Cost of Ownership (TCO) Calculator",
         "Azure Advisor"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The Azure Pricing Calculator lets you configure Azure services and estimate the monthly cost before deployment. Azure Cost Management analyzes costs after resources are deployed. The TCO Calculator estimates savings from migrating on-premises workloads to Azure. Azure Advisor provides recommendations but does not produce upfront pricing estimates.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3101,7 +3103,9 @@
         "Total Cost of Ownership (TCO) Calculator",
         "Azure Monitor"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "The TCO Calculator is designed specifically to compare the costs of running workloads on-premises versus in Azure, factoring in hardware, electricity, IT labor, and data center overhead. The Pricing Calculator estimates Azure costs alone, not a comparison with on-premises. Azure Cost Management analyzes existing Azure spend. Azure Monitor is for operational monitoring, not financial estimation.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3115,7 +3119,9 @@
         "The number of Azure subscriptions in the tenant",
         "Whether the VM is running or stopped (deallocated)"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "The number of Azure subscriptions in a tenant does not directly affect VM pricing. VM cost is determined by size (compute resources), region (prices vary by geography), and run state (a deallocated VM does not incur compute charges, though storage costs remain). Having many subscriptions is an organizational choice, not a billing variable for an individual VM.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3129,7 +3135,9 @@
         "3-year Reserved Instance",
         "Dev/Test pricing"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "A 3-year Reserved Instance (Azure Reserved VM Instances) provides the largest discount (up to ~72%) compared to pay-as-you-go because you commit to a longer term. A 1-year reservation gives a smaller discount. Spot pricing can be cheaper than reservations for interruptible workloads but is not suitable for predictable, always-on workloads. Dev/Test pricing applies only to Visual Studio subscribers for non-production workloads.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3143,7 +3151,10 @@
         "The number of virtual networks in the subscription",
         "The number of resource groups used to organize blobs"
       ],
-      "correctAnswers": [0, 1],
+      "correctAnswers": [
+        0,
+        1
+      ],
       "explanation": "Azure Blob Storage is billed based on capacity (GB stored per month) and operations (read, write, list, and delete requests). The number of virtual networks or resource groups in a subscription does not affect storage costs; those are organizational constructs with no per-unit billing in this context.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3157,7 +3168,9 @@
         "Azure applies a fixed regional tax on all services",
         "Regions closer to the equator are always cheaper due to cooling savings"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure service prices differ by region because underlying costs such as real estate, power, cooling, and local labor vary by geography. There is no fixed formula like equator proximity or AZ count. Understanding regional pricing differences is important when optimizing cost versus latency trade-offs.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3171,7 +3184,9 @@
         "Azure Dev/Test pricing",
         "Enterprise Agreement discount"
       ],
-      "correctAnswers": [0],
+      "correctAnswers": [
+        0
+      ],
       "explanation": "Azure Hybrid Benefit allows customers with qualifying on-premises Windows Server or SQL Server licenses covered by Software Assurance to bring those licenses to Azure, significantly reducing VM costs by removing the Windows Server license fee from the Azure price. Reserved Instances provide discounts for committing to a term. Dev/Test pricing is for non-production environments for Visual Studio subscribers.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3185,7 +3200,10 @@
         "Entering the number of developers on the team",
         "Choosing the physical data center rack location"
       ],
-      "correctAnswers": [0, 1],
+      "correctAnswers": [
+        0,
+        1
+      ],
       "explanation": "The Azure Pricing Calculator accepts the number of hours a resource will run per month (affecting compute cost) and the target region (which affects unit pricing). The number of developers and the physical rack location are not inputs; you cannot choose specific rack locations in Azure.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3199,7 +3217,9 @@
         "Azure support plan fees",
         "Microsoft Entra ID Premium licensing"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The TCO Calculator includes often-overlooked on-premises costs such as IT staff labor for hardware maintenance, power, cooling, physical space, and hardware refresh cycles. These indirect costs are frequently underestimated. Data egress fees, Azure support plans, and Entra ID licensing are Azure-side costs, not on-premises comparators.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3213,7 +3233,9 @@
         "Azure Spot Virtual Machines",
         "Azure Dedicated Host"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Azure Spot VMs use unused Azure capacity at steep discounts (up to 90% off pay-as-you-go) but can be evicted when Azure needs the capacity back. They are ideal for interruptible, fault-tolerant batch workloads. Reserved Instances require a commitment for consistently running workloads. Pay-as-you-go has no discount. Dedicated Host provides physical isolation at a premium price.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3227,7 +3249,9 @@
         "Azure Advisor",
         "Microsoft Defender for Cloud"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The Azure Pricing Calculator is used before deployment to estimate costs of specific Azure services and configurations. Azure Cost Management is used after resources are deployed to analyze actual spending. Azure Advisor makes recommendations on deployed resources. Microsoft Defender for Cloud focuses on security posture.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3241,7 +3265,9 @@
         "Reserved Instances provide a billing discount and can be exchanged or cancelled with limitations",
         "Reserved Instances are only available for virtual machines, not databases or storage"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Azure Reserved Instances provide a billing discount (applied automatically to matching usage) and can generally be exchanged for a different size or SKU, or cancelled (with an early termination fee). They are not locked to a resource group and are available for many services including SQL Database, Cosmos DB, and App Service, not just VMs. Instance size flexibility may apply within the same VM family.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -3255,7 +3281,9 @@
         "Data transfer within a region is charged at a higher rate to offset local infrastructure costs",
         "Cross-region transfer is free; only internet-bound egress is charged"
       ],
-      "correctAnswers": [0],
+      "correctAnswers": [
+        0
+      ],
       "explanation": "Azure charges for outbound data transfer (egress) between Azure regions because that traffic uses additional backbone network infrastructure. Data transfer within the same region between Azure services is generally free. Inbound (ingress) data to Azure is also generally free. Internet egress is charged, but cross-region transfer is a separate billing dimension.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3269,7 +3297,9 @@
         "Subscription spending cap in the Azure Pricing Calculator",
         "Resource lock of type ReadOnly applied to the subscription"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Cost Management allows you to create a budget at the subscription (or resource group) level and configure alert thresholds that send email notifications when actual or forecasted spend reaches a percentage of the budget. Azure Policy does not set financial spending limits. The Pricing Calculator is a pre-deployment estimation tool. Resource locks control management operations, not spending.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3283,7 +3313,9 @@
         "An Azure Policy assignment that denies resource creation above $4,000",
         "A spending limit in the Azure portal subscription settings"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Cost Management budgets allow you to set a dollar budget for a scope (subscription, resource group, or management group) and configure alert thresholds (as a percentage of the budget). When spending reaches 80%, an email is automatically sent. Azure Monitor metric alerts focus on operational metrics, not spend. Azure Policy can restrict resources but does not alert on cost percentages. Azure subscriptions have a spending limit concept only for free/trial accounts.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3297,7 +3329,9 @@
         "Management group",
         "Individual resource"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Management groups sit above subscriptions in the Azure hierarchy and can contain multiple subscriptions. A budget applied at the management group level therefore covers the widest scope. Subscriptions contain resource groups, which contain individual resources. Applying a budget at the management group level enables cost governance across an entire organization or business unit.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3311,7 +3345,9 @@
         "The original budget amount set for the billing period",
         "The cost of all resources if they were switched to Reserved Instances"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Forecasted cost in Azure Cost Management is a machine-learning-based projection of what the total spend will be by end of the billing period, extrapolated from current usage patterns. It helps identify potential overruns before they happen. It is not a budget value, not the lowest-cost alternative, and not a reservation calculation.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3325,7 +3361,10 @@
         "Budgets with alert thresholds",
         "VM performance CPU utilization dashboards"
       ],
-      "correctAnswers": [0, 2],
+      "correctAnswers": [
+        0,
+        2
+      ],
       "explanation": "Azure Cost Management provides cost analysis views (breakdown by service, resource group, tag, location, etc.) and budget management with configurable alert thresholds. Security compliance scores are provided by Microsoft Defender for Cloud, not Cost Management. VM performance dashboards are in Azure Monitor.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3339,7 +3378,9 @@
         "To notify stakeholders when actual or forecasted spend crosses a defined threshold",
         "To rebalance workloads across regions to lower cost"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Cost alerts in Azure Cost Management send notifications (email or action group) when spending reaches configured thresholds, enabling teams to take corrective action. They do not automatically delete resources or block deployments by default. Rebalancing workloads is a manual optimization activity, not a function of cost alerts.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3353,7 +3394,9 @@
         "Azure Advisor recommendations aggregated at the tenant level",
         "A manual export of invoices from each subscription combined in Excel"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Cost Management can be scoped to a management group, which aggregates costs across all child subscriptions. Combined with cost allocation tags (e.g., Department=Finance), this provides a unified departmental cost view. Separate per-subscription dashboards require manual aggregation. Azure Advisor is for operational recommendations. Manual invoice exports are inefficient and error-prone.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3367,7 +3410,9 @@
         "Tags enforce spending limits per cost center automatically",
         "Tags are only visible in the Azure portal and cannot be used in cost analysis"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Tags are key-value pairs attached to Azure resources. In Azure Cost Management, you can filter and group cost analysis by tag values (e.g., CostCenter=Marketing) to see how much each cost center is spending. Tags do not generate separate invoices, do not enforce spending limits, and are fully accessible in cost analysis, APIs, and exports.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3381,7 +3426,10 @@
         "A single Azure resource can have a maximum of 50 tags",
         "Tags can be enforced using Azure Policy to require specific tags on resource creation"
       ],
-      "correctAnswers": [1, 3],
+      "correctAnswers": [
+        1,
+        3
+      ],
       "explanation": "Tags are name-value pairs used to organize, categorize, and filter Azure resources; they are a core governance mechanism. Azure Policy can enforce tagging requirements, such as requiring a 'CostCenter' tag on all new resources. Tags are NOT automatically inherited by resources from their resource group (they must be applied separately or via policy). The maximum is 50 tag name-value pairs per resource, not per group.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3395,7 +3443,9 @@
         "Apply a resource lock to the subscription to prevent untagged resources",
         "Configure Azure Cost Management to reject resources without the tag"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Policy can enforce tagging at resource creation time. A built-in policy initiative or a custom policy can require that the 'Environment' tag exists and restrict its values to an allowed list. Documentation-only approaches rely on human compliance. Resource locks control delete/modify operations, not tagging. Azure Cost Management is a reporting tool, not a resource creation control.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3409,7 +3459,9 @@
         "50",
         "100"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Each Azure resource, resource group, and subscription supports up to 50 tag name-value pairs. Tag names are case-insensitive and limited to 512 characters; tag values are limited to 256 characters. If you need more organizational metadata, consider storing it in an external CMDB linked via tags.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3423,7 +3475,9 @@
         "Deny",
         "DeployIfNotExists"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "The 'Deny' policy effect blocks a resource creation or modification request if it does not comply with the policy rule, such as missing a required tag. 'Audit' only logs non-compliance without blocking. 'Append' adds a tag with a default value. 'DeployIfNotExists' deploys a related resource if one does not exist, but does not block creation of the non-compliant resource.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3437,7 +3491,9 @@
         "Resources do NOT automatically inherit tags from their resource group",
         "Resources inherit tags from the resource group only if deployed via ARM templates"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "In Azure, tags applied to a resource group are NOT automatically inherited by the resources within it. Each resource must be tagged individually, or you can use Azure Policy with the 'Inherit a tag from the resource group' built-in initiative to propagate tags automatically. This is a common source of confusion and a reason why policy-driven tagging enforcement is recommended.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3451,7 +3507,9 @@
         "Azure Data Factory",
         "Microsoft Defender for Cloud"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Microsoft Purview is the unified data governance service that enables organizations to discover, classify, and manage data across on-premises, multicloud (AWS, GCP), and Azure sources. It provides a data catalog, data lineage visualization, and sensitive data scanning. Azure Synapse and Data Factory are data integration and analytics services. Defender for Cloud focuses on security posture.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3465,7 +3523,9 @@
         "Azure Policy compliance dashboard",
         "Microsoft Entra ID access reviews"
       ],
-      "correctAnswers": [0],
+      "correctAnswers": [
+        0
+      ],
       "explanation": "Microsoft Purview's Data Map automatically scans registered data sources and classifies sensitive data (including PII) using built-in or custom classifiers. This allows compliance officers to see where PII resides across the data estate. Compliance Manager tracks regulatory compliance posture. Azure Policy monitors resource configuration compliance, not data content classification. Entra ID access reviews are for identity governance.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3479,7 +3539,10 @@
         "Information protection policies to classify and label sensitive documents and emails",
         "Network security groups to control inbound and outbound VM traffic"
       ],
-      "correctAnswers": [0, 2],
+      "correctAnswers": [
+        0,
+        2
+      ],
       "explanation": "Microsoft Purview includes a data governance data catalog (for discovering, classifying, and managing data assets) and information protection capabilities (sensitivity labels, DLP policies for documents and emails). Firewall rules for Azure SQL and network security groups are infrastructure security features managed outside of Purview.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3493,7 +3556,9 @@
         "Azure Cost Management export analysis",
         "Azure Monitor Log Analytics workspace"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Microsoft Purview's Data Map captures and visualizes data lineage, showing how data moves and transforms across pipelines from source to destination. This is critical for impact analysis and compliance auditing. Azure Data Factory monitoring shows pipeline run status but does not provide a cross-system lineage map. Azure Monitor and Cost Management serve operational and financial monitoring purposes.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3507,7 +3572,9 @@
         "Encrypting data at rest in Azure Storage accounts",
         "Monitoring virtual machine performance and uptime"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Microsoft Purview Compliance Manager helps organizations assess, monitor, and improve their compliance posture against industry regulations and standards (GDPR, HIPAA, ISO 27001, NIST, etc.) by providing actionable improvement recommendations and a compliance score. Azure Policy handles resource configuration compliance. Encryption and VM monitoring are handled by other Azure services.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3521,7 +3588,9 @@
         "Microsoft Entra ID (identity) and Azure Key Vault (secrets management)",
         "Azure Backup (data protection) and Azure Site Recovery (disaster recovery)"
       ],
-      "correctAnswers": [0],
+      "correctAnswers": [
+        0
+      ],
       "explanation": "Microsoft Purview was formed by combining two previously separate Microsoft product areas: the standalone data governance catalog service and the Microsoft 365 Compliance portfolio (information protection, data lifecycle management, eDiscovery, and compliance management). Microsoft Sentinel and Microsoft Defender for Cloud are separate security products, not part of Purview.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -3535,7 +3604,9 @@
         "A backup service for Azure Blob Storage containers",
         "A network diagram of all Azure resources in a subscription"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The Microsoft Purview Data Catalog is a searchable repository of an organization's data assets. It stores metadata (schema, location, owners) and business glossary terms, and applies classification labels (e.g., 'contains PII'). It helps data consumers find trusted data. It is not a storage or backup service, nor a network topology tool.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3549,7 +3620,9 @@
         "Azure Cost Management",
         "Microsoft Purview"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Policy allows you to define rules (policies) that enforce naming conventions and restrict deployments to approved regions. Policies can Deny non-compliant resource creation, Audit existing resources, or Append required values. Azure Blueprints orchestrate policy assignments and other artifacts but the enforcement engine itself is Azure Policy. Cost Management manages spending. Purview manages data governance.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3563,7 +3636,9 @@
         "An initiative automatically remediates non-compliant resources, while individual policies only audit",
         "An initiative is a premium version of a policy that requires a paid SKU"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "An Azure Policy initiative (also called a policy set) is a logical grouping of multiple individual policies that share a common compliance goal, such as the 'Azure Security Benchmark' initiative. Assigning an initiative assigns all contained policies at once, simplifying governance. Both individual policies and initiatives can have Audit, Deny, or remediation effects; that is not an initiative-specific feature.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3577,7 +3652,9 @@
         "The resource group has the tag automatically added with an empty value",
         "The policy blocks all future resource deployments into that resource group"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The 'Audit' effect in Azure Policy only evaluates existing and new resources for compliance and reports non-compliant resources in the compliance dashboard. It does not take any corrective action, delete resources, add tags, or block new deployments. The 'Deny' effect would block new non-compliant resources; 'Modify' or 'Append' effects can add tags automatically.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3591,7 +3668,9 @@
         "Append",
         "AuditIfNotExists"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "The 'Append' effect adds fields to a resource during creation or update if those fields do not already exist or if the field is being replaced. It is commonly used to automatically append tags (e.g., a default 'Environment' tag) without blocking the operation. 'Deny' blocks non-compliant requests. 'Audit' only reports. 'AuditIfNotExists' checks for related resources, not simple field values.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3605,7 +3684,9 @@
         "Apply a ReadOnly resource lock to the resource group",
         "Move the policy assignment to each individual resource instead"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Policy assignments support exclusion scopes. When assigning (or editing) a policy, you can specify one or more exclusion scopes such as a resource group or individual resource. Resources in the excluded scope will not be evaluated by the policy. There is no need to move the resource group or change individual resource assignments. Resource locks do not affect policy evaluation.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3619,7 +3700,10 @@
         "Azure Policy can be used to restrict which Azure regions resources can be deployed in",
         "Each policy definition can only contain a single rule with a single effect"
       ],
-      "correctAnswers": [0, 2],
+      "correctAnswers": [
+        0,
+        2
+      ],
       "explanation": "Azure Policy assignments can be scoped to management groups, subscriptions, or resource groups, and are inherited by child scopes. Built-in policies like 'Allowed locations' can restrict which regions resources are deployed in. Policy assignments do not retroactively fix resources; remediation tasks must be run separately. A policy definition consists of one policy rule with a single effect (though initiatives can group many policies).",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -3633,7 +3717,9 @@
         "Configure Azure Cost Management budgets at the management group level",
         "Enable Microsoft Defender for Cloud at the tenant level"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Assigning a policy initiative (collection of policies) at the management group level ensures that all current and future child subscriptions inherit those policies automatically. Remediation tasks can then be run to bring existing non-compliant resources into compliance. Manual assignment per subscription does not scale. Cost Management budgets and Defender for Cloud are governance tools but do not enforce resource configuration compliance.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -3647,7 +3733,9 @@
         "DoNotDelete",
         "Immutable"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The 'CanNotDelete' lock prevents authorized users from deleting a resource, but they can still read and modify it. 'ReadOnly' prevents both deletion and modification. 'DoNotDelete' is not a valid Azure lock name. 'Immutable' is not a resource lock type; it is a storage blob immutability policy concept.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3661,7 +3749,10 @@
         "Deleting the storage account",
         "Viewing the storage account properties in the Azure portal"
       ],
-      "correctAnswers": [1, 2],
+      "correctAnswers": [
+        1,
+        2
+      ],
       "explanation": "A ReadOnly lock prevents write operations (uploading/modifying blobs) and delete operations on the resource. Reading existing data and viewing properties are read operations and are permitted under a ReadOnly lock. In essence, ReadOnly means users can read but cannot create, update, or delete the locked resource.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3675,7 +3766,9 @@
         "Owner or a role with Microsoft.Authorization/locks/* permissions",
         "Any role that has write access to the resource"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "To create or delete a resource lock, you need the Owner built-in role or a custom role that includes the 'Microsoft.Authorization/locks/write' and 'Microsoft.Authorization/locks/delete' permissions. The Contributor role can deploy and manage resources but explicitly lacks the Authorization/locks action, which is by design to prevent contributors from removing governance controls.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -3689,7 +3782,9 @@
         "The lock applies only to resources created after the lock was applied",
         "The lock must be individually applied to each resource inside the group"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Resource locks applied to a resource group are inherited by all resources within that group, just as RBAC and policy assignments are inherited through the Azure scope hierarchy. A lock on the resource group means you cannot delete (CanNotDelete) or modify (ReadOnly) either the group itself or any of its contained resources, unless you first remove the lock.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3703,7 +3798,9 @@
         "The VM cannot be read or viewed in the Azure portal",
         "The VM cannot have its disk resized, but can be deleted"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "A CanNotDelete lock allows all read and write operations on the resource, including starting, stopping, resizing, and reconfiguring the VM. The only blocked operation is deletion. This is the key distinction from ReadOnly, which blocks both write and delete operations. Reads and portal views are always permitted regardless of lock type.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3717,7 +3814,9 @@
         "The new resource group is created in a pending state until the lock is removed",
         "The new resource group is created but all resources inside it inherit the ReadOnly lock automatically"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "A ReadOnly lock prevents any write or create operations on the locked scope and its children. Creating a new resource group within a ReadOnly-locked subscription is a write operation and will fail. Resource groups are not exempt from locks. The lock must be removed before new resources or resource groups can be created.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -3731,7 +3830,10 @@
         "ReadOnly",
         "WriteProtect"
       ],
-      "correctAnswers": [0, 2],
+      "correctAnswers": [
+        0,
+        2
+      ],
       "explanation": "Azure provides exactly two resource lock types: 'CanNotDelete' (prevents deletion but allows reads and writes) and 'ReadOnly' (prevents both write and delete operations). 'NoAccess' and 'WriteProtect' are not valid Azure resource lock types. Access restrictions are handled through RBAC, not resource locks.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3745,7 +3847,9 @@
         "Azure portal",
         "Azure Resource Manager (ARM) templates"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "The Azure portal (portal.azure.com) is a web-based graphical interface that runs in a browser and requires no local software installation. It is used to create, manage, and monitor all Azure resources. Azure CLI and PowerShell are command-line tools that must be installed locally (or used via Cloud Shell). ARM templates are declarative JSON files, not a graphical tool.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3759,7 +3863,9 @@
         "Azure Cost Management views",
         "Microsoft Entra ID My Apps"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure portal dashboards allow users to pin tiles (charts, resource lists, metrics, links) and arrange them on a customizable canvas that can be shared with team members. Azure Monitor workbooks are for more complex analytical reports. Cost Management views focus on spending. Entra ID My Apps is an application launcher for SSO-enabled apps.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3773,7 +3879,9 @@
         "The Azure portal provides access to all Azure services and is updated continuously without downtime",
         "The Azure portal is only available to users with the Owner role"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "The Azure portal is a browser-based management interface accessible from any device with a supported browser. It requires no local agents and is continuously updated by Microsoft using a 'zero downtime' rolling update model so users always have access to the latest features. It is accessible to any user with appropriate RBAC permissions, not just Owners.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3787,7 +3895,9 @@
         "Azure Resource Manager API via a browser",
         "Azure DevOps pipeline manual run"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Cloud Shell is a browser-based interactive shell environment embedded in the Azure portal (and accessible at shell.azure.com). It comes pre-installed with the Azure CLI and Azure PowerShell modules, so no local installation is needed. Users can run commands immediately. Azure DevOps is a separate CI/CD platform, not a browser-based shell for ad-hoc operations.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3801,7 +3911,9 @@
         "By submitting a support ticket to get access to specific blades",
         "Using a separate desktop application that links to portal blades"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The Azure portal global search bar (accessible from any page) lets users quickly find Azure services (e.g., 'Virtual Machines'), specific resources by name, documentation, and marketplace items. This makes navigation fast without needing to know specific URL paths. Support tickets are for issues, not navigation. The portal is entirely browser-based.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3815,7 +3927,10 @@
         "Cloud Shell automatically authenticates you with your Azure credentials when launched from the portal",
         "Cloud Shell must be installed on your local machine before use"
       ],
-      "correctAnswers": [0, 2],
+      "correctAnswers": [
+        0,
+        2
+      ],
       "explanation": "Azure Cloud Shell provides a browser-based shell environment supporting both Bash (with Azure CLI) and PowerShell (with Azure PowerShell modules). It launches pre-authenticated with your Azure credentials, eliminating the need for separate login. It requires a storage account (free tier eligible) to persist files but has no separate paid add-on requirement and does not need local installation.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3829,7 +3944,9 @@
         "Azure Resource Manager (ARM) JSON templates only",
         "Azure Cost Management exports"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure CLI (Bash-based) and Azure PowerShell (PowerShell-based) are imperative command-line tools that support full scripting capabilities including loops, variables, conditionals, and error handling. This makes them ideal for automation scripts. The Azure portal is interactive and not scriptable. ARM templates are declarative and while powerful, do not use imperative scripting constructs natively. Cost Management is for financial analysis.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3843,7 +3960,9 @@
         "Azure PowerShell can only manage Azure resources; Azure CLI can manage any cloud",
         "Azure CLI requires an Azure subscription; Azure PowerShell can be used without one"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The primary syntactic difference is that Azure CLI uses a command-and-parameter syntax (e.g., 'az vm create --resource-group...') while Azure PowerShell uses PowerShell cmdlets following the Verb-Noun convention (e.g., 'New-AzVM'). Both tools are cross-platform (Windows, Linux, macOS), both require an Azure subscription, and both manage Azure resources. The choice often comes down to developer familiarity with Bash vs PowerShell.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3857,7 +3976,10 @@
         "Azure portal desktop application",
         "Windows Admin Center for Azure"
       ],
-      "correctAnswers": [0, 1],
+      "correctAnswers": [
+        0,
+        1
+      ],
       "explanation": "Both Azure CLI and Azure PowerShell are cross-platform tools available on Linux. Azure PowerShell runs on PowerShell 7+, which is supported on Linux. The Azure portal does not have a native desktop application; it is browser-based. Windows Admin Center is a Windows-centric management tool primarily for on-premises Windows servers.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3871,7 +3993,9 @@
         "Submitting a support request to have Microsoft create the resource groups",
         "Exporting an existing resource group 50 times using the portal export feature"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Using Azure CLI or Azure PowerShell with a loop allows you to create 50 resource groups programmatically, ensuring consistent naming conventions and taking seconds instead of hours. Manual portal creation is error-prone at scale. Microsoft support does not create customer resources. There is no bulk export-and-recreate feature in the portal for resource groups.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3885,7 +4009,10 @@
         "Azure PowerShell requires the Az module to be installed",
         "Azure PowerShell cmdlets use a different Azure Resource Manager API than the Azure portal"
       ],
-      "correctAnswers": [0, 2],
+      "correctAnswers": [
+        0,
+        2
+      ],
       "explanation": "Azure PowerShell cmdlets follow the standard PowerShell Verb-Noun convention prefixed with 'Az' (e.g., Get-AzResourceGroup, New-AzVM). They require the Az PowerShell module to be installed, available from the PowerShell Gallery. Azure PowerShell can be used locally (not only in Cloud Shell) and uses the same underlying Azure Resource Manager API as the portal, CLI, and all other Azure management tools.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3899,7 +4026,9 @@
         "Azure Arc is a private network service that replaces Azure Virtual WAN for hybrid connectivity",
         "Azure Arc is a backup solution for Azure VMs that replicates data to an on-premises site"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Arc is a bridge that brings Azure management capabilities (Azure Policy, Defender for Cloud, Azure Monitor, tagging, RBAC) to resources that run outside Azure, such as on-premises servers, Kubernetes clusters, and VMs in AWS or GCP. It is not a networking, CDN, or backup service. Arc allows you to govern a heterogeneous environment from a single control plane.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3913,7 +4042,9 @@
         "Azure Arc",
         "Azure Virtual WAN"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Azure Arc-enabled servers allow on-premises (and multi-cloud) machines to be registered in Azure Resource Manager. Once registered, Azure Policy, tags, RBAC, Defender for Cloud, and Azure Monitor can be applied uniformly to both Azure-native and Arc-enabled resources. Azure Site Recovery is for DR. Azure Migrate is for discovery and migration assessment. Azure Virtual WAN is for networking.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3927,7 +4058,11 @@
         "Azure-native virtual machines already running in Azure",
         "SQL Server instances running on-premises or on other clouds"
       ],
-      "correctAnswers": [0, 1, 3],
+      "correctAnswers": [
+        0,
+        1,
+        3
+      ],
       "explanation": "Azure Arc supports Arc-enabled servers (Windows/Linux, physical or virtual, anywhere), Arc-enabled Kubernetes clusters (any CNCF-conformant cluster outside Azure), and Arc-enabled SQL Server (SQL Server instances outside Azure). Azure-native VMs do not need Arc because they are already managed by Azure Resource Manager natively.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -3941,7 +4076,9 @@
         "By creating a dedicated Azure subscription that proxies all AWS API calls",
         "This is not possible; Defender for Cloud only monitors Azure resources"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Microsoft Defender for Cloud has native multicloud connectors and also uses Azure Arc to onboard AWS EC2 instances as Arc-enabled servers. Once onboarded, Defender for Cloud can assess their security posture using the same policies and recommendations as Azure-native VMs. Manual log exports are not required, and no proxy subscription is needed.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -3955,7 +4092,9 @@
         "It provides the same SLA guarantees as AKS for on-premises clusters",
         "It eliminates the need for a Kubernetes control plane in the on-premises cluster"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Arc-enabled Kubernetes projects the on-premises cluster into Azure Resource Manager, enabling Azure Policy (for configuration compliance), GitOps-based application deployment (via Flux), and Azure Monitor Container Insights. It does not migrate workloads, extend Azure SLAs to non-Azure infrastructure, or remove the on-premises control plane requirement.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -3969,7 +4108,9 @@
         "Platform as a Service (PaaS)",
         "Configuration drift"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Infrastructure as Code (IaC) is the practice of defining and managing infrastructure (VMs, networks, databases) through code or declarative configuration files that can be versioned, reviewed, and applied automatically. This enables repeatability, consistency, and auditability. Continuous integration is about code build and test automation. PaaS is a cloud service model. Configuration drift is the problem IaC helps prevent.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3983,7 +4124,10 @@
         "Automatic elimination of all cloud costs",
         "Complete elimination of the need for RBAC and security policies"
       ],
-      "correctAnswers": [0, 1],
+      "correctAnswers": [
+        0,
+        1
+      ],
       "explanation": "IaC enables consistent, repeatable deployments by using the same code to create identical environments, reducing human error. Infrastructure code can be stored in version control systems (Git) enabling change tracking, code review, and rollback. IaC does not eliminate costs (it can optimize them but that depends on what you deploy) and does not replace RBAC or security controls.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -3997,7 +4141,9 @@
         "Assigning the Owner role to all team members so anyone can fix problems",
         "Disabling change tracking to prevent unauthorized modifications"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "IaC combined with Azure Policy (which can audit or remediate configuration drift) provides a systematic way to declare the desired state and enforce it. Azure Policy compliance checks continuously evaluate resources and remediation tasks can bring non-compliant resources back to the desired state. Manual weekly checks are too infrequent and error-prone. Broad Owner access increases risk. Disabling change tracking reduces visibility.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4011,7 +4157,9 @@
         "Only managing VM disk configurations; network resources require manual creation",
         "IaC templates can only be applied once; subsequent changes require manual updates"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure IaC tools (ARM templates, Bicep, Terraform) can deploy, update, and reproduce entire environments including virtual networks, VMs, databases, storage accounts, and more. They are idempotent, meaning you can apply the same template repeatedly and it will bring the environment to the declared state. IaC is not limited to new deployments or specific resource types.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4025,7 +4173,9 @@
         "Azure Blueprints",
         "Azure DevOps pipelines"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "ARM templates are JSON-based declarative files that define the Azure resources and their configurations. They are submitted directly to Azure Resource Manager, which orchestrates resource creation and updates. ARM templates are idempotent. Azure PowerShell and CLI are imperative scripting tools. Azure Blueprints orchestrate ARM templates and policy assignments but are not themselves the declarative template format. DevOps pipelines are CI/CD orchestrators.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -4039,7 +4189,9 @@
         "A scripting extension for Azure PowerShell that adds ARM template generation",
         "A visual drag-and-drop designer in the Azure portal for creating ARM templates"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Bicep is a Microsoft-developed domain-specific language (DSL) that provides a simpler, cleaner syntax for authoring Azure deployments compared to raw ARM JSON. Bicep files compile (transpile) to ARM JSON templates, so they use the same Resource Manager deployment engine and have full feature parity. It is officially supported and recommended by Microsoft as a first-class IaC tool.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4053,7 +4205,9 @@
         "Bicep files cannot be stored in source control because they are compiled binaries",
         "Bicep is only supported for Azure Virtual Machine deployments"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Bicep provides a more readable, concise syntax compared to ARM JSON, with improved IDE support including IntelliSense in VS Code, parameter completion, and a built-in linter. Bicep files are plain text and should be stored in source control. No special subscription feature is required. Bicep supports the full range of Azure resource types, not just VMs.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4067,7 +4221,9 @@
         "ARM reconciles the deployment to match the template; existing resources are updated if different and the missing one is created",
         "ARM returns an error because the existing resources conflict with the template"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "ARM template deployments are idempotent and reconcile the Azure environment to the desired state declared in the template. If resources already exist and match the template, no changes are made. If they differ, they are updated. New resources are created. Resources NOT in the template are left unchanged (unless you use 'Complete' mode, which deletes unlisted resources). ARM does not error on existing resources.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -4081,7 +4237,10 @@
         "Terraform HCL configurations",
         "Pulumi TypeScript programs"
       ],
-      "correctAnswers": [0, 1],
+      "correctAnswers": [
+        0,
+        1
+      ],
       "explanation": "Both ARM JSON templates and Bicep are natively supported Azure IaC formats. Bicep compiles to ARM JSON and is deployed via the Azure CLI (az deployment group create) or PowerShell without any additional tools beyond the Bicep CLI (which is bundled with recent Azure CLI versions). Terraform (HCL) and Pulumi are third-party IaC tools that use the Azure Resource Manager API but require their own separate tool installations.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4095,7 +4254,9 @@
         "Azure Advisor",
         "Microsoft Defender for Cloud"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Azure Advisor is a personalized cloud consultant that analyzes your Azure configuration and usage and provides actionable recommendations across five categories: Cost, Security, Reliability (formerly High Availability), Operational Excellence, and Performance. Azure Monitor collects metrics and logs. Service Health provides status of Azure platform issues. Defender for Cloud focuses specifically on security posture and threat protection.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -4109,7 +4270,9 @@
         "Cost",
         "Operational Excellence"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Right-sizing underutilized VMs is a cost optimization recommendation in Azure Advisor. Advisor analyzes VM CPU and memory utilization patterns and recommends reducing the VM size or shutting down idle VMs to save money. Reliability recommendations address HA and fault tolerance. Security recommendations cover security configurations. Operational Excellence covers management practices.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -4123,7 +4286,10 @@
         "Azure Advisor can automatically implement recommendations without user action when set to auto-remediate",
         "Azure Advisor covers five recommendation categories including Cost and Security"
       ],
-      "correctAnswers": [1, 3],
+      "correctAnswers": [
+        1,
+        3
+      ],
       "explanation": "Azure Advisor analyzes your actual deployed resources and usage patterns to generate personalized recommendations. It covers five categories: Cost, Security, Reliability, Operational Excellence, and Performance, and applies to many resource types beyond VMs (SQL databases, App Service, storage, networking, etc.). Advisor does not automatically implement changes; it provides recommendations that the user must choose to act on.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4137,7 +4303,9 @@
         "Azure Service Health",
         "Azure Resource Health"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Azure Service Health provides personalized alerts and guidance when Azure platform issues (outages, planned maintenance, health advisories) affect the services and regions you use. Azure Resource Health (a component of Service Health) shows the health of your individual resources. Azure Monitor collects operational telemetry from your resources. Azure Advisor provides configuration optimization recommendations.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -4151,7 +4319,9 @@
         "Azure Cost Management anomaly detection",
         "Azure Policy compliance report"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Service Health's 'Service Issues' section shows active Azure platform problems (outages and degradations) by region and service. During a platform incident, Microsoft posts updates here with impact scope and progress. Service Health can also send alerts so teams are notified proactively. Azure Monitor would show your application's symptomatic metrics (high error rates) but would not explain the root cause as a platform event. Cost Management and Policy are not operational health tools.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4165,7 +4335,11 @@
         "Azure Resource Health (health of individual resources)",
         "Azure Monitor Metrics (performance data for your VMs)"
       ],
-      "correctAnswers": [0, 1, 2],
+      "correctAnswers": [
+        0,
+        1,
+        2
+      ],
       "explanation": "Azure Service Health has three main components: Azure Status (a global public page showing the health of all Azure services worldwide), Service Issues (personalized view of active platform events affecting your subscriptions), and Azure Resource Health (individual resource-level health and history). Azure Monitor Metrics is a separate telemetry collection service and is not part of Service Health.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4179,7 +4353,9 @@
         "Enable Microsoft Defender for Cloud enhanced security features",
         "Subscribe to the Azure blog RSS feed"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Service Health allows you to create health alerts scoped to specific event types (Service issues, Planned maintenance, Health advisories), specific Azure services (e.g., Virtual Machines), and specific regions (e.g., East US). These alerts can trigger Action Groups to send emails, SMS, or invoke webhooks. CPU metric alerts in Monitor fire on performance thresholds, not platform events. Defender for Cloud and RSS feeds are not appropriate for this automation.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4193,7 +4369,9 @@
         "Azure Monitor",
         "Microsoft Sentinel"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Azure Monitor is the comprehensive observability platform in Azure that collects, analyzes, and acts on telemetry including metrics (numerical performance data), logs (structured/unstructured event data), and traces. It provides alert rules, dashboards (Workbooks), and integrates with Log Analytics, Application Insights, and Action Groups. Service Health covers platform events, not resource telemetry. Advisor provides recommendations. Microsoft Sentinel is a SIEM/SOAR solution.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -4207,7 +4385,9 @@
         "Azure Monitor Action Groups",
         "Azure Service Health activity log"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Log Analytics workspaces store log data collected by Azure Monitor and allow querying using Kusto Query Language (KQL), a powerful query language for filtering, aggregating, and correlating log data across multiple sources. Metrics Explorer visualizes numerical time-series metrics, not log records. Action Groups define notification actions for alerts. The activity log tracks ARM operations, not application or OS logs.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4221,7 +4401,9 @@
         "Providing compliance reports for Azure subscriptions",
         "Managing Azure virtual machine operating system updates"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Application Insights is an Application Performance Monitoring (APM) service that instruments web applications to collect telemetry about request rates, response times, failure rates, exceptions, and dependencies. It enables developers to detect performance regressions and diagnose issues. It operates as a feature of Azure Monitor. It monitors applications, not physical infrastructure, subscription compliance, or OS patch management.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -4235,7 +4417,9 @@
         "Azure Cost Management cost analysis",
         "Azure Policy compliance dashboard"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Application Insights distributed tracing captures the full request journey across microservices and renders an Application Map showing each component and its dependencies, with response times and failure rates. This pinpoints which service call is causing the latency. CPU/memory metrics show infrastructure utilization but not the request path. Cost Management and Policy are not performance diagnosis tools.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4249,7 +4433,9 @@
         "A role assignment that grants monitoring permissions to a team",
         "A Log Analytics query that runs on a schedule"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "An Azure Monitor Action Group defines what happens when an alert rule fires. It can send email/SMS/push notifications, call a webhook, trigger an Azure Function, run a Logic App, or create an ITSM ticket. One Action Group can be reused across many alert rules. It is not a resource grouping, role assignment, or scheduled query.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4263,7 +4449,9 @@
         "Azure Service Health activity alert",
         "Microsoft Purview data alert"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Monitor metric alert rules evaluate metrics (like DTU consumption) against a threshold over a time window (5 minutes). When the condition is met, the alert fires and invokes the configured Action Group, which can send email and trigger a webhook (PagerDuty). Cost Management alerts are for spending thresholds. Service Health alerts cover Azure platform events. Purview does not monitor database performance.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4277,7 +4465,9 @@
         "Azure subscription billing invoices and cost breakdowns",
         "ARM template deployment manifests"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Log Analytics workspaces store log-based data: structured and semi-structured records including Windows event logs, Linux syslog, Azure resource diagnostic logs, VM agent data, and application traces. KQL is optimized for this type of data. Real-time high-frequency metrics are stored in the Azure Monitor Metrics store (not Log Analytics). Billing data lives in Azure Cost Management. ARM templates are deployment artifacts.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4291,7 +4481,10 @@
         "Azure Activity Log which records past ARM operations after they occur",
         "Azure Cost Management budget alerts for spending thresholds"
       ],
-      "correctAnswers": [0, 1],
+      "correctAnswers": [
+        0,
+        1
+      ],
       "explanation": "Azure Monitor alert rules can fire BEFORE user impact by alerting when a metric (e.g., error rate, memory usage) exceeds a warning threshold. Application Insights smart detection uses machine learning to detect anomalous patterns (e.g., sudden failure rate increase) and alerts automatically. The Activity Log records past events after they happen. Cost budget alerts are financial, not operational health indicators.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -4305,7 +4498,9 @@
         "Configure Azure Cost Management to export VM performance data to a storage account",
         "Use Azure Blueprints to capture VM state at deployment and store it in Key Vault"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The Azure Monitor Agent (AMA) is deployed to VMs (via VM extensions or Azure Policy) and configured with Data Collection Rules to send performance metrics and log data to a Log Analytics workspace. Multiple VMs can send to the same workspace, enabling centralized querying and correlation. Blob Storage requires custom tooling for querying. Cost Management does not collect VM performance data. Blueprints are for deployment governance, not monitoring.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -4319,7 +4514,9 @@
         "A financial reporting tool for Azure subscription costs",
         "A configuration management database (CMDB) for Azure resources"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Monitor Workbooks provide an interactive canvas where you can combine markdown text, KQL log queries, metric charts, and parameter controls into rich analytical reports. They can be shared with teams and are commonly used for application health dashboards, security monitoring reports, and operational reviews. They are not remediation tools, financial reports, or CMDBs.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4333,7 +4530,9 @@
         "Metrics",
         "Events"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "In Azure Monitor, metrics are numerical time-series data points emitted by Azure resources at regular intervals (e.g., CPU percentage every minute). They are stored in a high-performance time-series database optimized for near real-time alerting. Logs are structured or unstructured records (events, diagnostics). Traces are end-to-end request paths in Application Insights. 'Events' is a general term; structured log records are stored as log entries in Log Analytics.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -4347,7 +4546,9 @@
         "Microsoft Purview",
         "Azure Cost Management"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Advisor analyzes actual resource usage and configuration to generate personalized, actionable recommendations across five pillars including Cost and Performance. It directly addresses both goals with specific resource-level suggestions. Service Health covers platform events. Purview is data governance. Cost Management shows spending data but does not generate performance improvement recommendations.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -4361,7 +4562,9 @@
         "Use Azure Cost Management to identify unencrypted VMs and generate an invoice exception",
         "Apply a ReadOnly resource lock to every VM to prevent any changes"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Policy assigned at the management group level cascades to all child subscriptions, enabling centralized compliance enforcement. Built-in policies exist to audit or enforce Azure Disk Encryption on VMs, and remediation tasks can deploy encryption to non-compliant VMs. Manual portal work does not scale to 10 subscriptions. Cost Management cannot detect encryption status. ReadOnly locks prevent modifications, including enabling encryption.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -4375,7 +4578,9 @@
         "Application Insights replaces Azure Monitor for all monitoring scenarios",
         "Application Insights only works with on-premises applications registered via Azure Arc"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Application Insights is a feature (capability) within Azure Monitor. It uses a Log Analytics workspace as its data store for application telemetry (requests, dependencies, exceptions, traces). All Application Insights data can be queried with KQL alongside other Monitor data, enabling unified observability. Insights does not replace all Monitor scenarios and is not limited to Arc-onboarded apps.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4389,7 +4594,9 @@
         "Azure Cost Management",
         "Microsoft Purview"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Blueprints allows you to package Azure Policy assignments, RBAC role assignments, ARM templates, and resource group definitions into a single 'blueprint' artifact that can be versioned and applied to new subscriptions. This ensures a consistent governance baseline. Azure Advisor provides recommendations on existing resources. Cost Management handles billing. Purview handles data governance.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -4403,7 +4610,9 @@
         "Azure Cost Management transaction history",
         "Microsoft Entra ID sign-in logs"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The Azure Activity Log records all ARM control plane operations: who performed an action, what action was performed, on which resource, and when. This includes resource creation, modification, and deletion events. It is the first place to look when investigating accidental resource deletions. Monitor Metrics captures performance data. Cost Management tracks billing. Entra ID sign-in logs track authentication events, not ARM operations.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4417,7 +4626,9 @@
         "Metric alert rule",
         "Service Health alert rule"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Metric alert rules evaluate Azure Monitor metrics (numerical time-series data like network egress bytes) against a threshold over a time window and fire when the condition is met. Log query alert rules evaluate KQL queries against log data (not real-time metric streams). Activity log alerts trigger on specific ARM operations. Service Health alerts trigger on Azure platform events, not resource metrics.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4431,7 +4642,9 @@
         "Azure Cost Management can enforce Azure Policy rules to prevent overspending",
         "Azure Monitor and Azure Service Health both collect resource performance metrics"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Policy is a governance service that enforces rules (e.g., allowed regions, required tags) at resource creation time. Azure Advisor analyzes actual usage and recommends improvements. They are complementary, not interchangeable. Azure Cost Management reports on spending but does not enforce Policy rules. Azure Service Health covers platform incidents, not resource performance metrics (that is Azure Monitor's job).",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4445,7 +4658,9 @@
         "Modify",
         "Append"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "The 'Modify' effect can add, update, or remove tags on existing resources through remediation tasks. Remediation tasks are run after a Modify policy is assigned to bring existing non-compliant resources into compliance. 'Audit' only reports without changing resources. 'Deny' blocks new non-compliant resources but does not fix existing ones. 'Append' adds fields at creation/update time but does not run remediation tasks against existing resources.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -4459,7 +4674,9 @@
         "Azure Advisor reliability recommendations",
         "Microsoft Purview data lineage report"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "The Azure Activity Log provides a record of all resource deployments, including the region, and the Azure Policy compliance report for the 'Allowed locations' policy shows which resources are compliant or non-compliant with the approved region restriction. Together they provide audit evidence. Cost Management shows spending by region but does not enforce or attest to compliance. Advisor and Purview do not serve this audit purpose.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -4473,7 +4690,9 @@
         "Microsoft Purview Compliance Manager",
         "Azure Service Health"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Cost Management + Billing is the dedicated financial management service in Azure providing cost analysis, budgets with alerts, cost forecasting, invoice management, and export capabilities. Azure Advisor's Cost tab provides recommendations but not comprehensive spending analysis. Purview Compliance Manager is for regulatory compliance posture. Service Health covers platform events.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -4487,7 +4706,9 @@
         "Assign an Azure Policy with the Deny effect for VM resize operations",
         "Move the VMs to a separate subscription with no junior team members"
       ],
-      "correctAnswers": [0],
+      "correctAnswers": [
+        0
+      ],
       "explanation": "A ReadOnly resource lock applied to the resource group prevents all write operations (including VM resize and disk changes) regardless of the user's RBAC role, even Contributor. Locks override RBAC permissions for the locked operations. Defender for Cloud alerts are detective, not preventive. Azure Policy can restrict new VM sizes but not modifications to existing VMs via a simple Deny rule in all scenarios. Moving to a separate subscription is disruptive.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -4501,7 +4722,9 @@
         "Tags are automatically created by Azure Cost Management based on spending patterns",
         "Tags in Cost Management can only be applied by subscription administrators"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Cost Management supports filtering and grouping cost data by tag values. For example, filtering by 'Team=DataEngineering' shows only costs for resources tagged with that value. This enables chargeback and showback scenarios. Tags must be applied to resources manually (or via Policy); Cost Management does not create them automatically. Any user with sufficient permissions can apply tags.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4515,7 +4738,9 @@
         "Azure Blueprints",
         "Microsoft Defender for Cloud"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Arc is specifically designed to extend Azure governance (Azure Policy, RBAC, Azure Monitor, tags) to resources outside Azure, including on-premises servers, Kubernetes clusters, and VMs in other clouds. This creates a unified management plane across heterogeneous environments. Azure Lighthouse is for service provider management of customer tenants. Blueprints manage subscription-level governance. Defender for Cloud provides security posture management but relies on Arc for non-Azure resources.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4529,7 +4754,9 @@
         "A Kusto query that filters log data for the alert evaluation",
         "A set of RBAC permissions that control who can view the alert"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "An Action Group is a reusable collection of actions (email, SMS, voice call, webhook, Azure Function, Logic App, ITSM connector) that execute when an associated alert rule fires. Multiple alert rules can reference the same Action Group, enabling consistent notification workflows. It is not a resource group, query filter, or permissions construct.",
       "category": "Azure Management and Governance",
       "difficulty": "easy"
@@ -4543,7 +4770,9 @@
         "Apply resource locks to all resources deployed in those regions",
         "Use Azure Cost Management to generate an alert when resources are deployed in those regions"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Assigning the 'Allowed locations' built-in policy with a Deny effect at the management group level enforces the restriction across all child subscriptions and prevents deployments to non-approved regions at creation time. Documentation and training are not enforceable controls. Resource locks cannot prevent creation; they prevent deletion or modification. Cost Management alerts are detective, not preventive.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4557,7 +4786,9 @@
         "Reliability",
         "Security"
       ],
-      "correctAnswers": [2],
+      "correctAnswers": [
+        2
+      ],
       "explanation": "Azure Advisor's Reliability category (formerly 'High Availability') focuses on ensuring business continuity and resilience. A VM without a backup is a reliability risk. Advisor will recommend enabling Azure Backup for unprotected VMs in this category. Cost recommendations cover spending optimization. Performance covers latency and throughput. Security covers configurations like missing disk encryption or open management ports.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4571,7 +4802,9 @@
         "In an Azure SQL Database provisioned automatically per user",
         "Files are not persisted; they must be re-uploaded each session"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Azure Cloud Shell persists user files in an Azure Files share mounted to the Cloud Shell session container. This share is backed by an Azure Storage account (created on first use, in a storage account you own). The same files are available in both Bash and PowerShell modes and across sessions. No OneDrive sync or SQL Database is involved. Files do persist between sessions.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4585,7 +4818,10 @@
         "Azure Advisor to recommend tagging improvements",
         "Azure Service Health to alert when untagged resources cause incidents"
       ],
-      "correctAnswers": [0, 1],
+      "correctAnswers": [
+        0,
+        1
+      ],
       "explanation": "Azure Policy with a Deny or Modify effect enforces that the 'Department' tag is present on every new resource. Azure Cost Management can then group and filter cost data by the Department tag value to produce a departmental cost breakdown. Azure Advisor may surface tag-related cost recommendations but does not enforce them. Service Health is for platform events, not tag-related monitoring.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"
@@ -4599,7 +4835,9 @@
         "Azure SQL Database Transparent Data Encryption (TDE)",
         "Azure Policy for SQL Database configuration compliance"
       ],
-      "correctAnswers": [1],
+      "correctAnswers": [
+        1
+      ],
       "explanation": "Microsoft Purview Data Map can scan Azure SQL databases (and many other sources) using built-in classifiers that automatically detect sensitive data patterns including credit card numbers (PCI DSS classification). The results are surfaced in the Purview catalog with classification labels. Compliance Manager assesses regulatory posture but does not scan data content. TDE encrypts storage but does not classify data. Azure Policy checks resource configuration, not data content.",
       "category": "Azure Management and Governance",
       "difficulty": "hard"
@@ -4613,7 +4851,11 @@
         "Azure Cost Management - Enforces tagging and naming conventions on new resource deployments",
         "Azure Monitor - Collects telemetry and provides alerting, dashboards, and analytics for Azure resources"
       ],
-      "correctAnswers": [0, 1, 3],
+      "correctAnswers": [
+        0,
+        1,
+        3
+      ],
       "explanation": "Azure Policy enforces configuration rules (correct). Azure Advisor provides personalized optimization recommendations across five pillars (correct). Azure Monitor collects metrics and logs and provides alerting and visualization (correct). Azure Cost Management analyzes and manages spending; it does not enforce tagging or naming conventions - that is Azure Policy's role. This question tests understanding of the distinct responsibilities of each governance tool.",
       "category": "Azure Management and Governance",
       "difficulty": "medium"

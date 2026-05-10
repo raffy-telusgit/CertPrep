@@ -37,3 +37,6 @@ test-results/
 .idea
 .DS_Store
 Thumbs.db
+
+# Local test artifacts
+test_output.txt

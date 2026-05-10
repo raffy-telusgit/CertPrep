@@ -1,0 +1,148 @@
+{
+  "examId": "gcp-pcd",
+  "version": 0,
+  "placeholder": true,
+  "generatedAt": "2026-05-08",
+  "questions": [
+    {
+      "id": "gcppcd-ph-001",
+      "question": "Placeholder question 1 about application design. Which placeholder application architecture is recommended?",
+      "options": [
+        "Placeholder App Architecture A",
+        "Placeholder App Architecture B",
+        "Placeholder App Architecture C",
+        "Placeholder App Architecture D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Architecture A is cloud-native and scalable. Architecture B is a monolith that cannot scale horizontally.",
+      "category": "Designing highly scalable, available, and reliable cloud-native applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcd-ph-002",
+      "question": "Placeholder question 2 about application development. Which TWO placeholder development practices should be followed?",
+      "options": [
+        "Placeholder Dev Practice 1",
+        "Placeholder Dev Practice 2",
+        "Placeholder Dev Practice 3",
+        "Placeholder Dev Practice 4"
+      ],
+      "correctAnswers": [2, 3],
+      "explanation": "Placeholder explanation: Practices 3 and 4 promote code quality and testability. Practice 1 creates tight coupling.",
+      "category": "Building and testing applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcd-ph-003",
+      "question": "Placeholder question 3 about integrating Google services. Which placeholder API integration pattern is correct?",
+      "options": [
+        "Placeholder API Pattern A",
+        "Placeholder API Pattern B",
+        "Placeholder API Pattern C",
+        "Placeholder API Pattern D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: API Pattern B uses proper retry with exponential backoff. Pattern A makes immediate retries that can cause cascading failures.",
+      "category": "Integrating Google Cloud services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcd-ph-004",
+      "question": "Placeholder question 4 about managing application performance. Which placeholder performance metric is most important?",
+      "options": [
+        "Placeholder Metric A",
+        "Placeholder Metric B",
+        "Placeholder Metric C",
+        "Placeholder Metric D"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Metric D directly measures user experience. Metric A measures internal system performance that may not correlate to user impact.",
+      "category": "Managing application performance monitoring",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcd-ph-005",
+      "question": "Placeholder question 5 about scalable application design. This hard placeholder tests distributed system patterns.",
+      "options": [
+        "Placeholder Distributed Pattern 1",
+        "Placeholder Distributed Pattern 2",
+        "Placeholder Distributed Pattern 3",
+        "Placeholder Distributed Pattern 4"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Pattern 3 handles the distributed consistency requirement. Pattern 1 creates consistency issues across services.",
+      "category": "Designing highly scalable, available, and reliable cloud-native applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcd-ph-006",
+      "question": "Placeholder question 6 about testing. Which placeholder testing strategy ensures reliability?",
+      "options": [
+        "Placeholder Testing Strategy A",
+        "Placeholder Testing Strategy B",
+        "Placeholder Testing Strategy C",
+        "Placeholder Testing Strategy D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Strategy A includes integration tests that catch cross-service issues. Strategy B only has unit tests which miss integration bugs.",
+      "category": "Building and testing applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcd-ph-007",
+      "question": "Placeholder question 7 about integrating services. Which placeholder service mesh feature is needed?",
+      "options": [
+        "Placeholder Service Mesh Feature 1",
+        "Placeholder Service Mesh Feature 2",
+        "Placeholder Service Mesh Feature 3",
+        "Placeholder Service Mesh Feature 4"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Feature 4 provides the required mTLS between services. Feature 1 handles traffic routing but not security.",
+      "category": "Integrating Google Cloud services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcd-ph-008",
+      "question": "Placeholder question 8 about performance monitoring. Which TWO placeholder observability tools are needed?",
+      "options": [
+        "Placeholder Observability Tool A",
+        "Placeholder Observability Tool B",
+        "Placeholder Observability Tool C",
+        "Placeholder Observability Tool D"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Placeholder explanation: Tools A and C together provide traces and logs. Tool B provides metrics but not distributed tracing.",
+      "category": "Managing application performance monitoring",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcd-ph-009",
+      "question": "Placeholder question 9 about cloud-native design. This easy placeholder tests basic microservices concepts.",
+      "options": [
+        "Placeholder Microservice Concept A",
+        "Placeholder Microservice Concept B",
+        "Placeholder Microservice Concept C",
+        "Placeholder Microservice Concept D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Concept B correctly describes the single responsibility principle. Concept A describes a monolith antipattern.",
+      "category": "Designing highly scalable, available, and reliable cloud-native applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcd-ph-010",
+      "question": "Placeholder question 10 about GCP service integration. Which placeholder data pipeline approach is correct?",
+      "options": [
+        "Placeholder Data Pipeline 1",
+        "Placeholder Data Pipeline 2",
+        "Placeholder Data Pipeline 3",
+        "Placeholder Data Pipeline 4"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Pipeline 3 provides reliable message delivery with proper ordering. Pipeline 1 can lose messages under high load.",
+      "category": "Integrating Google Cloud services",
+      "difficulty": "medium"
+    }
+  ]
+}

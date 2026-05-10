@@ -1,0 +1,3082 @@
+{
+  "examId": "az-900",
+  "version": 0,
+  "placeholder": true,
+  "generatedAt": "2026-05-09",
+  "questions": [
+    {
+      "id": "az900-cloud-concepts-001",
+      "question": "A company is evaluating cloud computing for its IT infrastructure. Which statement BEST describes cloud computing?",
+      "options": [
+        "Delivery of computing services over the internet, including servers, storage, databases, networking, software, and analytics",
+        "A private data center managed by a third-party vendor on behalf of the company",
+        "A software licensing model where applications are installed locally but licensed annually",
+        "A network architecture that connects multiple on-premises data centers together"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Cloud computing is the delivery of computing services over the internet, enabling faster innovation, flexible resources, and economies of scale. A private data center managed by a third party is colocation or managed hosting, not cloud computing. Cloud computing is fundamentally about on-demand access to shared pools of configurable resources.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-002",
+      "question": "Under the shared responsibility model in Azure, which of the following is ALWAYS the customer's responsibility regardless of the service type (IaaS, PaaS, or SaaS)?",
+      "options": [
+        "Operating system patching",
+        "Physical network security",
+        "Identity and access management for users",
+        "Hypervisor maintenance"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Identity and access management for users (such as managing who has access to data and resources) is always the customer's responsibility across all cloud service types. Physical network security and hypervisor maintenance are always Microsoft's responsibility. Operating system patching shifts from customer (IaaS) to provider (PaaS, SaaS) depending on the service model.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-003",
+      "question": "A healthcare company is migrating to Azure. Under the shared responsibility model for a PaaS deployment, which TWO items does Microsoft manage? Select TWO.",
+      "options": [
+        "The underlying hardware and physical infrastructure",
+        "The patient data stored in the application",
+        "The operating system and middleware runtime",
+        "User access permissions to patient records"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "In a PaaS model, Microsoft manages the physical infrastructure (hardware, networking, data centers) and the underlying operating system and middleware runtime. The customer retains responsibility for the data they store (patient records) and for managing user access permissions. This division allows developers to focus on application logic without worrying about infrastructure.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-004",
+      "question": "Which statement about the shared responsibility model is correct when comparing IaaS to SaaS?",
+      "options": [
+        "In IaaS, the cloud provider manages the operating system; in SaaS, the customer manages the operating system",
+        "In IaaS, the customer manages the operating system; in SaaS, the cloud provider manages the operating system",
+        "In both IaaS and SaaS, the customer manages the operating system",
+        "In both IaaS and SaaS, the cloud provider manages the operating system"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "In IaaS, the customer is responsible for managing the operating system, middleware, and runtime. In SaaS, the cloud provider manages everything from physical infrastructure up through the application layer, including the operating system. This is one of the key distinctions between IaaS and SaaS service models.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-005",
+      "question": "A company stores sensitive financial data in Azure Blob Storage. According to the shared responsibility model, who is responsible for classifying and labeling this data?",
+      "options": [
+        "Microsoft, because the data resides in Azure infrastructure",
+        "The customer, because data classification is always a customer responsibility",
+        "Both Microsoft and the customer share this responsibility equally",
+        "A third-party auditor designated by Microsoft"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Data classification and labeling is always the customer's responsibility in the shared responsibility model, regardless of whether the deployment is IaaS, PaaS, or SaaS. Microsoft provides tools like Microsoft Purview to help with classification, but the responsibility for deciding how data should be classified belongs to the data owner — the customer.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-006",
+      "question": "Which of the following items is Microsoft's responsibility under the shared responsibility model for ALL cloud deployment types?",
+      "options": [
+        "Application-level firewall rules",
+        "Physical security of data centers",
+        "Encryption of data at rest",
+        "Network traffic filtering between virtual machines"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Physical security of data centers (including access controls, surveillance, and physical hardware security) is always Microsoft's responsibility across all service models (IaaS, PaaS, and SaaS). Application-level firewall rules, encryption configuration, and network traffic filtering between VMs are customer responsibilities in IaaS scenarios.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-007",
+      "question": "A company is concerned about compliance with data residency requirements. Under the shared responsibility model, which party is responsible for ensuring data is stored only in approved geographic regions?",
+      "options": [
+        "Microsoft, because Azure controls where data is physically stored",
+        "The customer, because they choose which Azure regions to deploy resources in",
+        "The regional government authority that issued the compliance requirements",
+        "Shared equally: Microsoft provides region options and the customer must select them"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "While Microsoft provides Azure regions and the ability to restrict data to specific geographies, the customer is responsible for configuring their deployments to use only the approved regions. The customer makes the architectural decisions about where to store data. Microsoft provides the tools (such as Azure Policy) to enforce these decisions, but the responsibility lies with the customer.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-008",
+      "question": "Which TWO characteristics best describe the shared responsibility model in cloud computing? Select TWO.",
+      "options": [
+        "Responsibility for security controls is split between the cloud provider and the customer",
+        "The cloud provider is responsible for all security in a SaaS model",
+        "Customer responsibility increases as you move from SaaS to IaaS",
+        "Physical infrastructure security is always the customer's responsibility"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "The shared responsibility model divides security responsibilities between the provider and customer, with the split varying by service type. Customers have the most responsibility in IaaS (managing OS, applications, and data) and the least in SaaS (only responsible for data and identity). Physical infrastructure security is always the provider's responsibility, not the customer's.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-009",
+      "question": "In a SaaS deployment on Azure, a customer reports that their users can access data they should not be allowed to see. Who is responsible for fixing this issue?",
+      "options": [
+        "Microsoft, because SaaS means Microsoft manages all access controls",
+        "The customer, because identity and access management for their users is always the customer's responsibility",
+        "The independent software vendor (ISV) that developed the SaaS application",
+        "Microsoft and the customer must jointly investigate and resolve the issue"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Even in a SaaS model where Microsoft manages the infrastructure, platform, and application, the customer is always responsible for managing identity and access for their own users. Assigning correct roles and permissions to users is a customer responsibility. The customer should review and correct role assignments or access policies in the application.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-010",
+      "question": "Which statement accurately describes a key benefit of the shared responsibility model for cloud customers?",
+      "options": [
+        "Customers are completely freed from all security responsibilities",
+        "Customers can focus their security efforts on layers above the infrastructure, reducing their overall security burden",
+        "Customers gain full visibility and control over physical hardware security",
+        "Customers receive guarantees that their applications will never be compromised"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The shared responsibility model allows customers to focus their security efforts on the layers they control (data, identity, applications, and in some cases, the OS), because Microsoft handles infrastructure-level security. This reduces the customer's overall security burden compared to running an on-premises data center where they would be responsible for everything.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-011",
+      "question": "A startup wants to build a web application but does not want to manage any servers or infrastructure. Which cloud computing concept describes a model where the provider manages all infrastructure while the customer only manages their application code and data?",
+      "options": [
+        "Infrastructure as a Service (IaaS)",
+        "Platform as a Service (PaaS)",
+        "Software as a Service (SaaS)",
+        "Function as a Service (FaaS)"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "PaaS provides a managed platform where the provider handles infrastructure, OS, runtime, and middleware, allowing the customer to focus on application code and data. IaaS still requires the customer to manage the OS and above. SaaS is a complete application solution. FaaS (serverless functions) is a subset of PaaS but the question describes the broader managed platform concept.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-012",
+      "question": "An organization runs its applications on-premises and is considering moving to Azure. Under the on-premises model compared to IaaS, which responsibility shifts to Microsoft when moving to IaaS?",
+      "options": [
+        "Managing application code and business logic",
+        "Controlling user access to applications",
+        "Maintaining physical servers, networking hardware, and the data center facility",
+        "Deciding how data is classified and labeled"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "When moving from on-premises to IaaS, Microsoft takes responsibility for the physical data center infrastructure including servers, networking hardware, storage hardware, and facilities. Application code, user access management, and data classification remain the customer's responsibility in IaaS, just as they were on-premises.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-013",
+      "question": "A company wants to deploy resources in an environment that they exclusively own and control, hosted in their own data center. Which cloud deployment model does this describe?",
+      "options": [
+        "Public cloud",
+        "Private cloud",
+        "Hybrid cloud",
+        "Community cloud"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A private cloud is an environment exclusively used and controlled by a single organization, hosted either in their own data center or by a dedicated hosting provider. A public cloud (like Azure) is shared infrastructure available to any organization. A hybrid cloud combines both public and private cloud environments. Community cloud is shared among organizations with common interests.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-014",
+      "question": "A financial services firm must keep certain regulated data on-premises due to compliance requirements, but wants to use Azure for its development and test environments. Which cloud deployment model is MOST appropriate?",
+      "options": [
+        "Public cloud only",
+        "Private cloud only",
+        "Hybrid cloud",
+        "Community cloud"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "A hybrid cloud combines on-premises (or private cloud) infrastructure with a public cloud, allowing organizations to keep sensitive workloads on-premises while leveraging public cloud resources for other workloads. This model is ideal when compliance mandates that certain data stay on-premises but the organization still wants cloud benefits for non-regulated workloads.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-015",
+      "question": "Which cloud model provides the MOST flexibility in controlling where workloads run and how resources are allocated, while also requiring the MOST operational management from the customer?",
+      "options": [
+        "Public cloud (Azure)",
+        "Private cloud",
+        "Hybrid cloud",
+        "SaaS-delivered cloud"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A private cloud offers the most control and flexibility over resource placement and configuration, but it requires the customer to manage all hardware, software, and operations themselves. Public cloud provides less control but offloads management. Hybrid cloud offers a balance but the private component still requires significant management. SaaS minimizes management burden at the cost of control.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-016",
+      "question": "A retail company experiences large traffic spikes during holiday seasons. For the rest of the year, their traffic is much lower. Which cloud deployment model would BEST help them manage costs during off-peak times while handling peak loads?",
+      "options": [
+        "Private cloud, because they own the infrastructure",
+        "Public cloud, because they can scale resources up and down on demand and only pay for what they use",
+        "Hybrid cloud, because they need both on-premises and cloud resources at all times",
+        "Community cloud, because they can share costs with similar retailers"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A public cloud like Azure is ideal for workloads with variable demand because resources can be scaled up during peak periods and reduced during off-peak times, with billing based on actual consumption. A private cloud requires provisioning for peak capacity, meaning resources sit idle (and still cost money) during low-traffic periods. This elasticity and cost alignment is a core advantage of public cloud.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-017",
+      "question": "Which TWO statements accurately describe advantages of public cloud over private cloud? Select TWO.",
+      "options": [
+        "Public cloud requires no upfront capital expenditure for hardware",
+        "Public cloud gives organizations complete control over the physical hardware",
+        "Public cloud allows organizations to scale globally within minutes",
+        "Public cloud ensures data never leaves the organization's premises"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Public cloud eliminates upfront capital expenditure because you consume shared infrastructure billed on an operational expense model. Public cloud also provides global scale instantly, with Microsoft's Azure regions available worldwide. Private cloud requires purchasing and maintaining hardware, which is the customer's responsibility. Data in a public cloud is stored in Microsoft's data centers, not on the organization's premises.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-018",
+      "question": "A government agency requires that their cloud environment be used exclusively by government entities and must meet specific regulatory standards. Which cloud deployment model is MOST appropriate?",
+      "options": [
+        "Public cloud with additional compliance certifications",
+        "Private cloud owned by the agency",
+        "Community cloud shared among government organizations",
+        "Hybrid cloud combining government data center and Azure"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "A community cloud is shared among organizations with common interests, compliance requirements, or regulatory frameworks, such as government agencies. This model allows multiple government entities to share infrastructure costs while meeting shared compliance standards. Azure Government is an example of a community cloud model. A purely private cloud would be more expensive; a standard public cloud may not meet all compliance requirements.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-019",
+      "question": "Which statement BEST describes a hybrid cloud deployment?",
+      "options": [
+        "Using two different public cloud providers (such as Azure and AWS) simultaneously",
+        "Running some workloads on-premises or in a private cloud while connecting to and using public cloud services",
+        "Deploying all workloads to a single public cloud provider's multiple regions",
+        "Using a single provider for both SaaS and IaaS services"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A hybrid cloud connects on-premises or private cloud infrastructure with a public cloud environment, allowing data and applications to be shared between them. Using two different public clouds is called multi-cloud, not hybrid cloud. Deploying to multiple regions of a single provider is a resiliency pattern within public cloud. Using multiple service types from one provider does not create a hybrid cloud.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-020",
+      "question": "A manufacturing company has legacy systems that cannot be moved to the cloud but wants to extend their capabilities with Azure services. Which cloud model supports this scenario?",
+      "options": [
+        "Public cloud",
+        "Private cloud",
+        "Hybrid cloud",
+        "SaaS"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Hybrid cloud is designed for exactly this scenario: keeping legacy on-premises systems that cannot be migrated while extending their capabilities with public cloud services. Azure Arc and Azure VPN Gateway are examples of hybrid connectivity tools. A pure public cloud deployment would require migrating the legacy systems, which the company cannot do.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-021",
+      "question": "Which THREE of the following characteristics are associated with private cloud deployments? Select THREE.",
+      "options": [
+        "Hardware is owned or exclusively dedicated to a single organization",
+        "Resources are shared among multiple unrelated organizations",
+        "The organization has complete control over the infrastructure configuration",
+        "The organization is responsible for maintaining and updating the hardware"
+      ],
+      "correctAnswers": [
+        0,
+        2,
+        3
+      ],
+      "explanation": "Private clouds are characterized by: exclusive hardware ownership or dedication, complete control over infrastructure configuration, and the organization being responsible for hardware maintenance. Resources in a private cloud are not shared with unrelated organizations — that is a public cloud characteristic where infrastructure is shared among many tenants.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-022",
+      "question": "A company currently pays large capital expenses for servers and data center space. They switch to Azure and now pay monthly based on actual usage. This change from capital expenditure to operational expenditure is BEST described as which cloud benefit?",
+      "options": [
+        "High availability",
+        "Geo-distribution",
+        "Consumption-based pricing model",
+        "Agility"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "The consumption-based pricing model (also called OpEx model) means you pay only for what you use, when you use it, replacing large upfront capital expenditures (CapEx) with predictable operational expenditures (OpEx). High availability refers to minimizing downtime. Geo-distribution refers to deploying across multiple regions. Agility refers to the speed of deploying and changing resources.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-023",
+      "question": "Which statement BEST describes the consumption-based model in cloud computing?",
+      "options": [
+        "You pay a fixed monthly fee regardless of how many resources you use",
+        "You pay only for the cloud resources you use, with costs directly tied to consumption",
+        "You purchase a set number of virtual machines upfront for the year",
+        "You pay for resources based on how many employees your company has"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "In a consumption-based model, costs are directly tied to actual resource usage. If you use more compute or storage, you pay more; if you use less, you pay less. This is in contrast to a fixed fee model, reserved capacity purchasing, or user-based licensing. This model allows organizations to align IT costs directly with business activity.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-024",
+      "question": "A company is comparing the costs of running their workload on-premises versus on Azure. Which TWO financial advantages does the Azure consumption-based model offer compared to owning physical hardware? Select TWO.",
+      "options": [
+        "No upfront cost to purchase servers or storage hardware",
+        "Guaranteed that total spending will always be lower than on-premises",
+        "Ability to stop paying for resources when they are no longer needed",
+        "Free support and maintenance from Microsoft for all workloads"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "The consumption-based model eliminates upfront capital expenditure for hardware, meaning you do not need to purchase servers, storage, or networking equipment. Additionally, you can stop paying immediately when you delete or stop resources, unlike owned hardware which incurs fixed costs regardless of use. Cloud is not guaranteed to always be cheaper (it depends on workload), and premium support has additional costs.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-025",
+      "question": "Which pricing model in Azure allows a company to get a significant discount in exchange for committing to a specific VM type and region for one or three years?",
+      "options": [
+        "Pay-as-you-go",
+        "Azure Reserved Virtual Machine Instances",
+        "Azure Spot instances",
+        "Azure Free Tier"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Reserved Virtual Machine Instances allow customers to commit to a one-year or three-year term for a specific VM type in a specific region, receiving a significant discount (up to 72%) compared to pay-as-you-go pricing. Pay-as-you-go has no commitment and no discount. Spot instances offer discounts for interruptible workloads. Azure Free Tier provides limited free resources for trial purposes.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-026",
+      "question": "A startup with unpredictable workloads wants to minimize costs. They sometimes need high compute capacity and sometimes need almost none. Which Azure pricing model BEST serves their needs?",
+      "options": [
+        "Reserved Instances (3-year commitment)",
+        "Pay-as-you-go consumption-based pricing",
+        "Enterprise Agreement with fixed annual commitment",
+        "Azure Dev/Test pricing"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Pay-as-you-go is ideal for unpredictable workloads because costs scale directly with usage. If demand drops to near zero, costs drop accordingly. Reserved Instances require commitment to a specific capacity regardless of actual use, which would waste money during low-usage periods. Enterprise Agreements have minimum commitments. Azure Dev/Test pricing is only for non-production development and testing workloads.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-027",
+      "question": "Which statement correctly distinguishes Capital Expenditure (CapEx) from Operational Expenditure (OpEx) in the context of cloud computing?",
+      "options": [
+        "CapEx is spending on cloud services; OpEx is spending on on-premises hardware",
+        "CapEx involves upfront investment in physical assets; OpEx is ongoing spending on services consumed over time",
+        "CapEx and OpEx are identical concepts with different names used by different vendors",
+        "OpEx requires purchasing resources upfront while CapEx involves monthly payments"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "CapEx (Capital Expenditure) involves purchasing physical assets upfront, such as servers, storage, and networking equipment. These costs are depreciated over time. OpEx (Operational Expenditure) is ongoing spending on services consumed over time, such as monthly cloud bills. Cloud computing shifts IT spending from CapEx to OpEx, improving cash flow and aligning costs with actual usage.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-028",
+      "question": "An organization uses Azure Spot Virtual Machines to run batch processing jobs. What is the PRIMARY trade-off of using Spot VMs compared to regular pay-as-you-go VMs?",
+      "options": [
+        "Spot VMs have slower processors than standard VMs",
+        "Spot VMs can be evicted by Azure with short notice when Azure needs the capacity back",
+        "Spot VMs cannot run Windows workloads",
+        "Spot VMs require a minimum 6-month commitment"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Spot VMs offer significant discounts by using unused Azure capacity, but they can be evicted (shut down and deallocated) with a short notice (30 seconds to 2 minutes) when Azure needs that capacity for regular workloads. This makes Spot VMs unsuitable for time-sensitive or continuous workloads but excellent for fault-tolerant batch jobs. Spot VMs are identical hardware to standard VMs and support both Windows and Linux.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-029",
+      "question": "A company wants to reduce costs for a steady-state production workload that runs 24/7 and uses the same VM size consistently. Which pricing strategy would provide the GREATEST cost savings?",
+      "options": [
+        "Pay-as-you-go pricing",
+        "Azure Spot Instances",
+        "Azure Reserved Virtual Machine Instances",
+        "Azure Dev/Test subscription pricing"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "For a steady-state, always-on production workload with predictable resource needs, Azure Reserved Instances provide the greatest savings (up to 72% over pay-as-you-go) by committing to a 1- or 3-year term. Spot Instances are cheaper but can be evicted, making them unsuitable for always-on production workloads. Azure Dev/Test pricing is only for non-production environments.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-030",
+      "question": "Which of the following BEST describes serverless computing in Azure?",
+      "options": [
+        "Computing that requires no physical servers anywhere in the world",
+        "A model where the cloud provider automatically manages infrastructure provisioning and scaling, and customers pay only for execution time",
+        "Virtual machines that do not have a server operating system installed",
+        "A deployment model where the customer's code runs directly on physical hardware without virtualization"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Serverless computing does not mean there are no servers; it means the servers are abstracted away from the developer. The cloud provider (Microsoft) manages all infrastructure provisioning, scaling, and maintenance automatically. Customers only write and deploy code, and they pay only for actual execution time and resources consumed. Azure Functions is the primary serverless compute offering in Azure.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-031",
+      "question": "A developer needs to run a small piece of code that executes only when a new file is uploaded to Azure Blob Storage. The code runs infrequently, and the developer does not want to pay for idle compute time. Which Azure service and model BEST fits this requirement?",
+      "options": [
+        "Azure Virtual Machines with an always-on instance",
+        "Azure Kubernetes Service with a dedicated node pool",
+        "Azure Functions (serverless) triggered by Blob Storage events",
+        "Azure App Service with a dedicated pricing tier"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Functions is Azure's serverless compute service. It supports event-driven triggers (including Blob Storage events) and only executes code when triggered. Because the code runs infrequently, the serverless model is cost-efficient: the developer pays only for the milliseconds of execution time, with no charges during idle periods. A VM or App Service with a dedicated tier would incur costs even when not processing any files.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-032",
+      "question": "Which TWO characteristics are true of serverless computing in Azure? Select TWO.",
+      "options": [
+        "The developer is responsible for provisioning and managing the servers that run the code",
+        "The platform automatically scales resources to match demand, including scaling to zero",
+        "Serverless functions can only be written in Python",
+        "Customers are billed based on the number of executions and the duration of each execution"
+      ],
+      "correctAnswers": [
+        1,
+        3
+      ],
+      "explanation": "Serverless computing abstracts infrastructure management from developers; the platform automatically scales up when demand increases and scales to zero when there is no demand. Billing is based on actual execution count and duration, not on pre-provisioned capacity. Developers are not responsible for server management. Azure Functions supports multiple languages including C#, JavaScript, Python, Java, and PowerShell.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-033",
+      "question": "Which Azure service is the PRIMARY example of serverless computing for running event-driven code?",
+      "options": [
+        "Azure Virtual Machines",
+        "Azure App Service (Standard tier)",
+        "Azure Functions",
+        "Azure Kubernetes Service"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Functions is Microsoft's primary serverless compute offering, designed for event-driven, short-running code execution. It abstracts all infrastructure and automatically handles scaling and provisioning. Azure Virtual Machines require manual provisioning. Azure App Service Standard tier is a managed PaaS but still requires a dedicated plan. Azure Kubernetes Service manages containers but is not serverless.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-034",
+      "question": "A company is considering serverless architecture for a customer-facing API that handles sporadic requests throughout the day with occasional bursts of traffic. Which benefit of serverless computing is MOST relevant to this scenario?",
+      "options": [
+        "Serverless ensures data is replicated to multiple geographic regions automatically",
+        "Serverless automatically scales from zero to thousands of concurrent executions without manual intervention",
+        "Serverless provides dedicated CPU and memory that cannot be shared with other customers",
+        "Serverless eliminates all network latency for API responses"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The key advantage of serverless for sporadic, bursty workloads is automatic scaling: the platform can instantly scale from zero (no cost during idle periods) to handling thousands of concurrent requests during traffic spikes, then scale back down. This elasticity happens without any manual configuration. Serverless does not provide dedicated resources; it runs on shared infrastructure. Geographic replication and network latency elimination are separate concerns.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-035",
+      "question": "In which scenario would serverless computing be LEAST appropriate?",
+      "options": [
+        "Processing images uploaded to a storage container",
+        "Sending email notifications when a database record changes",
+        "Running a high-frequency trading system that requires consistently sub-millisecond response times",
+        "Orchestrating a multi-step workflow triggered by incoming messages"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Serverless computing introduces a cold-start latency when a function instance is initialized for the first time (or after a period of inactivity). For high-frequency trading systems requiring consistently sub-millisecond response times, this unpredictable latency is unacceptable. The other scenarios (image processing, notifications, and workflow orchestration) are excellent fits for serverless because they are event-driven, tolerate variable latency, and benefit from automatic scaling.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-036",
+      "question": "What does 'high availability' mean in the context of Azure cloud services?",
+      "options": [
+        "The ability of a service to handle a large number of concurrent users",
+        "Ensuring services remain accessible with minimal downtime, even when components fail",
+        "The geographic distribution of services across multiple continents",
+        "The ability to add more capacity to a service within minutes"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "High availability refers to designing systems and services to remain operational and accessible with minimal downtime, even when individual components fail. Azure achieves this through redundant hardware, automatic failover, and Service Level Agreements (SLAs). Handling large numbers of users is scalability. Geographic distribution is geo-redundancy. Adding capacity quickly is elasticity.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-037",
+      "question": "A company deploys an Azure Virtual Machine and needs to ensure it remains available even if a hardware failure occurs in the data center. Which Azure feature BEST supports high availability for this single VM?",
+      "options": [
+        "Azure Backup",
+        "Azure Availability Zones",
+        "Azure Blob Storage geo-replication",
+        "Azure Virtual Network peering"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Availability Zones are physically separate locations within an Azure region, each with independent power, cooling, and networking. Deploying VMs across Availability Zones protects against data center-level failures, providing high availability. Azure Backup protects data but does not keep a VM running during failure. Blob Storage geo-replication is for storage, not VMs. Virtual Network peering connects networks but does not provide VM redundancy.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-038",
+      "question": "Which Azure concept describes the ability of a cloud service to handle increased workload by adding more resources, either by scaling up (bigger instances) or scaling out (more instances)?",
+      "options": [
+        "High availability",
+        "Disaster recovery",
+        "Scalability",
+        "Geo-distribution"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Scalability is the ability to handle increased workload by adding resources. Vertical scaling (scale up) means moving to a more powerful instance (larger CPU, more RAM). Horizontal scaling (scale out) means adding more instances. High availability is about minimizing downtime. Disaster recovery is about recovering from major failures. Geo-distribution is about deploying resources across regions.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-039",
+      "question": "An e-commerce website automatically adds more virtual machines when CPU usage exceeds 80% and removes them when CPU usage drops below 30%. This behavior BEST demonstrates which cloud benefit?",
+      "options": [
+        "High availability",
+        "Elasticity",
+        "Reliability",
+        "Predictability"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Elasticity refers to the ability to automatically scale resources up or down dynamically in response to changing demand. The scenario describes automatic scaling triggered by CPU thresholds, which is the definition of elasticity. High availability is about minimizing downtime. Reliability is about consistent performance and recovery from failures. Predictability relates to consistent performance and cost forecasting.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-040",
+      "question": "Which TWO statements correctly describe scalability in Azure? Select TWO.",
+      "options": [
+        "Scaling vertically means adding more virtual machine instances behind a load balancer",
+        "Scaling horizontally means adding more instances to distribute the load",
+        "Azure Virtual Machine Scale Sets support automatic horizontal scaling",
+        "Scaling up in Azure always requires downtime to resize the VM"
+      ],
+      "correctAnswers": [
+        1,
+        2
+      ],
+      "explanation": "Horizontal scaling (scale out) means adding more instances and distributing load across them. Azure Virtual Machine Scale Sets automatically add or remove VM instances based on demand or schedules, supporting automatic horizontal scaling. Vertical scaling (scale up) means increasing the resources of an existing instance (larger VM size), not adding more instances. While resizing a VM may require a restart, it is not always the case for all size changes.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-041",
+      "question": "A company designs their Azure deployment so that if one Azure region becomes unavailable, traffic automatically routes to resources in a second region. This design BEST demonstrates which cloud benefit?",
+      "options": [
+        "Scalability",
+        "Elasticity",
+        "High availability combined with disaster recovery",
+        "Consumption-based pricing"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Routing traffic to a secondary region when the primary is unavailable demonstrates both high availability (keeping the service accessible) and disaster recovery (recovering from a major regional failure). Scalability and elasticity address adding capacity for increased load. Consumption-based pricing is a financial model. Azure Traffic Manager and Azure Front Door are common services used to implement this multi-region pattern.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-042",
+      "question": "A gaming company deploys their application across three Azure Availability Zones in the same region. What does this deployment protect against?",
+      "options": [
+        "Only the failure of a single virtual machine",
+        "The complete failure of the Azure region itself",
+        "Data center-level failures within the region, such as power or cooling outages",
+        "Network issues between the company's office and Azure"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Availability Zones are physically separated data center facilities within a region, each with independent power, cooling, and networking. Deploying across Availability Zones protects against data center-level failures. They do not protect against a complete regional failure (that requires multi-region deployment) and do not address single VM failures (Availability Sets handle that) or network connectivity from external locations.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-043",
+      "question": "What does 'reliability' mean as a cloud benefit in Azure?",
+      "options": [
+        "The ability to scale resources on demand to meet growing workloads",
+        "The ability of a system to recover from failures and continue to function, ensuring consistent performance",
+        "The assurance that your cloud costs will remain the same month over month",
+        "The geographic distribution of resources across multiple continents"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Reliability in cloud computing refers to the ability of a system to recover from failures and continue to function as expected. Azure's globally distributed infrastructure, redundancy options, and automatic failover capabilities contribute to reliability. Scalability is about capacity. Cost consistency is part of predictability. Geographic distribution contributes to reliability but is not the definition of reliability itself.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-044",
+      "question": "Which Azure capability BEST demonstrates the 'reliability' cloud benefit by enabling automatic failover of a database when the primary instance fails?",
+      "options": [
+        "Azure Monitor",
+        "Azure Cosmos DB automatic failover",
+        "Azure Cost Management",
+        "Azure Advisor"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Cosmos DB supports automatic failover, where the service automatically promotes a replica in another region to become the primary when the primary region becomes unavailable. This demonstrates reliability: the system recovers from failure and continues to function without manual intervention. Azure Monitor tracks performance metrics. Azure Cost Management tracks spending. Azure Advisor provides recommendations but does not perform failover.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-045",
+      "question": "What does 'predictability' refer to as a cloud benefit in Azure?",
+      "options": [
+        "Guaranteeing that applications will never experience any latency",
+        "Confidence in consistent performance levels and the ability to forecast costs accurately",
+        "The guarantee that Azure will never change its pricing models",
+        "Ensuring that a VM will always have the same IP address"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Predictability in cloud computing has two dimensions: performance predictability (confidence that your application will perform consistently) and cost predictability (ability to forecast spending using tools like the Azure Pricing Calculator). Neither dimension means absolute guarantees of zero latency or unchanging prices. Azure provides tools and frameworks that support both performance and cost predictability.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-046",
+      "question": "A company uses the Azure Pricing Calculator to estimate monthly costs before deploying a new workload. This activity BEST aligns with which cloud benefit?",
+      "options": [
+        "High availability",
+        "Scalability",
+        "Cost predictability",
+        "Security"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Using the Azure Pricing Calculator to estimate costs before deployment is an example of cost predictability: understanding what you will spend before committing resources. Azure's consumption-based model and pricing tools allow organizations to forecast spending accurately. High availability, scalability, and security are separate cloud benefits unrelated to cost estimation.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-047",
+      "question": "Which TWO factors contribute to performance predictability in Azure? Select TWO.",
+      "options": [
+        "Autoscaling that adds resources when demand increases to maintain consistent response times",
+        "The ability to cancel an Azure subscription at any time",
+        "Load balancing that distributes traffic across healthy instances",
+        "The option to choose any custom VM size"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Performance predictability is supported by autoscaling (which adds resources under load to prevent degraded performance) and load balancing (which distributes requests across multiple healthy instances to avoid overloading any single instance). The ability to cancel a subscription is a contractual flexibility. Custom VM sizes relate to capacity planning but do not directly ensure consistent performance.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-048",
+      "question": "A company is deploying a mission-critical application to Azure. They want to ensure reliability by deploying to multiple Azure regions. Which statement accurately describes this approach?",
+      "options": [
+        "Multi-region deployment guarantees 100% uptime with no possibility of failure",
+        "Multi-region deployment increases resilience by reducing the impact of a single regional outage",
+        "Multi-region deployment is not supported for IaaS workloads in Azure",
+        "Multi-region deployment eliminates the need for backups and disaster recovery planning"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Deploying to multiple Azure regions increases resilience by ensuring that if one region experiences an outage, the application can continue running from another region. No deployment model guarantees 100% uptime. Multi-region deployment is fully supported for IaaS, PaaS, and SaaS workloads. Backups and disaster recovery planning are still necessary even with multi-region deployments.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-049",
+      "question": "Which Azure feature helps organizations meet compliance requirements and maintain governance over their cloud resources, representing the 'governance' cloud benefit?",
+      "options": [
+        "Azure Virtual Network",
+        "Azure Policy",
+        "Azure Load Balancer",
+        "Azure Virtual Machine Scale Sets"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Policy is a governance tool that allows organizations to define, assign, and manage rules and policies across Azure resources to ensure compliance with corporate standards and regulatory requirements. For example, a policy can enforce that all resources must have specific tags or must be deployed only in approved regions. Virtual Network, Load Balancer, and VM Scale Sets are infrastructure services unrelated to governance.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-050",
+      "question": "A company wants to ensure that no one in their organization can create Azure resources without applying specific cost-center tags. Which Azure capability provides this governance control?",
+      "options": [
+        "Azure Monitor alerts",
+        "Azure Policy with a deny effect",
+        "Azure Advisor recommendations",
+        "Microsoft Defender for Cloud security alerts"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Policy with a 'deny' effect can block the creation of resources that do not comply with defined requirements, such as missing required tags. This enforces governance at the resource creation level. Azure Monitor alerts notify after the fact. Azure Advisor provides recommendations but cannot enforce rules. Microsoft Defender for Cloud addresses security threats, not resource tagging governance.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-051",
+      "question": "Which TWO cloud benefits are MOST directly related to security in Azure? Select TWO.",
+      "options": [
+        "Microsoft manages physical security of Azure data centers",
+        "Customers can automatically scale their applications based on demand",
+        "Microsoft Defender for Cloud provides unified security management and threat detection",
+        "Azure Availability Zones ensure applications remain online during regional failures"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Microsoft manages physical data center security (guards, biometric access, surveillance), which is a direct security benefit of cloud computing. Microsoft Defender for Cloud provides security posture management and threat detection, directly contributing to the security benefit. Automatic scaling relates to elasticity. Availability Zones relate to high availability, not security specifically.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-052",
+      "question": "A company migrates to Azure and realizes they no longer need to worry about replacing aging physical switches and firewalls, because Microsoft maintains the underlying network hardware. Which security benefit does this BEST represent?",
+      "options": [
+        "The customer has full access to configure network hardware settings",
+        "Microsoft handles physical infrastructure security and hardware refresh cycles",
+        "The customer saves money by not needing to hire security professionals",
+        "The customer can disable network security groups to simplify configuration"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "One of the security advantages of cloud computing is that Microsoft manages physical infrastructure security and the hardware lifecycle, including replacing aging switches, firewalls, and servers with newer, more secure equipment. This removes the risk of running on end-of-life hardware with unpatched vulnerabilities. Customers do not have access to configure physical network hardware. Security professionals are still needed for managing cloud security configurations.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-053",
+      "question": "Which Azure service provides a unified view of security recommendations and compliance scores across an organization's Azure resources, directly supporting the 'security and governance' cloud benefit?",
+      "options": [
+        "Azure Backup",
+        "Microsoft Defender for Cloud",
+        "Azure Traffic Manager",
+        "Azure Content Delivery Network"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Defender for Cloud (formerly Azure Security Center) provides a centralized security posture management view, showing security recommendations, compliance scores against frameworks (like CIS benchmarks or PCI-DSS), and threat detection alerts. Azure Backup handles data protection. Traffic Manager handles load balancing across regions. CDN accelerates content delivery.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-054",
+      "question": "Which statement BEST describes the 'governance' benefit of cloud computing in Azure?",
+      "options": [
+        "Azure automatically governs all resources on behalf of the customer with no configuration required",
+        "Azure provides tools to define, enforce, and audit organizational policies across cloud resources",
+        "Governance in Azure is only available to large enterprise customers",
+        "Azure governance tools replace the need for security teams within an organization"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud governance in Azure means using tools like Azure Policy, Azure Blueprints, and Management Groups to define standards, enforce compliance, and audit resource configurations across the organization. These tools do not automatically configure themselves; they require setup by the customer. Governance tools are available to all Azure customers regardless of size. Governance tools complement, not replace, security teams.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-055",
+      "question": "A company wants to enforce that all Azure virtual machines across multiple subscriptions must use approved VM sizes and be deployed only in specific regions. Which Azure feature enables this at scale?",
+      "options": [
+        "Azure Monitor",
+        "Azure Management Groups with Azure Policy",
+        "Azure Advisor",
+        "Azure Cost Management and Billing"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Management Groups allow you to organize multiple subscriptions into a hierarchy and apply Azure Policies at the management group level, which then cascade down to all subscriptions and resources beneath them. This enables enforcement of VM size and region restrictions across an entire organization. Azure Monitor tracks metrics. Azure Advisor gives recommendations. Cost Management tracks spending.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-056",
+      "question": "Which cloud benefit does Azure provide through features like the Azure portal, Azure CLI, Azure PowerShell, and Azure Resource Manager templates, which allow administrators to deploy, monitor, and manage cloud resources efficiently?",
+      "options": [
+        "High availability",
+        "Manageability",
+        "Reliability",
+        "Scalability"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Manageability refers to how easily cloud resources can be deployed, configured, monitored, and managed. Azure offers multiple management interfaces (portal, CLI, PowerShell, REST API, ARM templates) that make it easy to manage resources at scale. High availability is about uptime. Reliability is about recovery from failures. Scalability is about handling increased load.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-057",
+      "question": "Which TWO capabilities represent the 'manageability of the cloud' benefit in Azure? Select TWO.",
+      "options": [
+        "Automatically scaling resources based on CPU utilization thresholds",
+        "Replacing failed hardware components without customer involvement",
+        "Deploying resources based on a pre-configured template using Azure Resource Manager",
+        "Paying only for resources that are actively running"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Manageability of the cloud includes the ability to manage your resources efficiently. Automatic scaling based on metrics (like CPU) removes the need for manual intervention when demand changes, improving management efficiency. Deploying via ARM templates enables infrastructure-as-code, making deployments repeatable and manageable at scale. Replacing failed hardware is a cloud provider responsibility (reliability). Consumption-based billing relates to the pricing model.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-058",
+      "question": "A company wants to automate the deployment of identical Azure environments for development, testing, and production to reduce human error. Which Azure capability BEST supports this manageability goal?",
+      "options": [
+        "Azure Backup",
+        "Azure Resource Manager templates (ARM templates) or Bicep files",
+        "Azure Active Directory B2C",
+        "Azure Service Health"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "ARM templates and Bicep files define infrastructure as code, allowing organizations to deploy identical, repeatable Azure environments automatically. This reduces human error from manual configuration, supports version control of infrastructure, and enables consistent deployments across dev, test, and production. Azure Backup protects data. Azure AD B2C handles consumer identity. Service Health provides infrastructure status updates.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-059",
+      "question": "Which of the following is an example of 'manageability in the cloud' (as opposed to 'manageability of the cloud')?",
+      "options": [
+        "Azure automatically replacing failed physical hardware in its data centers",
+        "A customer setting up Azure Monitor alerts to automatically notify the team when an application error rate spikes",
+        "Microsoft provisioning additional capacity to handle global customer demand",
+        "Azure automatically applying operating system patches to PaaS services"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Manageability 'in' the cloud refers to how customers can manage their cloud resources using the tools provided (portal, CLI, REST API, monitoring tools). Setting up Azure Monitor alerts is an example of a customer managing their deployed resources. Manageability 'of' the cloud refers to the ease of deploying and scaling resources. The other options describe actions Microsoft takes automatically, not customer management activities.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-060",
+      "question": "What is Infrastructure as a Service (IaaS) in Azure?",
+      "options": [
+        "A service model where Microsoft provides a complete, ready-to-use application like Microsoft 365",
+        "A service model where Microsoft provides virtualized computing resources such as VMs, storage, and networking, and the customer manages the OS and above",
+        "A service model where Microsoft provides a managed platform for developers to deploy applications without managing infrastructure",
+        "A service model where the customer manages all physical hardware in Microsoft's data center"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "IaaS provides virtualized computing resources over the internet. Microsoft manages the physical hardware (servers, networking, storage hardware, and data centers) while the customer is responsible for the operating system, middleware, runtime, applications, and data. This gives customers the most control and flexibility among cloud service types. PaaS provides the managed platform. SaaS provides complete applications. Customers never manage physical hardware in Azure.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-061",
+      "question": "A company wants to migrate its existing on-premises servers to the cloud with minimal changes to the operating system configuration and installed applications. Which service model is MOST appropriate?",
+      "options": [
+        "Software as a Service (SaaS)",
+        "Platform as a Service (PaaS)",
+        "Infrastructure as a Service (IaaS)",
+        "Serverless"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "IaaS is the most appropriate model for lift-and-shift migrations because it provides virtual machines that behave like physical servers. Organizations can migrate their existing OS configuration and applications with minimal changes. PaaS requires refactoring applications to work with managed platforms. SaaS provides pre-built applications that cannot be customized to match existing workloads. Serverless requires significant re-architecture.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-062",
+      "question": "A development team wants to build and deploy a web application without worrying about installing web servers, configuring middleware, or managing OS patches. Which Azure service model BEST meets this need?",
+      "options": [
+        "IaaS using Azure Virtual Machines",
+        "PaaS using Azure App Service",
+        "SaaS using Microsoft 365",
+        "Serverless using Azure Blob Storage"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure App Service is a PaaS offering where Microsoft manages the underlying infrastructure, web server, OS patches, and runtime. Developers simply deploy their application code. IaaS would require the team to manage OS and web server configuration. Microsoft 365 is a SaaS application, not a platform for deploying custom applications. Azure Blob Storage is a storage service, not a compute platform.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-063",
+      "question": "Which of the following is an example of a Software as a Service (SaaS) offering from Microsoft?",
+      "options": [
+        "Azure Virtual Machines",
+        "Azure App Service",
+        "Microsoft 365 (Word, Outlook, Teams)",
+        "Azure Kubernetes Service"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Microsoft 365 (including Word, Outlook, Teams, SharePoint) is a SaaS offering: it is a complete, ready-to-use application suite managed entirely by Microsoft. Users access it through a web browser or client without managing any infrastructure. Azure Virtual Machines is IaaS. Azure App Service is PaaS. Azure Kubernetes Service is a managed container orchestration platform (PaaS).",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-064",
+      "question": "Match the Azure service to the correct service model. Azure Virtual Machines = ?, Azure SQL Database (managed) = ?, Microsoft 365 = ?",
+      "options": [
+        "Azure Virtual Machines = PaaS, Azure SQL Database = IaaS, Microsoft 365 = SaaS",
+        "Azure Virtual Machines = IaaS, Azure SQL Database = PaaS, Microsoft 365 = SaaS",
+        "Azure Virtual Machines = IaaS, Azure SQL Database = SaaS, Microsoft 365 = PaaS",
+        "Azure Virtual Machines = SaaS, Azure SQL Database = PaaS, Microsoft 365 = IaaS"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Virtual Machines is IaaS because the customer manages the OS, applications, and data on a Microsoft-managed physical host. Azure SQL Database is PaaS because Microsoft manages the database engine, OS patches, and infrastructure while the customer manages the database schema and data. Microsoft 365 is SaaS because it is a complete, fully managed application suite. This is a classic AZ-900 classification question.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-065",
+      "question": "A small business wants to use email and collaboration tools without running any servers or hiring an IT administrator to manage them. Which service model BEST meets their requirement?",
+      "options": [
+        "IaaS, because they can deploy virtual mail servers",
+        "PaaS, because they can build a custom email system",
+        "SaaS, because the application is fully managed and ready to use",
+        "On-premises, because they need full control over their email"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "SaaS is ideal for organizations that want to use ready-made applications without any infrastructure management. Email services like Microsoft 365 (Exchange Online) or Google Workspace are SaaS offerings that require no server management, OS patching, or IT administration for the underlying platform. IaaS and PaaS still require technical expertise to configure and manage. On-premises would require the most technical involvement.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-066",
+      "question": "Which TWO use cases are MOST appropriate for IaaS? Select TWO.",
+      "options": [
+        "Running a legacy application that requires a specific operating system version that is no longer supported by PaaS platforms",
+        "Using Microsoft Teams for corporate communication",
+        "Migrating an existing on-premises SQL Server installation to Azure virtual machines without re-architecting",
+        "Using Azure Cognitive Services APIs to add AI capabilities to an application"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "IaaS is best suited for scenarios requiring control over the OS or for lift-and-shift migrations. Running a legacy application requiring a specific OS version benefits from IaaS because you can install any OS version on an Azure VM. Migrating SQL Server to Azure VMs (without using Azure SQL Database) is a classic lift-and-shift IaaS use case. Microsoft Teams is SaaS. Azure Cognitive Services is a PaaS/API service.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-067",
+      "question": "A company is building a new cloud-native mobile app backend. They want to focus only on writing API code without managing servers, OS patches, or middleware. Which cloud service model is MOST appropriate?",
+      "options": [
+        "IaaS",
+        "PaaS",
+        "SaaS",
+        "On-premises dedicated servers"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "PaaS is ideal for building new cloud-native applications because it manages the underlying infrastructure, OS, runtime, and middleware, allowing developers to focus entirely on application code. Azure App Service, Azure Functions, and Azure API Management are PaaS services suited for API backends. IaaS requires managing the OS. SaaS provides pre-built applications that cannot be customized into a mobile backend. On-premises defeats the cloud-native goal.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-068",
+      "question": "Which statement BEST describes a disadvantage of SaaS compared to IaaS?",
+      "options": [
+        "SaaS requires more technical expertise to manage than IaaS",
+        "SaaS applications cannot be accessed from mobile devices",
+        "SaaS provides less flexibility to customize the application to meet specific business requirements",
+        "SaaS is more expensive than IaaS for all workloads"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "A primary trade-off of SaaS is limited customization flexibility. Because the application is fully managed by the provider, customers generally cannot modify the underlying code, database schema, or server configuration. IaaS and PaaS offer greater flexibility but require more management. SaaS applications typically do support mobile access. SaaS is not inherently more expensive; for appropriate workloads it can be very cost-effective.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-069",
+      "question": "In the IaaS model, which of the following tasks is the customer responsible for? Select TWO.",
+      "options": [
+        "Maintaining the physical network switches in the Azure data center",
+        "Applying security patches to the virtual machine operating system",
+        "Powering on and off servers in the Azure data center",
+        "Configuring network security groups to control VM traffic"
+      ],
+      "correctAnswers": [
+        1,
+        3
+      ],
+      "explanation": "In IaaS, customers are responsible for the operating system and everything above it, including applying OS security patches and configuring network-level controls like Network Security Groups (NSGs). Physical network hardware management and data center operations (power, cooling, hardware) are always Microsoft's responsibility. Customers access and configure VMs via software interfaces, not physical access.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-070",
+      "question": "A company uses Azure for three different scenarios: (1) hosting virtual machines for their ERP system, (2) deploying a custom web app on Azure App Service, and (3) using Microsoft 365 for email. Which service model combination is correct?",
+      "options": [
+        "All three are PaaS",
+        "ERP VMs = IaaS, Web App = PaaS, Microsoft 365 = SaaS",
+        "ERP VMs = SaaS, Web App = IaaS, Microsoft 365 = PaaS",
+        "ERP VMs = PaaS, Web App = SaaS, Microsoft 365 = IaaS"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Hosting virtual machines for an ERP system is IaaS: you manage the OS and application on Microsoft-managed hardware. Azure App Service for a custom web app is PaaS: Microsoft manages infrastructure and runtime while you manage the app code. Microsoft 365 for email is SaaS: a complete managed application. Understanding how to classify Azure services by model is a core AZ-900 competency.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-071",
+      "question": "Which cloud service type gives the customer the MOST control over the deployed environment, including the operating system, installed software, and network configuration?",
+      "options": [
+        "Software as a Service (SaaS)",
+        "Platform as a Service (PaaS)",
+        "Infrastructure as a Service (IaaS)",
+        "Serverless (Function as a Service)"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "IaaS provides the most customer control among cloud service types. Customers can choose and configure the operating system, install any software, configure the network stack, and manage all layers above the physical hardware. PaaS abstracts OS and middleware away. SaaS provides even less control, limited to application-level settings. Serverless (FaaS) abstracts all infrastructure including OS and runtime.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-072",
+      "question": "A company has a compute-intensive simulation that runs once a month and takes about 4 hours. The rest of the time, no compute resources are needed. Which combination of cloud service model and pricing would be MOST cost-effective?",
+      "options": [
+        "IaaS with Reserved Instances (1-year commitment)",
+        "On-premises servers sized for the simulation workload",
+        "IaaS or serverless with pay-as-you-go, deallocating resources when not in use",
+        "SaaS solution with a per-user monthly license"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "For a workload that runs only 4 hours per month, pay-as-you-go pricing is ideal: you pay only for the 4 hours of compute, then stop the VMs or let serverless functions scale to zero. Reserved Instances require paying for 24/7 capacity even when not used. On-premises servers would sit idle for most of the month, wasting capital. A SaaS solution cannot be customized for compute-intensive simulations.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-073",
+      "question": "A company is evaluating public versus private cloud for a new business intelligence platform. Which TWO factors would favor choosing public cloud over private cloud? Select TWO.",
+      "options": [
+        "The platform needs to be compliant with regulations that prohibit data leaving the company's owned premises",
+        "The company wants to avoid large upfront capital investment in servers and data center equipment",
+        "The company needs to rapidly scale storage and compute as their data volumes grow unpredictably",
+        "The company has existing data center space and IT staff experienced in managing hardware"
+      ],
+      "correctAnswers": [
+        1,
+        2
+      ],
+      "explanation": "Public cloud eliminates upfront capital expenditure for hardware, which is a strong financial argument for organizations wanting to avoid large server purchases. Public cloud also offers rapid, near-unlimited scaling to handle unpredictable data volume growth. Regulatory requirements that mandate data stays on company-owned premises would favor private cloud. Having existing data center space and experienced IT staff is an argument for private cloud, not public cloud.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-074",
+      "question": "Which cloud benefit allows a company to deploy their application to Azure regions on multiple continents, reducing latency for users around the world?",
+      "options": [
+        "Consumption-based pricing",
+        "Geo-distribution",
+        "Vertical scalability",
+        "Shared responsibility"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Geo-distribution refers to the ability to deploy resources and content to data center locations around the world, reducing latency by serving users from a region geographically close to them. Azure has more than 60 regions globally. Consumption-based pricing is about the billing model. Vertical scalability is about adding more resources to an instance. Shared responsibility is about dividing security duties.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-075",
+      "question": "A company is selecting between Azure public cloud and an on-premises private data center. Which statement about agility favors public cloud?",
+      "options": [
+        "Public cloud requires a 6-month procurement cycle to add new server capacity",
+        "Public cloud allows new virtual machines to be provisioned in minutes rather than weeks",
+        "Public cloud provides greater control over physical hardware configuration",
+        "Public cloud requires more IT staff to manage the underlying infrastructure"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud agility refers to the ability to rapidly provision and de-provision resources. In Azure, a new virtual machine can be deployed in minutes through the portal, CLI, or APIs. In contrast, on-premises procurement involves ordering hardware, waiting for delivery, racking, and configuring, which can take weeks or months. Cloud reduces the need for IT staff to manage physical infrastructure, which is an additional benefit.",
+      "category": "Cloud Concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-cloud-concepts-076",
+      "question": "Which statement BEST describes a key difference between high availability and disaster recovery in Azure?",
+      "options": [
+        "High availability and disaster recovery are identical concepts with different names",
+        "High availability focuses on keeping services running during normal failures; disaster recovery focuses on restoring services after a major catastrophic event",
+        "High availability requires multiple Azure subscriptions; disaster recovery only needs one",
+        "Disaster recovery prevents failures from occurring; high availability handles them after they occur"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "High availability is about maintaining uptime during routine failures (hardware glitches, single server outages) through redundancy and automatic failover within a region or zone. Disaster recovery addresses major, catastrophic events (entire region outage, data corruption) and involves restoring services, often from a secondary region, with a defined recovery time objective (RTO) and recovery point objective (RPO). They are complementary but distinct concepts.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-077",
+      "question": "A company deploys their application only in a single Azure region with no redundancy. A power outage affects that region. Which cloud benefit was NOT properly implemented in this architecture?",
+      "options": [
+        "Consumption-based pricing",
+        "Governance",
+        "Reliability",
+        "Manageability"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Reliability requires designing systems to recover from failures and continue functioning. A single-region deployment with no redundancy violates the reliability principle because a regional outage takes down the entire application. Implementing Availability Zones, multiple regions, or Azure Site Recovery would improve reliability. The outage is not a pricing, governance, or manageability issue.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-078",
+      "question": "Which Azure benefit is MOST directly demonstrated when Microsoft automatically updates the operating system and middleware on Azure App Service instances without customer action?",
+      "options": [
+        "Scalability",
+        "Manageability",
+        "High availability",
+        "Geo-distribution"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Automatic OS and middleware updates by Microsoft on PaaS services like Azure App Service is an example of cloud manageability: the provider manages the platform so customers do not have to. This reduces operational overhead and ensures the platform stays secure and up-to-date without customer effort. Scalability, high availability, and geo-distribution are separate cloud benefits.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-cloud-concepts-079",
+      "question": "A startup evaluates cloud vs. on-premises hosting for their new application. They identify that with cloud they can start small, pay only for what they use, and grow without hardware purchases. Which THREE cloud benefits does this describe? Select THREE.",
+      "options": [
+        "Consumption-based pricing (OpEx model)",
+        "Scalability to grow resources as the business grows",
+        "Elimination of upfront capital expenditure",
+        "Full customer control over the physical data center"
+      ],
+      "correctAnswers": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "The scenario describes three key cloud benefits: consumption-based pricing (pay only for what you use), scalability (grow resources as business grows without hardware purchases), and elimination of upfront CapEx (no need to purchase servers before knowing actual needs). Customers do not control the physical data center in public cloud — that is always Microsoft's domain. This combination of financial and capacity flexibility is a primary reason startups favor cloud.",
+      "category": "Cloud Concepts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-cloud-concepts-080",
+      "question": "Which statement BEST summarizes why cloud computing enables organizations to innovate faster compared to traditional on-premises infrastructure?",
+      "options": [
+        "Cloud computing eliminates all operational costs",
+        "Cloud computing provides instant access to a broad range of services and technologies without requiring upfront hardware procurement",
+        "Cloud computing guarantees that all deployments will succeed without errors",
+        "Cloud computing automatically writes application code using artificial intelligence"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud computing accelerates innovation because organizations can instantly access a vast catalog of services (AI, databases, analytics, IoT, DevOps tools) without waiting weeks for hardware procurement and setup. Teams can experiment, prototype, and deploy rapidly. Cloud does not eliminate all operational costs, guarantee deployment success, or write application code. The speed of access to diverse, on-demand services is the key enabler of faster innovation.",
+      "category": "Cloud Concepts",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-001",
+      "question": "Which Azure construct groups a set of data centers that are close together and connected through a low-latency network?",
+      "options": [
+        "Availability Zone",
+        "Azure Region",
+        "Azure Geography",
+        "Management Group"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "An Azure Region is a set of data centers deployed within a latency-defined perimeter and connected through a dedicated low-latency network. An Availability Zone is a physically separate location within a region. A Geography is a larger boundary containing one or more regions. Management Groups are an organizational construct, not a physical one.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-002",
+      "question": "A company wants to protect its Azure workloads from a complete regional outage. Which Azure feature should they use to host replicated copies of their resources in a second location?",
+      "options": [
+        "Availability Zone",
+        "Resource Group",
+        "Region Pair",
+        "Azure Policy"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Region Pairs associate each Azure region with a second region within the same geography, at least 300 miles away. During a regional outage or planned maintenance, Azure prioritizes recovery of one region in each pair. Availability Zones protect against data center failures within a single region. Resource Groups and Azure Policy are organizational tools, not disaster recovery features.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-003",
+      "question": "An Availability Zone in Azure is BEST described as which of the following?",
+      "options": [
+        "A replicated region located hundreds of miles from the primary region",
+        "A physically separate data center with independent power, cooling, and networking within a region",
+        "A logical grouping of Azure resources used for billing purposes",
+        "A geographic boundary used to define data residency requirements"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Availability Zones are physically separate data centers within a single Azure region, each with independent power, cooling, and networking to ensure fault isolation. They are not separate regions, nor billing constructs. Deploying across at least three Availability Zones ensures resilience to a single data center failure without replication to a distant region.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-004",
+      "question": "A financial services company must ensure its Azure resources are deployed within the European Union and that data never leaves EU boundaries due to regulatory requirements. Which Azure construct enforces this boundary?",
+      "options": [
+        "Region Pair",
+        "Azure Geography",
+        "Availability Zone",
+        "Subscription boundary"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "An Azure Geography is a discrete market, typically containing two or more regions, that preserves data residency and compliance boundaries. EU customers can choose regions within the European geography to ensure data stays within EU borders. Region Pairs are for disaster recovery within a geography. Availability Zones and subscriptions do not enforce geographic data residency.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-005",
+      "question": "Which TWO statements about Azure region pairs are correct? Select TWO.",
+      "options": [
+        "Region pairs are always located within the same country or geographic area",
+        "Azure serializes platform updates so both regions in a pair are not updated simultaneously",
+        "Region pairs allow customers to choose any two regions they prefer as their pair",
+        "In the event of a broad outage, at least one region from each pair will be prioritized for recovery"
+      ],
+      "correctAnswers": [
+        1,
+        3
+      ],
+      "explanation": "Azure region pairs are pre-defined by Microsoft and serialized for platform updates so that both regions in a pair are not taken offline simultaneously. During a broad outage, Microsoft prioritizes restoring at least one region in every pair. Customers cannot define their own region pairs. Some pairs do cross national boundaries (for example, Brazil South is paired with South Central US).",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-006",
+      "question": "Azure sovereign regions differ from standard Azure regions in which key way?",
+      "options": [
+        "Sovereign regions offer lower latency than standard regions",
+        "Sovereign regions are physically and logically isolated instances operated to meet the compliance needs of specific government bodies",
+        "Sovereign regions are available to all Azure customers at a premium price tier",
+        "Sovereign regions automatically replicate data to a standard Azure region for backup"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure sovereign regions, such as Azure Government (US) and Azure China (operated by 21Vianet), are isolated instances of Azure that meet strict compliance requirements for specific government or regulatory bodies. They are not accessible to general commercial Azure customers and do not automatically replicate data to standard commercial regions. Latency and pricing are not the distinguishing factors.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-007",
+      "question": "A government agency in the United States requires a cloud solution that is restricted to US government personnel and operates on physically isolated infrastructure separate from the commercial Azure cloud. Which offering meets this requirement?",
+      "options": [
+        "Azure Public Cloud (US regions)",
+        "Azure Government",
+        "Azure Stack Hub",
+        "Azure China"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Government is a sovereign cloud instance dedicated to US federal, state, local, and tribal government entities, operated by screened US persons on physically separate infrastructure. Azure Public Cloud is accessible to anyone. Azure Stack Hub is an on-premises Azure solution. Azure China is operated by 21Vianet for China-based customers.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-008",
+      "question": "How many Availability Zones does Microsoft recommend deploying across to achieve the highest intra-region resiliency?",
+      "options": [
+        "At least one",
+        "Exactly two",
+        "At least three",
+        "At least five"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Microsoft recommends deploying across at least three Availability Zones within a region to achieve high availability. Three zones ensure that if one zone fails, the two remaining zones can continue to serve traffic and meet most availability targets. Using only two zones could result in a 50% capacity loss on failure.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-009",
+      "question": "A company is designing an Azure solution and wants resiliency against an entire data center failure but does NOT need protection against a full regional outage. Which feature BEST meets this requirement?",
+      "options": [
+        "Azure Region Pairs",
+        "Availability Zones",
+        "Resource Groups",
+        "Azure Blueprints"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Availability Zones provide protection against individual data center failures by distributing workloads across physically separate locations within the same Azure region. Region Pairs protect against full regional outages by replicating across geographically distant regions. Resource Groups are logical containers for management, and Azure Blueprints are governance tools.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-010",
+      "question": "Which Azure concept refers to the physical facilities that house Azure servers, storage, and networking equipment?",
+      "options": [
+        "Azure Region",
+        "Azure Data Center",
+        "Availability Zone",
+        "Azure Edge Zone"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Data Centers are the physical buildings containing the servers, storage hardware, and networking equipment that power Azure services. A Region is a collection of data centers connected by a low-latency network. An Availability Zone is a grouping of one or more data centers within a region with isolated power and networking.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-011",
+      "question": "An organization is planning a multi-region deployment. They want automatic failover to a paired region if their primary region goes down. Which Azure storage redundancy option provides geo-redundant storage with read access to the secondary region at all times?",
+      "options": [
+        "Locally Redundant Storage (LRS)",
+        "Zone-Redundant Storage (ZRS)",
+        "Geo-Redundant Storage (GRS)",
+        "Read-Access Geo-Redundant Storage (RA-GRS)"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "RA-GRS replicates data to the paired region and also allows read access to that secondary copy at all times, not just during failover. GRS replicates to the paired region but does not allow reads from the secondary unless a failover occurs. LRS stores copies within a single data center. ZRS distributes across availability zones within one region.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-012",
+      "question": "Which TWO Azure regions are paired with each other and reside within the same geography? Select TWO.",
+      "options": [
+        "East US and West Europe",
+        "East US and West US",
+        "North Europe and South Asia",
+        "Australia East and Japan East"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "East US and West US are an example of an Azure region pair within the same geography (United States). West Europe and East US are in different geographies. North Europe is paired with West Europe (within Europe). Region pairs are designed to keep data within the same geopolitical region when possible for compliance reasons.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-013",
+      "question": "A company deploying in Azure wants to ensure that a scheduled Azure maintenance event does not take down all instances of their application simultaneously. They are deploying within a single Azure region. Which feature protects against this scenario at the data center level?",
+      "options": [
+        "Region Pair",
+        "Azure Policy",
+        "Availability Zone",
+        "Management Group"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Availability Zones within a single region have separate power, cooling, and networking, so Azure can perform maintenance on one zone without affecting others. Region Pairs operate across regions, not within one. Azure Policy is a governance tool. Management Groups organize subscriptions but do not affect maintenance schedules.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-014",
+      "question": "Which statement is TRUE about Azure regions that support Availability Zones?",
+      "options": [
+        "All Azure regions support Availability Zones",
+        "Only sovereign regions support Availability Zones",
+        "Availability Zones are supported in select regions that have at least three independent data center buildings",
+        "Availability Zones are only supported in the US and Europe"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Availability Zones are supported in select Azure regions where the infrastructure can physically provide at least three independent data center buildings with separate power and networking. Not all regions have this capability. The feature is available in many geographies worldwide, not just US and Europe, and is not limited to sovereign regions.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-015",
+      "question": "A company wants to use Azure services that are designed to tolerate a failure of an entire Azure region. Which COMBINATION of features should they use?",
+      "options": [
+        "Availability Zones and Resource Groups",
+        "Region Pairs and geo-redundant storage",
+        "Availability Sets and Azure Policy",
+        "Management Groups and Azure Blueprints"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Region Pairs combined with geo-redundant storage provide resilience against full regional failures by replicating resources and data to a geographically distant paired region. Availability Zones only protect within a single region. Resource Groups, Azure Policy, Management Groups, and Azure Blueprints are governance and organizational tools, not resiliency features.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-016",
+      "question": "Azure China differs from standard Azure in which key way?",
+      "options": [
+        "Azure China is operated by Microsoft directly but with additional Chinese language support",
+        "Azure China is operated by 21Vianet and is physically and operationally separate from global Azure",
+        "Azure China is a subset of Azure Government designed for Asia-Pacific compliance",
+        "Azure China uses different hardware but the same management plane as global Azure"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure China is operated by 21Vianet under a technology licensing agreement with Microsoft. It is a physically and operationally isolated instance that complies with Chinese regulations. It is not operated by Microsoft directly, not related to Azure Government, and does not share the same management plane as global Azure.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-017",
+      "question": "Which Azure organizational construct is the LOWEST level in the Azure management hierarchy?",
+      "options": [
+        "Management Group",
+        "Subscription",
+        "Resource Group",
+        "Resource"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "The Azure management hierarchy from top to bottom is: Management Groups > Subscriptions > Resource Groups > Resources. A Resource (such as a virtual machine, storage account, or database) is the lowest-level entity. Resource Groups contain resources, subscriptions contain resource groups, and management groups contain subscriptions.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-018",
+      "question": "A large enterprise has multiple Azure subscriptions across different business units and wants to apply a single governance policy across all of them. Which Azure feature enables this?",
+      "options": [
+        "Resource Groups",
+        "Azure Policy assigned to each subscription individually",
+        "Management Groups",
+        "Azure Cost Management"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Management Groups allow organizations to group multiple subscriptions under a hierarchy where governance policies, RBAC assignments, and budgets can be applied at the management group level and inherited by all subscriptions within it. Applying Azure Policy to each subscription individually is possible but does not scale. Resource Groups only organize resources within one subscription.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-019",
+      "question": "Which statement BEST describes an Azure Resource Group?",
+      "options": [
+        "A billing boundary that generates a separate invoice",
+        "A logical container that holds related Azure resources and enables lifecycle management as a group",
+        "A physical grouping of servers within a single data center",
+        "A security boundary that prevents resources from communicating outside the group"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A Resource Group is a logical container for Azure resources that enables you to manage, deploy, and delete related resources together. It is not a billing boundary (subscriptions generate invoices), not a physical container, and not a network security boundary. Resources in different resource groups can still communicate with each other.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-020",
+      "question": "A company has four departments and wants to ensure each department has its own billing statement while sharing the same Azure Active Directory tenant. Which approach meets this requirement?",
+      "options": [
+        "Create four Management Groups, one per department",
+        "Create four Resource Groups, one per department",
+        "Create four Subscriptions, one per department",
+        "Create four Virtual Networks, one per department"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Each Azure Subscription generates its own billing statement, making it the correct boundary for separate departmental billing. Multiple subscriptions can exist under the same Microsoft Entra ID tenant. Management Groups organize subscriptions but do not create separate billing. Resource Groups are sub-subscription containers and do not have separate invoices.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-021",
+      "question": "Which TWO are direct benefits of placing resources in the same Resource Group? Select TWO.",
+      "options": [
+        "Resources in the same group automatically replicate to a paired region",
+        "You can delete all resources in the group with a single operation",
+        "You can apply role-based access control (RBAC) at the group level and have it apply to all resources in the group",
+        "Resources in the same group automatically share the same virtual network"
+      ],
+      "correctAnswers": [
+        1,
+        2
+      ],
+      "explanation": "Resource Groups allow lifecycle management as a unit: you can deploy, update, or delete all resources in a group together. RBAC permissions assigned at the resource group level are inherited by all resources within it. Resources in the same group do not automatically replicate or share a virtual network; networking is configured separately.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-022",
+      "question": "An organization applies an Azure Policy at the Management Group level. Which resources does this policy affect?",
+      "options": [
+        "Only the resources directly within the management group",
+        "All subscriptions and their resources nested within that management group",
+        "Only the subscriptions at the root management group level",
+        "Only resources created after the policy was applied"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Policy applied at a Management Group level inherits down through all child management groups, subscriptions, resource groups, and resources within that hierarchy. This inheritance model allows a single policy to govern a large organizational scope. Policies can also affect existing non-compliant resources, not only newly created ones.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-023",
+      "question": "What is the maximum number of Management Group levels (depth) that Azure supports under the root management group?",
+      "options": [
+        "3",
+        "6",
+        "10",
+        "Unlimited"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure supports up to six levels of management group hierarchy below the root management group (not counting the root itself or the subscription level). This provides deep enough nesting for complex enterprise organizational structures while maintaining manageability.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-024",
+      "question": "A resource exists in Resource Group A in East US. Can it be associated with a virtual network located in Resource Group B in the same region?",
+      "options": [
+        "No, resources can only use networking within their own Resource Group",
+        "No, resources must be in the same Resource Group as the virtual network",
+        "Yes, a resource can be connected to a virtual network in a different Resource Group within the same region",
+        "Yes, but only if both Resource Groups are within the same subscription"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Resource Groups are logical containers and do not restrict network connectivity. A VM in Resource Group A can connect to a virtual network in Resource Group B as long as permissions allow. Resources can even span subscriptions in some networking scenarios (such as virtual network peering). The key constraint is that a resource can only belong to one Resource Group at a time.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-025",
+      "question": "Which Azure construct represents the top-level ownership and billing boundary and is associated with a single Microsoft account?",
+      "options": [
+        "Management Group",
+        "Resource Group",
+        "Azure Subscription",
+        "Azure Tenant"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "An Azure Subscription is the core billing and ownership boundary. Each subscription is associated with a billing account and generates invoices. A Tenant (Microsoft Entra ID) is an identity directory that can contain multiple subscriptions. Management Groups organize subscriptions but do not generate invoices. Resource Groups exist within subscriptions.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-026",
+      "question": "A company has 500 Azure subscriptions and needs to ensure a 'deny public internet access' policy applies to all of them with minimal administrative effort. Which is the MOST efficient approach?",
+      "options": [
+        "Assign the Azure Policy to each of the 500 subscriptions individually",
+        "Assign the Azure Policy to the root Management Group so it applies to all subscriptions",
+        "Create a single Resource Group containing all resources and assign the policy there",
+        "Use Azure Cost Management to restrict internet access"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Assigning the policy to the root Management Group is the most efficient approach because it inherits automatically to all subscriptions in the tenant. Assigning individually to 500 subscriptions is error-prone and time-consuming. A single Resource Group cannot span subscriptions. Azure Cost Management handles budgets and spending, not policy enforcement.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-027",
+      "question": "Which statement about Azure Virtual Machines (VMs) compared to Azure Functions is MOST accurate?",
+      "options": [
+        "Azure VMs are cheaper than Azure Functions for all workloads",
+        "Azure Functions are best for event-driven, short-duration tasks, while Azure VMs provide full OS-level control for long-running workloads",
+        "Azure Functions require the customer to manage the underlying OS",
+        "Azure VMs can only run Windows workloads, while Azure Functions support any operating system"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Functions is a serverless compute service ideal for event-triggered, stateless, short-duration tasks where you pay only when code executes. Azure VMs provide an Infrastructure-as-a-Service (IaaS) experience with full OS control, making them suitable for persistent, long-running workloads that require deep customization. Functions abstract the OS entirely; VMs expose it to the customer.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-028",
+      "question": "A developer wants to run a containerized microservice that scales automatically and does not require managing the underlying operating system or cluster infrastructure. Which Azure compute option is BEST suited?",
+      "options": [
+        "Azure Virtual Machines",
+        "Azure Virtual Machine Scale Sets",
+        "Azure Container Instances",
+        "Azure Kubernetes Service"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Container Instances (ACI) allows you to run containers on-demand without managing any underlying infrastructure, VMs, or cluster orchestration. It is ideal for simple container workloads. Azure Kubernetes Service (AKS) is more appropriate for complex, multi-container orchestration but requires managing the cluster. VMs and Scale Sets expose infrastructure management to the user.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-029",
+      "question": "Which compute model BEST describes Azure Functions?",
+      "options": [
+        "Infrastructure as a Service (IaaS)",
+        "Platform as a Service (PaaS)",
+        "Serverless (Function as a Service)",
+        "Software as a Service (SaaS)"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Functions is a serverless, or Function as a Service (FaaS), compute model. Customers write and deploy code without provisioning or managing servers. Azure automatically scales and charges only for execution time. IaaS (like VMs) requires customers to manage OS and infrastructure. PaaS (like App Service) manages the OS but still requires customers to manage the application runtime deployment.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-030",
+      "question": "A company needs to choose between Azure VMs and Azure containers for a new application. Which TWO scenarios favor containers over VMs? Select TWO.",
+      "options": [
+        "The application requires a specific legacy operating system version that is not available as a container base image",
+        "The team wants to deploy multiple isolated application instances using less overhead than separate VMs",
+        "The application needs rapid startup times measured in seconds rather than minutes",
+        "The application requires direct access to the physical GPU hardware"
+      ],
+      "correctAnswers": [
+        1,
+        2
+      ],
+      "explanation": "Containers are lighter-weight than VMs because they share the host OS kernel, enabling faster startup (seconds vs. minutes) and lower resource overhead, which allows running many isolated instances efficiently. Legacy OS requirements are better served by VMs that can run any supported OS image. Physical GPU access typically requires VMs with GPU-optimized SKUs.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-031",
+      "question": "Which Azure service provides serverless code execution triggered by events such as an HTTP request, a timer, or a message in a queue?",
+      "options": [
+        "Azure App Service",
+        "Azure Logic Apps",
+        "Azure Functions",
+        "Azure Batch"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Functions is the event-driven serverless compute service that can be triggered by HTTP requests, timers, queue messages, storage events, and many other triggers. Azure App Service hosts continuously running web apps. Azure Logic Apps is a low-code workflow integration service. Azure Batch is for large-scale parallel and high-performance computing jobs.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-032",
+      "question": "A company migrates an application from on-premises to Azure. The application is a traditional three-tier web app that requires full control over the OS, can run custom software, and needs persistent state. Which Azure compute option is MOST appropriate?",
+      "options": [
+        "Azure Functions",
+        "Azure Container Instances",
+        "Azure Virtual Machines",
+        "Azure App Service (Free tier)"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Virtual Machines provide full OS-level control, support custom software installation, and are the closest equivalent to on-premises servers. They are the standard IaaS lift-and-shift target. Azure Functions is event-driven and stateless. Container Instances are for containerized workloads. App Service Free tier is limited and not appropriate for traditional three-tier apps requiring OS customization.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-033",
+      "question": "Which Azure VM feature automatically increases or decreases the number of VM instances based on demand or a defined schedule?",
+      "options": [
+        "Availability Set",
+        "Azure Bastion",
+        "VM Scale Sets",
+        "Azure Load Balancer"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Virtual Machine Scale Sets allow you to deploy and manage a group of identical, auto-scaling VMs. They automatically increase or decrease instance count based on demand or a schedule, ensuring the right capacity at all times. Availability Sets spread VMs across fault and update domains for high availability but do not autoscale. Azure Load Balancer distributes traffic. Azure Bastion provides secure RDP/SSH access.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-034",
+      "question": "A company deploys three virtual machine instances behind a load balancer and wants protection against rack-level hardware failures within the same Azure data center. Which feature should they configure?",
+      "options": [
+        "Azure Virtual Machine Scale Sets",
+        "Availability Zones",
+        "Availability Sets",
+        "Azure Site Recovery"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Availability Sets protect VMs within a single data center by distributing them across fault domains (separate rack power and networking) and update domains (separate maintenance windows). This prevents a single rack failure or maintenance event from taking down all instances. Availability Zones protect at the data center level. Scale Sets provide autoscaling. Azure Site Recovery is a disaster recovery service.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-035",
+      "question": "What does Azure Virtual Desktop primarily provide?",
+      "options": [
+        "A managed Kubernetes service for containerized applications",
+        "A cloud-hosted virtual desktop infrastructure (VDI) that streams Windows desktop experience to any device",
+        "A serverless compute environment for running Python scripts",
+        "A dedicated hardware solution for high-performance computing workloads"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Virtual Desktop is a cloud-based VDI service that hosts Windows desktops and applications in Azure and streams them to end-user devices (including thin clients, tablets, and personal computers) over the internet. It is not a Kubernetes service, serverless platform, or dedicated hardware product.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-036",
+      "question": "Which TWO scenarios are BEST suited for Azure Virtual Desktop? Select TWO.",
+      "options": [
+        "A company wants to provide secure remote work desktops to employees on personal devices without installing a full corporate OS",
+        "A company wants to autoscale web server VMs during peak traffic hours",
+        "A company needs to run Windows 10 or Windows 11 multi-session for a large workforce to reduce licensing costs",
+        "A company wants to run a containerized microservices application"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Azure Virtual Desktop is ideal for enabling secure remote work on personal devices because applications run in Azure and only screen data is transmitted. It also supports Windows multi-session, which allows multiple users to share a single Windows 10/11 VM, significantly reducing licensing and infrastructure costs compared to individual VDI deployments. Autoscaling web servers is a VM Scale Set use case, and containerized apps use AKS or ACI.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-037",
+      "question": "A company deploys 10 VMs in an Availability Set. How does Azure distribute them to maximize resiliency?",
+      "options": [
+        "All 10 VMs are placed in separate Azure regions",
+        "Azure distributes the VMs across up to 3 fault domains and up to 20 update domains",
+        "Azure places all 10 VMs on the same physical server for optimal performance",
+        "Azure distributes the VMs across Availability Zones automatically"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Availability Sets distribute VMs across up to 3 fault domains (separate racks with independent power and networking) and up to 20 update domains (groups that are rebooted sequentially during maintenance). This prevents hardware failures or planned maintenance from affecting all VMs simultaneously. Availability Sets operate within a single region and do not span regions or zones automatically.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-038",
+      "question": "What is the primary difference between Azure VM Scale Sets and Availability Sets?",
+      "options": [
+        "Scale Sets provide fault domain distribution; Availability Sets provide autoscaling",
+        "Scale Sets provide autoscaling of identical VM instances; Availability Sets provide fault and update domain distribution for existing VMs",
+        "Scale Sets are only for Linux VMs; Availability Sets are only for Windows VMs",
+        "There is no difference; they are two names for the same feature"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "VM Scale Sets automatically increase or decrease the number of identical VM instances in response to demand or schedules, enabling horizontal scaling. Availability Sets distribute a fixed number of VMs across fault and update domains for high availability without changing the count. They serve different purposes and can be used together. Both support Windows and Linux.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-039",
+      "question": "Which FIVE Azure resources are typically required when deploying a Windows Virtual Machine in Azure? Select TWO of the most essential non-obvious ones.",
+      "options": [
+        "A Network Interface Card (NIC) to connect the VM to a virtual network",
+        "An Azure Kubernetes cluster for container orchestration",
+        "A Virtual Network (VNet) for network connectivity",
+        "A dedicated Azure ExpressRoute circuit"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Deploying an Azure VM requires at minimum: the VM itself, a managed disk (OS disk), a network interface card (NIC), and a virtual network (VNet) with a subnet. The NIC connects the VM to the VNet. An ExpressRoute circuit and Kubernetes cluster are optional advanced features not required for basic VM deployment.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-040",
+      "question": "A VM requires internet-accessible access. Which additional Azure resource must be explicitly created and associated with the VM's NIC or load balancer?",
+      "options": [
+        "Azure DNS zone",
+        "Public IP Address",
+        "Network Security Group",
+        "Azure Firewall"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A Public IP Address must be created and associated with the VM's Network Interface Card (NIC) or a load balancer to make the VM accessible from the internet. Without a public IP, the VM can only be accessed within the virtual network or via Azure Bastion. DNS zones, NSGs, and Azure Firewall are optional or separately managed resources.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-041",
+      "question": "Which Azure resource acts as a virtual firewall to control inbound and outbound traffic to and from Azure VMs by allowing or denying traffic based on rules?",
+      "options": [
+        "Virtual Network (VNet)",
+        "Network Interface Card (NIC)",
+        "Network Security Group (NSG)",
+        "Azure Route Table"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "A Network Security Group (NSG) is a virtual firewall that contains security rules to allow or deny inbound and outbound traffic to NICs and subnets. A VNet is the networking fabric. A NIC is the virtual network adapter. A Route Table controls how traffic is routed but does not filter based on security rules.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-042",
+      "question": "Which THREE resources are always created or required when deploying an Azure Virtual Machine? Select THREE.",
+      "options": [
+        "Managed Disk (OS disk)",
+        "Azure Load Balancer",
+        "Network Interface Card (NIC)",
+        "Virtual Network (VNet)"
+      ],
+      "correctAnswers": [
+        0,
+        2,
+        3
+      ],
+      "explanation": "Every Azure VM requires at minimum: a managed OS disk (to store the operating system), a Network Interface Card (NIC) to connect to a network, and a Virtual Network with a subnet for the NIC to attach to. An Azure Load Balancer is optional and used only when distributing traffic across multiple VM instances.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-043",
+      "question": "A development team builds a web application and must choose an Azure hosting option. The team wants a managed platform that handles OS patching, scaling, and SSL termination without managing VMs. Which option is BEST?",
+      "options": [
+        "Azure Virtual Machine",
+        "Azure App Service (Web Apps)",
+        "Azure Container Instances",
+        "Azure Batch"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure App Service (Web Apps) is a fully managed PaaS platform for hosting web applications. Microsoft handles OS patching, runtime updates, scaling, and SSL termination. Developers deploy code without managing VMs. Azure VMs require OS management. Container Instances are for containerized apps. Azure Batch is for large-scale parallel compute jobs.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-044",
+      "question": "Which application hosting scenario is BEST served by deploying an application to Azure App Service rather than Azure Virtual Machines?",
+      "options": [
+        "The application requires a custom kernel module not available in standard Linux distributions",
+        "The application is a standard web or API application that must scale quickly with minimal operational overhead",
+        "The application requires RDP access to the underlying server for debugging",
+        "The application needs direct access to GPU resources for machine learning inference"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure App Service is ideal for standard web applications and APIs that need to scale rapidly without the operational burden of managing VMs. Custom kernel modules, RDP access to underlying servers, and direct GPU access require VM-based deployments where the customer controls the infrastructure.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-045",
+      "question": "A company wants to host a containerized web application on Azure without managing Kubernetes clusters or VMs. They need the container to start on-demand and be billed only for container runtime. Which Azure service is MOST appropriate?",
+      "options": [
+        "Azure Kubernetes Service (AKS)",
+        "Azure App Service with container support",
+        "Azure Container Instances (ACI)",
+        "Azure Virtual Machine Scale Sets"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Container Instances provides on-demand container hosting without managing any underlying infrastructure. You pay only for the duration the container is running. AKS requires managing a Kubernetes cluster. App Service with containers is managed but involves a persistent App Service Plan. VM Scale Sets require full VM management.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-046",
+      "question": "Which Azure virtual networking feature allows resources in two different Azure virtual networks to communicate with each other using Microsoft's backbone network without traffic traversing the public internet?",
+      "options": [
+        "Azure VPN Gateway",
+        "Network Security Group",
+        "Virtual Network (VNet) Peering",
+        "Azure Load Balancer"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "VNet Peering connects two Azure virtual networks so that resources in both networks can communicate using private IP addresses over the Microsoft backbone network, not the public internet. VPN Gateway provides encrypted site-to-site or point-to-site VPN connectivity to on-premises. NSGs control traffic rules. Load Balancer distributes incoming traffic.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-047",
+      "question": "A company has VNet-A in East US and VNet-B in West US. They want resources in both VNets to communicate privately. Which feature enables this?",
+      "options": [
+        "Intra-region VNet Peering",
+        "Global VNet Peering",
+        "ExpressRoute Global Reach",
+        "Azure Traffic Manager"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Global VNet Peering connects Azure virtual networks in different regions using the Microsoft global backbone. Intra-region peering applies within the same region. ExpressRoute Global Reach connects on-premises sites through ExpressRoute circuits, not Azure VNets in different regions. Azure Traffic Manager is a DNS-based traffic routing service.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-048",
+      "question": "What is the purpose of a subnet within an Azure Virtual Network?",
+      "options": [
+        "To replicate data to a paired region automatically",
+        "To segment the virtual network address space into smaller ranges for organizing resources and applying security controls",
+        "To provide internet connectivity to resources within the VNet",
+        "To connect two separate Azure VNets together"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Subnets divide a virtual network's IP address space into smaller, manageable segments. Resources are placed in subnets, and Network Security Groups and Route Tables are applied at the subnet level to control traffic and routing. Subnets do not provide internet access (that requires a public IP or NAT Gateway), replicate data, or connect separate VNets.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-049",
+      "question": "A company has hundreds of Azure resources spread across multiple VNets and needs to resolve custom domain names for those resources. Which Azure service provides DNS resolution for custom domain names without requiring DNS servers in VMs?",
+      "options": [
+        "Azure Traffic Manager",
+        "Azure DNS Private Zones",
+        "Azure Load Balancer",
+        "Azure Firewall DNS Proxy"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure DNS Private Zones provide name resolution for custom domain names within Azure virtual networks without the need to manage DNS servers on VMs. Resources can register their names automatically or manually. Azure Traffic Manager provides DNS-based global load balancing. Azure Firewall DNS Proxy is for centralizing DNS queries, not creating private zones.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-050",
+      "question": "Which TWO statements about VNet Peering are correct? Select TWO.",
+      "options": [
+        "Peered VNets can have overlapping IP address spaces",
+        "Peering is non-transitive: VNet-A peered with VNet-B, and VNet-B peered with VNet-C, does not mean A can reach C",
+        "VNet Peering traffic travels over the public internet but is encrypted",
+        "VNet Peering enables low-latency, high-bandwidth private communication between peered VNets"
+      ],
+      "correctAnswers": [
+        1,
+        3
+      ],
+      "explanation": "VNet Peering is non-transitive by default, meaning you must explicitly peer every pair of VNets that need to communicate. Peered VNets communicate over the Microsoft backbone with low latency and high bandwidth, never over the public internet. Overlapping IP address spaces are not permitted in peered VNets, as this would cause routing conflicts.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-051",
+      "question": "A company needs to connect their on-premises office network to Azure so that employees can securely access Azure resources using the corporate network. Traffic must be encrypted. Which Azure service provides an encrypted site-to-site tunnel over the public internet?",
+      "options": [
+        "Azure ExpressRoute",
+        "Azure VPN Gateway",
+        "Azure Firewall",
+        "Azure Content Delivery Network (CDN)"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure VPN Gateway provides encrypted site-to-site VPN connections between on-premises networks and Azure VNets over the public internet using IPsec/IKE protocols. ExpressRoute provides a private, dedicated connection that does NOT traverse the public internet. Azure Firewall controls traffic within Azure. CDN is for content delivery acceleration.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-052",
+      "question": "A global financial institution requires a private, dedicated connection to Azure with predictable latency and bandwidth guarantees. The connection must NOT traverse the public internet. Which Azure service meets this requirement?",
+      "options": [
+        "Azure VPN Gateway (Site-to-Site)",
+        "Azure ExpressRoute",
+        "Azure Virtual WAN",
+        "Point-to-Site VPN"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure ExpressRoute provides a dedicated, private network connection between on-premises infrastructure and Azure through a connectivity provider. It does not travel over the public internet, providing consistent latency, higher reliability, and higher bandwidth than internet-based VPN. VPN Gateway uses encrypted internet tunnels. Virtual WAN is a managed network service but uses internet-based connections. Point-to-Site VPN connects individual devices, not entire networks.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-053",
+      "question": "Which TWO are differences between Azure VPN Gateway and Azure ExpressRoute? Select TWO.",
+      "options": [
+        "VPN Gateway encrypts traffic over the public internet; ExpressRoute uses a private dedicated connection that bypasses the public internet",
+        "ExpressRoute typically offers higher bandwidth and more consistent latency than VPN Gateway",
+        "VPN Gateway can only be used with Windows servers; ExpressRoute works with any operating system",
+        "ExpressRoute is always cheaper than VPN Gateway"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "VPN Gateway creates IPsec-encrypted tunnels over the public internet, while ExpressRoute provides a private, dedicated circuit through a connectivity partner, bypassing the internet entirely. ExpressRoute consistently offers higher available bandwidth (up to 100 Gbps) and lower, more predictable latency. VPN Gateway works with any OS, not just Windows. ExpressRoute is generally more expensive than VPN Gateway due to the dedicated circuit costs.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-054",
+      "question": "A company uses Azure ExpressRoute for their primary connectivity to Azure. Which additional benefit does ExpressRoute provide beyond private connectivity?",
+      "options": [
+        "Automatic failover to a VPN Gateway if the ExpressRoute circuit fails",
+        "The ability to extend on-premises networks into Azure seamlessly and access Microsoft cloud services like Microsoft 365 over the same circuit",
+        "Automatic data encryption because the circuit is private",
+        "Free egress data transfer charges from Azure"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "ExpressRoute allows organizations to extend their on-premises networks into Azure and optionally access Microsoft cloud services such as Microsoft 365 and Dynamics 365 through the same private circuit. ExpressRoute does NOT automatically encrypt data (you must add encryption at the application or VPN layer if needed). Failover to VPN must be configured explicitly. Standard egress charges may still apply.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-055",
+      "question": "Which VPN Gateway SKU option allows multiple on-premises locations to connect to the same Azure VNet simultaneously?",
+      "options": [
+        "Point-to-Site (P2S) VPN",
+        "Site-to-Site (S2S) VPN with BGP",
+        "ExpressRoute with FastPath",
+        "Azure Virtual WAN"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A Site-to-Site VPN with BGP (Border Gateway Protocol) enables multiple on-premises sites to connect to the same Azure VNet simultaneously and supports dynamic routing. Point-to-Site is for individual devices connecting remotely. ExpressRoute FastPath is a performance feature for ExpressRoute, not a multi-site VPN option. Azure Virtual WAN is a separate managed networking service.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-056",
+      "question": "What is a Private Endpoint in Azure?",
+      "options": [
+        "A publicly accessible URL for an Azure service with IP allowlisting enabled",
+        "A network interface that connects an Azure PaaS service to a virtual network using a private IP address",
+        "A firewall rule that blocks all public internet access to a VM",
+        "An ExpressRoute circuit configured for private peering"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A Private Endpoint is a network interface with a private IP address from your VNet that is connected to an Azure PaaS service (like Azure Storage or Azure SQL). Traffic flows from your VNet to the service over the Microsoft backbone without traversing the internet. It is not an IP allowlist, a firewall rule, or related to ExpressRoute.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-057",
+      "question": "A company wants to prevent their Azure Storage account from being accessed over the internet. They want resources in their VNet to access it using a private IP address. Which feature should they use?",
+      "options": [
+        "Storage firewall with IP allowlist",
+        "Azure Private Endpoint",
+        "VNet Service Endpoint",
+        "Azure Front Door"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Private Endpoint assigns a private IP address from the VNet to the storage account, so all access goes through the Microsoft backbone using a private address and does not traverse the internet. A Service Endpoint improves routing for traffic to the service but does not assign a private IP from the VNet address space. IP allowlisting still uses public endpoints. Azure Front Door is a CDN and global load balancer.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-058",
+      "question": "What is the primary advantage of a Private Endpoint over a VNet Service Endpoint for an Azure PaaS service?",
+      "options": [
+        "Private Endpoints are free; Service Endpoints cost money",
+        "Private Endpoints give the service a private IP address in the VNet, while Service Endpoints only improve routing but still use the service's public IP",
+        "Service Endpoints work with more Azure services than Private Endpoints",
+        "Private Endpoints require ExpressRoute; Service Endpoints work without it"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The key difference is that Private Endpoints project a PaaS service into the VNet with an actual private IP address, making the service appear as if it were a VNet resource. Service Endpoints optimize the routing path for traffic going to the service's public IP but do not eliminate the use of public IP addressing. Private Endpoints provide stronger network isolation. Neither requires ExpressRoute.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-059",
+      "question": "Which Azure Storage service is BEST suited for storing unstructured data such as images, videos, documents, and backup files?",
+      "options": [
+        "Azure Table Storage",
+        "Azure Queue Storage",
+        "Azure Blob Storage",
+        "Azure File Storage"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Blob Storage is optimized for storing massive amounts of unstructured data such as images, videos, documents, logs, and backups. It is accessible via HTTP/HTTPS from anywhere. Azure Table Storage is for NoSQL key-value data. Azure Queue Storage is for messaging between application components. Azure File Storage provides managed SMB file shares.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-060",
+      "question": "A legacy application running on Windows needs access to a shared network drive. The team wants to replace the on-premises NAS (Network Attached Storage) with an Azure service that supports the SMB protocol. Which Azure Storage service is MOST appropriate?",
+      "options": [
+        "Azure Blob Storage",
+        "Azure File Storage",
+        "Azure Queue Storage",
+        "Azure Disk Storage"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure File Storage provides fully managed cloud file shares accessible via the SMB (Server Message Block) protocol, making it a drop-in replacement for on-premises NAS systems. Windows applications can mount Azure File shares as a network drive using the same UNC path syntax. Blob Storage uses REST APIs. Queue Storage is for messaging. Disk Storage is attached directly to VMs, not shared via SMB.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-061",
+      "question": "An application component sends messages to a queue and another component reads and processes those messages asynchronously. Which Azure Storage service is designed for this pattern?",
+      "options": [
+        "Azure Blob Storage",
+        "Azure File Storage",
+        "Azure Table Storage",
+        "Azure Queue Storage"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Azure Queue Storage is designed for storing large numbers of messages that can be accessed via HTTP/HTTPS from anywhere, enabling decoupled asynchronous communication between application components. Blob Storage is for unstructured data. File Storage is for SMB shares. Table Storage is for structured NoSQL data.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-062",
+      "question": "Which TWO Azure Storage services are MOST appropriate for storing structured, non-relational data? Select TWO.",
+      "options": [
+        "Azure Table Storage",
+        "Azure Blob Storage",
+        "Azure Cosmos DB (Table API)",
+        "Azure Queue Storage"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Azure Table Storage is a NoSQL key-value store for structured data such as user profiles, device information, or metadata. Azure Cosmos DB with the Table API provides a globally distributed, high-throughput version of Table Storage with the same API. Blob Storage is for unstructured data. Queue Storage is for message queuing.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-063",
+      "question": "Which Azure Storage tier is designed for data that is rarely accessed but must be available within milliseconds when retrieved, and costs more per retrieval but less per GB stored than the Cool tier?",
+      "options": [
+        "Hot tier",
+        "Cool tier",
+        "Cold tier",
+        "Archive tier"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "The Cold tier (added after Cool) is for infrequently accessed data that is rarely accessed but must still be available with low latency (milliseconds). It has a lower storage cost than Cool but higher retrieval costs, fitting data that is kept for 90 or more days but accessed very rarely. Archive has the lowest storage cost but requires rehydration (hours) before access.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-064",
+      "question": "A company stores 10 years of regulatory compliance logs in Azure Blob Storage. The logs are almost never accessed but must be retained. Which storage tier minimizes storage cost for this scenario?",
+      "options": [
+        "Hot",
+        "Cool",
+        "Cold",
+        "Archive"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "The Archive tier has the lowest storage cost per GB of all Azure Blob tiers and is designed for data that is rarely (if ever) accessed. The trade-off is that data in Archive must be 'rehydrated' to Hot or Cool before it can be read, a process that can take hours. For 10-year compliance logs that are seldom accessed, Archive minimizes cost.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-065",
+      "question": "Which Azure Blob Storage tier is BEST for data that is accessed frequently, where retrieval speed is critical and cost per transaction should be minimized?",
+      "options": [
+        "Hot",
+        "Cool",
+        "Cold",
+        "Archive"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "The Hot tier is optimized for frequently accessed data. It has the highest storage cost per GB but the lowest access and transaction costs, making it ideal for active data such as website assets, frequently queried datasets, and operational data. The Cool, Cold, and Archive tiers progressively reduce storage cost while increasing access cost and latency.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-066",
+      "question": "Which Azure storage redundancy option replicates data synchronously across three Availability Zones within a single region?",
+      "options": [
+        "Locally Redundant Storage (LRS)",
+        "Zone-Redundant Storage (ZRS)",
+        "Geo-Redundant Storage (GRS)",
+        "Geo-Zone-Redundant Storage (GZRS)"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "ZRS replicates data synchronously across three Availability Zones within the same region, protecting against data center failures within the region. LRS stores three copies within a single data center in one zone. GRS replicates to a secondary region but within a single zone at the primary. GZRS combines ZRS at the primary region with GRS replication to a secondary region.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-067",
+      "question": "A company requires their Azure storage to survive a complete regional disaster and needs the ability to read from the secondary region even without a failover. Which redundancy option meets BOTH requirements?",
+      "options": [
+        "GRS",
+        "ZRS",
+        "RA-GZRS",
+        "LRS"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "RA-GZRS (Read-Access Geo-Zone-Redundant Storage) replicates data synchronously across three Availability Zones in the primary region and asynchronously to a paired region. It also allows read access to the secondary region without requiring a failover. GRS provides geo-replication but no secondary read access without failover. ZRS is zone-redundant within one region. LRS is a single data center.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-068",
+      "question": "Which Azure storage redundancy option provides the LOWEST cost but LEAST resilience?",
+      "options": [
+        "LRS",
+        "ZRS",
+        "GRS",
+        "RA-GRS"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Locally Redundant Storage (LRS) stores three copies of data within a single data center in one Availability Zone. It is the least expensive redundancy option but also the least resilient, as a single data center failure could result in data unavailability. ZRS, GRS, and RA-GRS all provide progressively more resilience at higher cost.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-069",
+      "question": "A company is moving 5 TB of data from their on-premises servers to Azure Blob Storage. Their internet connection is slow, and they want to avoid using bandwidth. Which Azure tool is designed for this physical data transfer scenario?",
+      "options": [
+        "AzCopy",
+        "Azure Storage Explorer",
+        "Azure Data Box",
+        "Azure File Sync"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Data Box is a physical device shipped by Microsoft to the customer, loaded with data on-premises, and shipped back to a Microsoft data center where the data is uploaded to Azure storage. It is ideal when internet bandwidth is insufficient for large data transfers. AzCopy and Storage Explorer transfer data over the internet. Azure File Sync synchronizes on-premises file servers with Azure Files but requires ongoing internet connectivity.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-070",
+      "question": "Which Azure tool provides a command-line utility for copying blobs and files to and from Azure Storage with high performance and support for incremental copies?",
+      "options": [
+        "Azure Data Box",
+        "Azure Storage Explorer",
+        "AzCopy",
+        "Azure Migrate"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "AzCopy is a command-line tool optimized for high-performance data transfers to and from Azure Blob Storage, Azure Files, and Azure Table Storage. It supports incremental copies, resumable transfers, and parallelism. Azure Storage Explorer is a GUI tool. Azure Data Box is a physical device for offline bulk transfer. Azure Migrate is for assessing and migrating on-premises servers, not for file-level data transfer.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-071",
+      "question": "A company wants to allow branch offices to continue using their existing Windows file servers while also synchronizing the data to Azure Files for cloud backup and tiering. Which Azure service enables this?",
+      "options": [
+        "AzCopy",
+        "Azure Data Box",
+        "Azure File Sync",
+        "Azure Migrate"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure File Sync transforms Azure Files into a distributed cache of Windows file servers. It allows branch offices to continue using their existing Windows file servers while syncing data bidirectionally to Azure Files. Cloud tiering enables seldom-accessed files to be tiered to the cloud while keeping a local placeholder. AzCopy and Data Box are for one-time or bulk transfers, not ongoing sync.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-072",
+      "question": "Which Azure service helps organizations assess on-premises servers, databases, and web apps for Azure migration readiness and provides a migration roadmap?",
+      "options": [
+        "Azure Data Box",
+        "Azure Migrate",
+        "AzCopy",
+        "Azure Site Recovery"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Migrate is the central hub for discovering, assessing, and migrating on-premises workloads (VMs, databases, web apps) to Azure. It provides dependency mapping, right-sizing recommendations, and cost estimates. Azure Data Box is for physical data transfer. AzCopy is for file/blob transfers. Azure Site Recovery is for ongoing replication and disaster recovery, not assessment.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-073",
+      "question": "Microsoft Entra ID is BEST described as which of the following?",
+      "options": [
+        "A Windows Server Active Directory hosted in an Azure VM",
+        "A cloud-based identity and access management service that provides authentication and authorization for cloud and hybrid environments",
+        "A VPN solution for connecting on-premises Active Directory to Azure",
+        "A hardware security module for storing cryptographic keys"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Entra ID (formerly Azure Active Directory) is a cloud-native identity and access management service. It provides authentication (sign-in), authorization (access control), single sign-on, multi-factor authentication, and conditional access for cloud and hybrid applications. It is not a VM-hosted domain controller, a VPN, or an HSM.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-074",
+      "question": "What is the primary purpose of Microsoft Entra Domain Services?",
+      "options": [
+        "To replace Microsoft Entra ID for user authentication in all scenarios",
+        "To provide managed domain services (such as domain join, Group Policy, LDAP, and Kerberos) without requiring domain controller VMs",
+        "To synchronize user passwords from Azure to on-premises Active Directory",
+        "To manage device enrollment in Microsoft Intune"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Entra Domain Services provides managed Active Directory domain services (domain join, Group Policy, LDAP, Kerberos, NTLM authentication) as a fully managed service in Azure, without requiring customers to deploy or manage domain controller VMs. It is not a replacement for Entra ID itself; rather, it complements it for legacy applications that require traditional AD capabilities.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-075",
+      "question": "A SaaS company builds a customer-facing application and wants to allow customers to sign in using their personal Microsoft accounts, Google accounts, or Facebook accounts. Which Microsoft Entra capability supports this?",
+      "options": [
+        "Microsoft Entra ID B2B",
+        "Microsoft Entra ID B2C",
+        "Microsoft Entra Domain Services",
+        "Microsoft Entra Privileged Identity Management"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Entra External ID B2C (Business-to-Consumer) is designed for customer-facing applications and enables customers to sign in using social identity providers (Google, Facebook, Apple) or custom accounts. Entra B2B is for inviting external business partners to access your own organization's resources. Domain Services provides managed AD for legacy applications. Privileged Identity Management is for managing elevated access roles.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-076",
+      "question": "Which Microsoft Entra feature is used to invite external business partners from another organization to access specific resources in your Azure tenant?",
+      "options": [
+        "Microsoft Entra B2C",
+        "Microsoft Entra B2B collaboration",
+        "Microsoft Entra Domain Services",
+        "Microsoft Entra Connect"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Entra B2B (Business-to-Business) collaboration allows you to invite external users from partner organizations to access resources in your tenant using their own organizational or Microsoft accounts. B2C is for customer-facing applications with consumer identities. Domain Services provides managed AD. Entra Connect synchronizes on-premises AD with Entra ID.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-077",
+      "question": "Which TWO identity capabilities are provided by Microsoft Entra ID? Select TWO.",
+      "options": [
+        "Single Sign-On (SSO) for SaaS applications",
+        "Domain Name System (DNS) resolution for Azure VNets",
+        "Multi-Factor Authentication (MFA)",
+        "Storage account key rotation"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Microsoft Entra ID provides SSO, enabling users to sign in once and access multiple SaaS applications without re-entering credentials, and MFA, which adds a second verification factor (such as a phone notification) to protect against stolen passwords. Azure DNS provides DNS resolution for VNets. Storage account key rotation is an Azure Key Vault or Storage feature.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-078",
+      "question": "A company deploys a legacy enterprise application to Azure VMs that requires Kerberos authentication and Group Policy Objects (GPOs). The team does not want to manage domain controller VMs. Which Microsoft Entra service should they use?",
+      "options": [
+        "Microsoft Entra ID",
+        "Microsoft Entra B2B",
+        "Microsoft Entra Domain Services",
+        "Microsoft Entra Privileged Identity Management"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Microsoft Entra Domain Services provides managed Kerberos, NTLM, LDAP, and Group Policy services as a PaaS offering, allowing legacy applications to use these protocols without the customer running domain controller VMs. Entra ID is a cloud identity service that does not support Kerberos or GPOs directly. B2B is for external identity federation. Privileged Identity Management manages elevated access.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-079",
+      "question": "Single Sign-On (SSO) in Microsoft Entra ID provides which benefit?",
+      "options": [
+        "Users only need to sign in once and can then access multiple applications without re-authenticating",
+        "Users share a single password across all applications for simplicity",
+        "Administrators can sign in to all user accounts with one master password",
+        "Applications share all user data with each other to eliminate duplicate profiles"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "SSO allows users to authenticate once with Microsoft Entra ID and then access multiple connected SaaS and enterprise applications without re-entering credentials. Each application has its own access policy and data isolation. SSO does not mean sharing passwords across apps or giving admins master password access.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-080",
+      "question": "What is the primary purpose of Multi-Factor Authentication (MFA) in Microsoft Entra ID?",
+      "options": [
+        "To encrypt data in transit between the user and Azure services",
+        "To require users to present two or more verification factors, adding a security layer beyond a password",
+        "To automatically rotate service account passwords every 30 days",
+        "To allow administrators to manage multiple Azure subscriptions from a single sign-in"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "MFA requires users to provide a second form of identity verification (such as a phone app notification, SMS code, or hardware token) in addition to their password. Even if a password is compromised, an attacker cannot complete authentication without the second factor. MFA is not about data encryption, password rotation, or multi-subscription management.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-081",
+      "question": "Passwordless authentication in Microsoft Entra ID can use which of the following methods?",
+      "options": [
+        "Entering a complex password that does not contain dictionary words",
+        "Windows Hello for Business, the Microsoft Authenticator app, or FIDO2 security keys",
+        "A one-time password sent via unencrypted email",
+        "A shared service account password stored in a secure vault"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Entra ID supports passwordless authentication through Windows Hello for Business (biometrics or PIN on trusted devices), the Microsoft Authenticator app (phone sign-in using fingerprint or face), and FIDO2 security keys (physical hardware keys). These methods replace the password entirely, not just supplement it. Email-based OTP and shared passwords are not passwordless methods.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-082",
+      "question": "Which Microsoft Entra feature allows administrators to automatically enforce access policies based on signals such as user location, device compliance status, and sign-in risk level?",
+      "options": [
+        "Multi-Factor Authentication (MFA)",
+        "Conditional Access",
+        "Privileged Identity Management",
+        "Microsoft Entra Connect"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Conditional Access uses signals (user identity, location/IP, device compliance, application being accessed, real-time sign-in risk) to make automated access decisions, such as requiring MFA for sign-ins from unfamiliar locations or blocking access from non-compliant devices. MFA is one possible outcome that Conditional Access can enforce. Privileged Identity Management manages just-in-time privileged roles. Entra Connect synchronizes on-premises AD.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-083",
+      "question": "A company requires that any user signing in to their Azure portal from outside the corporate network must complete MFA, but users on the corporate network can sign in with just a password. Which Microsoft Entra feature implements this requirement?",
+      "options": [
+        "Role-Based Access Control (RBAC)",
+        "Conditional Access Policy",
+        "Microsoft Entra Domain Services",
+        "Azure Policy"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A Conditional Access Policy in Microsoft Entra ID can be configured to evaluate the network location (named location vs. trusted IP) as a condition and require MFA when the sign-in originates from outside the corporate network while allowing password-only authentication from trusted locations. RBAC controls what users can do, not how they authenticate. Domain Services and Azure Policy serve different purposes.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-084",
+      "question": "Which Azure feature allows you to grant a user only the permissions they need to perform their job, and nothing more, following the principle of least privilege?",
+      "options": [
+        "Azure Policy",
+        "Role-Based Access Control (RBAC)",
+        "Network Security Groups",
+        "Azure Key Vault"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Role-Based Access Control (RBAC) implements least-privilege access by assigning specific built-in or custom roles to users, groups, or service principals at a defined scope (management group, subscription, resource group, or resource). Users receive only the permissions associated with their role. Azure Policy enforces compliance rules. NSGs control network traffic. Key Vault manages secrets and cryptographic keys.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-085",
+      "question": "An administrator needs to give a developer read-only access to all resources within a specific Resource Group, but not allow them to create, modify, or delete resources. Which built-in Azure RBAC role is MOST appropriate?",
+      "options": [
+        "Owner",
+        "Contributor",
+        "Reader",
+        "User Access Administrator"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "The Reader role grants read-only access to all resources within the assigned scope without allowing any modifications. Owner grants full access including role assignments. Contributor allows creating and managing resources but not managing role assignments. User Access Administrator manages user access but not resource operations.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-086",
+      "question": "Which TWO statements about Azure RBAC are correct? Select TWO.",
+      "options": [
+        "RBAC permissions assigned at a parent scope are inherited by child scopes",
+        "RBAC can only be assigned to individual user accounts, not groups or service principals",
+        "Multiple RBAC roles can be assigned to the same user at different scopes",
+        "RBAC and Azure Policy serve the same purpose and are interchangeable"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "RBAC uses an inheritance model: a role assigned at the subscription level is inherited by all resource groups and resources within that subscription. A user can also have different roles at different scopes (for example, Contributor at one resource group, Reader at another). RBAC can be assigned to users, groups, managed identities, and service principals. Azure Policy enforces compliance rules and is distinct from RBAC.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-087",
+      "question": "The Zero Trust security model assumes which of the following?",
+      "options": [
+        "Everything inside the corporate network is trusted and does not require verification",
+        "All network traffic is blocked by default until a physical VPN is established",
+        "No user, device, or network location is inherently trusted; every access request must be verified explicitly",
+        "Zero Trust only applies to external users and not to internal employees"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Zero Trust rejects the traditional 'trust but verify' perimeter model and replaces it with 'never trust, always verify.' Every access request (even from inside the corporate network) is evaluated against identity, device health, location, and risk before access is granted. It applies to all users and devices, including internal employees and corporate-owned devices.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-088",
+      "question": "Which THREE principles are core pillars of the Zero Trust security model? Select THREE.",
+      "options": [
+        "Verify explicitly using all available signals (identity, location, device, service, workload)",
+        "Use least privilege access to limit user rights to only what is needed",
+        "Trust all traffic originating from within the corporate perimeter",
+        "Assume breach and segment access to limit blast radius"
+      ],
+      "correctAnswers": [
+        0,
+        1,
+        3
+      ],
+      "explanation": "The three core Zero Trust principles are: verify explicitly (always authenticate and authorize using all available data points), use least privilege access (limit user access with just-in-time and just-enough-access), and assume breach (minimize blast radius, use end-to-end encryption, and monitor for anomalies). Trusting internal traffic is the opposite of Zero Trust thinking.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-089",
+      "question": "Defense-in-depth is a security strategy that applies to Azure in which way?",
+      "options": [
+        "Deploying a single powerful firewall at the network perimeter to block all attacks",
+        "Layering multiple security controls so that if one layer is breached, additional layers still protect the asset",
+        "Encrypting only the most sensitive data and leaving other data unprotected",
+        "Relying on Microsoft to handle all security responsibilities under the shared responsibility model"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Defense-in-depth uses multiple security layers (physical, identity, perimeter, network, compute, application, data) so that an attacker who penetrates one layer still faces additional barriers. A single perimeter firewall is a single point of failure. Defense-in-depth does not mean selective encryption or relying solely on Microsoft; the customer must implement appropriate layers within their scope of responsibility.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-090",
+      "question": "Which layer of the defense-in-depth model in Azure is MOST directly protected by Network Security Groups (NSGs)?",
+      "options": [
+        "Physical security layer",
+        "Identity and access layer",
+        "Network layer",
+        "Data layer"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "NSGs apply rules to allow or deny network traffic at the subnet or NIC level, directly protecting the network layer of the defense-in-depth model. Physical security is Microsoft's domain. Identity is protected by Entra ID and MFA. The data layer is protected by encryption and access controls on the data itself.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-091",
+      "question": "What is the primary function of Microsoft Defender for Cloud?",
+      "options": [
+        "A managed antivirus product for Azure Virtual Machines only",
+        "A Cloud Security Posture Management (CSPM) and workload protection service that provides security recommendations and threat detection across Azure and hybrid environments",
+        "A network perimeter firewall that blocks all inbound internet traffic",
+        "An identity protection service that replaces Microsoft Entra ID"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Defender for Cloud provides Cloud Security Posture Management (CSPM) by continuously assessing resources and providing security recommendations, and Cloud Workload Protection (CWP) by detecting and responding to threats across VMs, containers, databases, and more. It covers Azure, on-premises, and multi-cloud environments. It is not a standalone antivirus, network firewall, or identity service.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-092",
+      "question": "Microsoft Defender for Cloud provides a Secure Score. What does an improvement in the Secure Score indicate?",
+      "options": [
+        "The organization has spent more money on Azure services",
+        "The organization has addressed more of the security recommendations identified by Defender for Cloud",
+        "Microsoft has patched more vulnerabilities in the Azure infrastructure",
+        "The number of users in the Microsoft Entra ID tenant has increased"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The Secure Score in Microsoft Defender for Cloud is a metric that reflects the organization's security posture. It improves as the organization implements more of the recommended security controls (such as enabling MFA, encrypting disks, or closing unnecessary ports). It measures customer-side security actions, not Microsoft's infrastructure patching or organizational size.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-093",
+      "question": "A company's security team wants a unified view of security alerts, recommendations, and compliance posture across their Azure workloads and on-premises servers. Which Azure service provides this unified view?",
+      "options": [
+        "Azure Monitor",
+        "Microsoft Defender for Cloud",
+        "Azure Sentinel (Microsoft Sentinel)",
+        "Azure Advisor"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Defender for Cloud provides a unified security management dashboard that covers Azure, on-premises, and multi-cloud workloads. It shows security recommendations, Secure Score, compliance against regulatory standards, and active threat alerts. Azure Monitor collects operational metrics and logs. Microsoft Sentinel is a SIEM/SOAR for advanced threat investigation. Azure Advisor provides cost and performance recommendations.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-094",
+      "question": "Which Azure RBAC built-in role grants full access to all resources in a scope INCLUDING the ability to assign roles to others?",
+      "options": [
+        "Contributor",
+        "Reader",
+        "Owner",
+        "Security Admin"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "The Owner role grants full access to all Azure resources within the assigned scope, including the ability to assign Azure RBAC roles to other users, groups, and service principals. Contributor can manage resources but cannot grant roles. Reader is read-only. Security Admin is specific to Microsoft Defender for Cloud and does not grant general resource or role management permissions.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-095",
+      "question": "A company wants to ensure that all new Azure resources in their subscription are automatically tagged with a 'CostCenter' tag and that resources without this tag cannot be created. Which Azure feature enforces this requirement?",
+      "options": [
+        "Azure RBAC",
+        "Azure Policy",
+        "Resource Locks",
+        "Management Groups"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Policy can enforce tagging requirements by defining a policy that either denies the creation of resources without a specific tag or automatically appends the tag. RBAC controls who can create resources, not what properties those resources must have. Resource Locks prevent deletion or modification of existing resources. Management Groups organize subscriptions but do not enforce resource properties.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-096",
+      "question": "Which Azure storage account type supports all blob, file, queue, and table storage services and is the recommended general-purpose account?",
+      "options": [
+        "BlobStorage account",
+        "StorageV1 (general-purpose v1)",
+        "StorageV2 (general-purpose v2)",
+        "Premium FileStorage account"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "General-purpose v2 (StorageV2) is the recommended Azure storage account type that supports Blob Storage (all tiers), Azure Files, Queue Storage, and Table Storage. It supports the latest storage features and is the default recommendation for most scenarios. BlobStorage accounts only support Blob Storage. StorageV1 is a legacy account type. Premium FileStorage is a specialized high-performance account for file shares only.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-097",
+      "question": "Which Azure file movement tool provides a graphical user interface (GUI) for browsing, uploading, downloading, and managing Azure Storage blobs, files, queues, and tables?",
+      "options": [
+        "AzCopy",
+        "Azure CLI",
+        "Azure Storage Explorer",
+        "Azure Data Factory"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Storage Explorer is a cross-platform desktop GUI application that allows users to visually browse and manage Azure Storage accounts, blobs, file shares, queues, and tables without writing code or commands. AzCopy is a command-line tool. Azure CLI is a command-line interface for Azure management. Azure Data Factory is an enterprise data integration service.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-098",
+      "question": "Which Azure service is specifically designed to help organizations assess on-premises VMs, physical servers, and databases for migration to Azure and provides an agentless discovery capability?",
+      "options": [
+        "Azure Site Recovery",
+        "Azure Data Box",
+        "Azure Migrate",
+        "Azure Arc"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Migrate is the dedicated service for discovering, assessing, and migrating on-premises workloads to Azure. It includes agentless discovery for VMware environments, dependency analysis, and cost estimation tools. Azure Site Recovery handles ongoing replication and disaster recovery. Azure Data Box is for offline bulk data transfer. Azure Arc extends Azure management to on-premises and multi-cloud resources but does not assess for migration.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-099",
+      "question": "A company has 100 TB of data on-premises and needs to transfer it to Azure Blob Storage. Their internet connection speed is 100 Mbps. Which Azure offering provides the fastest physical transfer option by shipping petabyte-scale data?",
+      "options": [
+        "AzCopy over the internet",
+        "Azure Data Box",
+        "Azure ExpressRoute data transfer",
+        "Azure File Sync"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Data Box ships a physical device to the customer who loads up to 80 TB per device (or uses Data Box Heavy for 1 PB+) and ships it back to Microsoft for upload to Azure, bypassing slow internet connections entirely. At 100 Mbps, transferring 100 TB over the internet would take weeks. AzCopy and File Sync use internet bandwidth. ExpressRoute is faster than standard internet but still network-based.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-100",
+      "question": "Which TWO Azure Storage redundancy options replicate data to a geographically distant paired region? Select TWO.",
+      "options": [
+        "Locally Redundant Storage (LRS)",
+        "Geo-Redundant Storage (GRS)",
+        "Zone-Redundant Storage (ZRS)",
+        "Geo-Zone-Redundant Storage (GZRS)"
+      ],
+      "correctAnswers": [
+        1,
+        3
+      ],
+      "explanation": "Both GRS and GZRS replicate data asynchronously to a geographically distant Azure paired region. GRS combines three copies at the primary location (LRS-style) with replication to the secondary. GZRS combines zone-redundant storage at the primary with replication to the secondary. LRS and ZRS are single-region options with no cross-region replication.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-101",
+      "question": "Which statement BEST describes the difference between Azure App Service and Azure Virtual Machines for hosting a web application?",
+      "options": [
+        "Azure App Service is IaaS; Azure VMs are PaaS",
+        "Azure VMs are IaaS and require OS management; Azure App Service is PaaS and manages the OS for the developer",
+        "Azure App Service can only host .NET applications; Azure VMs support all languages",
+        "Azure VMs are always cheaper than Azure App Service for web hosting"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure VMs are IaaS, requiring developers to manage the OS, runtime, patches, and scaling infrastructure. Azure App Service is PaaS, where Microsoft manages the OS, runtime, patches, scaling infrastructure, and TLS certificates, letting developers focus on application code. App Service supports many languages including .NET, Java, Node.js, Python, and PHP.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-102",
+      "question": "Which Azure DNS feature enables automatic registration of VM hostnames in a private DNS zone without manual configuration?",
+      "options": [
+        "Azure Traffic Manager",
+        "Azure DNS autoregistration in Private DNS Zones",
+        "Azure ExpressRoute DNS Resolver",
+        "Azure Firewall DNS proxy"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "When a Virtual Network is linked to an Azure DNS Private Zone with autoregistration enabled, Azure VMs automatically register their hostnames and IP addresses in the zone when they are created, and deregister when they are deleted. This eliminates manual DNS management for VMs. Traffic Manager is for global routing. ExpressRoute DNS Resolver and Firewall DNS Proxy serve different network DNS purposes.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-103",
+      "question": "Which Azure service provides a managed, scalable, and serverless hosting solution specifically for containerized applications that can scale from zero to handle demand, without any cluster management?",
+      "options": [
+        "Azure Kubernetes Service (AKS)",
+        "Azure Container Instances (ACI)",
+        "Azure Container Apps",
+        "Azure App Service (Docker support)"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Container Apps is a fully managed serverless container service that handles scaling (including to zero), traffic splitting, and service discovery without requiring management of Kubernetes clusters. AKS requires cluster management. ACI is for simple on-demand containers but does not support scale-to-zero event-driven scaling natively. App Service with Docker is PaaS but not designed for microservices scale-to-zero patterns.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-104",
+      "question": "A company is evaluating whether to use Azure Blob Storage Hot tier or Cool tier for data that is accessed approximately twice per month. Which factor should drive their decision?",
+      "options": [
+        "Cool tier is always cheaper for all access patterns",
+        "Hot tier has lower storage costs but higher access costs; Cool tier has higher storage costs but lower access costs",
+        "Hot tier has higher storage costs but lower access costs; Cool tier has lower storage costs but higher access costs",
+        "Both tiers have identical pricing; the choice depends only on latency requirements"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Hot tier charges more per GB stored but less per read/write operation. Cool tier charges less per GB stored but more per read/write operation. For data accessed twice per month, the company should calculate total cost based on storage size and access frequency. Data accessed infrequently generally benefits from Cool tier despite higher per-operation costs. The tiers do not differ in retrieval latency (both are milliseconds).",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-105",
+      "question": "Which Azure Disk Storage type offers the highest performance with the lowest latency, designed for I/O-intensive workloads such as databases and trading platforms?",
+      "options": [
+        "Standard HDD Managed Disks",
+        "Standard SSD Managed Disks",
+        "Premium SSD Managed Disks",
+        "Ultra Disk"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Azure Ultra Disk provides the highest disk throughput and IOPS with sub-millisecond latency, designed for mission-critical I/O-intensive workloads such as SAP HANA, SQL Server with high transaction rates, and algorithmic trading platforms. Premium SSD offers high performance for most production workloads. Standard SSD and HDD are for less demanding workloads.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-106",
+      "question": "When a resource is moved from one Resource Group to another in Azure, which statement is TRUE?",
+      "options": [
+        "The resource's unique resource ID changes to reflect the new Resource Group path",
+        "The resource retains its data and configuration but its resource ID changes",
+        "The resource cannot be moved; it must be deleted and recreated",
+        "The resource is automatically deleted from the old group and recreated in the new group"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "When you move a resource to a different Resource Group (or subscription), the resource's Azure Resource Manager (ARM) resource ID changes because the ID includes the subscription and resource group path. The resource itself (data, configuration, IP addresses) is not re-created. Most resources can be moved; a few have restrictions. The resource is not deleted and recreated.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-107",
+      "question": "Which Azure networking service allows you to set up, manage, and scale a software-defined network in Azure, and is the fundamental building block for your private network?",
+      "options": [
+        "Azure DNS",
+        "Azure Virtual Network (VNet)",
+        "Azure Bastion",
+        "Azure ExpressRoute"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Virtual Network (VNet) is the fundamental networking building block in Azure. It enables Azure resources (VMs, app services, databases) to securely communicate with each other, the internet, and on-premises networks. Azure DNS provides name resolution. Azure Bastion enables secure RDP/SSH access. ExpressRoute provides private hybrid connectivity.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az900-architecture-108",
+      "question": "An organization's security policy requires that all authentication events in Microsoft Entra ID must require MFA when the sign-in risk level is 'Medium' or higher. Which feature enforces this dynamically?",
+      "options": [
+        "Enabling MFA for all users unconditionally in Entra ID settings",
+        "Microsoft Entra ID Protection with Conditional Access risk-based policy",
+        "Setting a minimum password length to 16 characters",
+        "Assigning the Security Reader RBAC role to all users"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Entra ID Protection uses machine learning to calculate sign-in risk and user risk scores. Combined with Conditional Access, a risk-based policy can automatically require MFA or block access when the sign-in risk reaches a defined threshold. Unconditional MFA for all users does not use risk signals. Password length and RBAC roles do not address risk-adaptive authentication.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az900-architecture-109",
+      "question": "Which THREE Azure resources are considered supporting resources that must exist before creating a Virtual Machine, rather than being created as part of the VM resource itself? Select THREE.",
+      "options": [
+        "Virtual Network (VNet) with a subnet",
+        "Network Interface Card (NIC)",
+        "Azure Active Directory group for VM admins",
+        "A Resource Group to contain the VM"
+      ],
+      "correctAnswers": [
+        0,
+        1,
+        3
+      ],
+      "explanation": "Before deploying an Azure VM, you need: a Resource Group (to contain all related resources), a Virtual Network with a subnet (for the VM's network connectivity), and a Network Interface Card (the NIC connects the VM to the subnet). While an Entra ID group can be used for managing access, it is not a required Azure infrastructure resource for VM creation itself.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az900-architecture-110",
+      "question": "A company wants to implement the Zero Trust principle of 'assume breach' in their Azure environment. Which TWO actions BEST operationalize this principle? Select TWO.",
+      "options": [
+        "Enable Microsoft Defender for Cloud to detect and alert on suspicious activity across workloads",
+        "Allow all traffic between subnets within the same VNet because it is already behind the network perimeter",
+        "Implement network segmentation with NSGs to limit lateral movement if a breach occurs",
+        "Grant all users the Contributor role so they can respond quickly to incidents"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Assuming breach means designing the environment as if a breach has already occurred: enable continuous monitoring and threat detection (Defender for Cloud) to catch attackers quickly, and segment the network with NSGs to limit lateral movement so a compromised workload cannot easily reach others. Allowing all intra-VNet traffic ignores lateral movement risk. Granting broad permissions violates least privilege, another Zero Trust principle.",
+      "category": "Azure Architecture and Services",
+      "difficulty": "hard"
+    }
+  ]
+}

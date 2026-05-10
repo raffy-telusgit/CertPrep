@@ -1,0 +1,148 @@
+{
+  "examId": "aws-dop",
+  "version": 0,
+  "placeholder": true,
+  "generatedAt": "2026-05-08",
+  "questions": [
+    {
+      "id": "awsdop-ph-001",
+      "question": "Placeholder question 1 about SDLC automation. Which placeholder pipeline configuration automates testing?",
+      "options": [
+        "Placeholder Pipeline Config A",
+        "Placeholder Pipeline Config B",
+        "Placeholder Pipeline Config C",
+        "Placeholder Pipeline Config D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Config B integrates automated testing at every stage. Config A only runs tests on merge to main.",
+      "category": "SDLC automation",
+      "difficulty": "easy"
+    },
+    {
+      "id": "awsdop-ph-002",
+      "question": "Placeholder question 2 about configuration management. Which TWO placeholder IaC practices should be followed?",
+      "options": [
+        "Placeholder IaC Practice 1",
+        "Placeholder IaC Practice 2",
+        "Placeholder IaC Practice 3",
+        "Placeholder IaC Practice 4"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Placeholder explanation: Practices 1 and 3 ensure idempotent and version-controlled infrastructure. Practice 2 creates manual drift.",
+      "category": "Configuration management and IaC",
+      "difficulty": "medium"
+    },
+    {
+      "id": "awsdop-ph-003",
+      "question": "Placeholder question 3 about resilience. Which placeholder multi-region strategy meets the RTO?",
+      "options": [
+        "Placeholder Multi-Region Strategy A",
+        "Placeholder Multi-Region Strategy B",
+        "Placeholder Multi-Region Strategy C",
+        "Placeholder Multi-Region Strategy D"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Strategy D provides active-active redundancy meeting the aggressive RTO. Strategy A uses pilot-light which takes longer to activate.",
+      "category": "Resilience cloud solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "awsdop-ph-004",
+      "question": "Placeholder question 4 about monitoring. Which placeholder alert configuration detects anomalies?",
+      "options": [
+        "Placeholder Alert Config 1",
+        "Placeholder Alert Config 2",
+        "Placeholder Alert Config 3",
+        "Placeholder Alert Config 4"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Alert Config 3 uses statistical anomaly detection. Config 1 uses static thresholds that miss gradual degradation.",
+      "category": "Monitoring and logging",
+      "difficulty": "medium"
+    },
+    {
+      "id": "awsdop-ph-005",
+      "question": "Placeholder question 5 about incident response. Which placeholder runbook step is performed first?",
+      "options": [
+        "Placeholder Runbook Step A",
+        "Placeholder Runbook Step B",
+        "Placeholder Runbook Step C",
+        "Placeholder Runbook Step D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Step A is always performed first to assess impact. Steps B and C are mitigation steps performed after assessment.",
+      "category": "Incident and event response",
+      "difficulty": "easy"
+    },
+    {
+      "id": "awsdop-ph-006",
+      "question": "Placeholder question 6 about security automation. This hard placeholder tests automated compliance.",
+      "options": [
+        "Placeholder Security Automation A",
+        "Placeholder Security Automation B",
+        "Placeholder Security Automation C",
+        "Placeholder Security Automation D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Automation B continuously enforces compliance and auto-remediates. Automation A only detects but does not remediate.",
+      "category": "Security and compliance automation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "awsdop-ph-007",
+      "question": "Placeholder question 7 about SDLC. Which placeholder deployment strategy allows for gradual rollout?",
+      "options": [
+        "Placeholder Rollout Strategy 1",
+        "Placeholder Rollout Strategy 2",
+        "Placeholder Rollout Strategy 3",
+        "Placeholder Rollout Strategy 4"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Strategy 3 uses canary deployments for gradual rollout with automatic rollback. Strategy 1 deploys to all instances simultaneously.",
+      "category": "SDLC automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "awsdop-ph-008",
+      "question": "Placeholder question 8 about configuration. Which TWO placeholder config management tools integrate with AWS?",
+      "options": [
+        "Placeholder Config Tool A",
+        "Placeholder Config Tool B",
+        "Placeholder Config Tool C",
+        "Placeholder Config Tool D"
+      ],
+      "correctAnswers": [0, 3],
+      "explanation": "Placeholder explanation: Tools A and D have native AWS integrations. Tool B requires custom integration work.",
+      "category": "Configuration management and IaC",
+      "difficulty": "easy"
+    },
+    {
+      "id": "awsdop-ph-009",
+      "question": "Placeholder question 9 about resilience. This hard placeholder tests chaos engineering concepts.",
+      "options": [
+        "Placeholder Chaos Concept A",
+        "Placeholder Chaos Concept B",
+        "Placeholder Chaos Concept C",
+        "Placeholder Chaos Concept D"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Chaos Concept C correctly describes the scientific chaos engineering process. Concept A skips the hypothesis step.",
+      "category": "Resilience cloud solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "awsdop-ph-010",
+      "question": "Placeholder question 10 about security automation. Which placeholder least-privilege policy is correct?",
+      "options": [
+        "Placeholder Least-Privilege Policy 1",
+        "Placeholder Least-Privilege Policy 2",
+        "Placeholder Least-Privilege Policy 3",
+        "Placeholder Least-Privilege Policy 4"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Policy 2 grants only the minimum required permissions. Policy 1 uses wildcards that grant excessive access.",
+      "category": "Security and compliance automation",
+      "difficulty": "medium"
+    }
+  ]
+}

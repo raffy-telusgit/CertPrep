@@ -1,0 +1,148 @@
+{
+  "examId": "gcp-pcde",
+  "version": 0,
+  "placeholder": true,
+  "generatedAt": "2026-05-08",
+  "questions": [
+    {
+      "id": "gcppcde-ph-001",
+      "question": "Placeholder question 1 about CI/CD pipeline design. Which placeholder pipeline approach is recommended?",
+      "options": [
+        "Placeholder Pipeline A",
+        "Placeholder Pipeline B",
+        "Placeholder Pipeline C",
+        "Placeholder Pipeline D"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Pipeline C follows GitOps best practices for GCP. Pipeline A does not support rollback capabilities.",
+      "category": "Bootstrapping and maintaining a Google Cloud organization",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-ph-002",
+      "question": "Placeholder question 2 about deployment. Which TWO placeholder deployment strategies minimize downtime?",
+      "options": [
+        "Placeholder Deployment Strategy 1",
+        "Placeholder Deployment Strategy 2",
+        "Placeholder Deployment Strategy 3",
+        "Placeholder Deployment Strategy 4"
+      ],
+      "correctAnswers": [0, 3],
+      "explanation": "Placeholder explanation: Strategies 1 and 4 enable zero-downtime deployments. Strategy 2 requires a maintenance window.",
+      "category": "Building and implementing CI/CD pipelines",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-ph-003",
+      "question": "Placeholder question 3 about site reliability. Which placeholder SLO configuration is correct?",
+      "options": [
+        "Placeholder SLO Config A",
+        "Placeholder SLO Config B",
+        "Placeholder SLO Config C",
+        "Placeholder SLO Config D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Config B properly defines the error budget. Config A sets an unrealistic SLO target.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-ph-004",
+      "question": "Placeholder question 4 about optimizing performance. Which placeholder optimization technique is most effective?",
+      "options": [
+        "Placeholder Optimization 1",
+        "Placeholder Optimization 2",
+        "Placeholder Optimization 3",
+        "Placeholder Optimization 4"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Optimization 4 addresses the root bottleneck. Optimization 1 improves a non-bottleneck and provides no benefit.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-ph-005",
+      "question": "Placeholder question 5 about incident management. Which placeholder incident response process is correct?",
+      "options": [
+        "Placeholder Incident Process A",
+        "Placeholder Incident Process B",
+        "Placeholder Incident Process C",
+        "Placeholder Incident Process D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Process A follows proper incident management procedures. Process B skips the mitigation step.",
+      "category": "Managing incidents",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-ph-006",
+      "question": "Placeholder question 6 about CI/CD. This hard placeholder tests advanced pipeline security.",
+      "options": [
+        "Placeholder Pipeline Security A",
+        "Placeholder Pipeline Security B",
+        "Placeholder Pipeline Security C",
+        "Placeholder Pipeline Security D"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Security C implements supply chain security best practices. Security A does not validate artifact provenance.",
+      "category": "Building and implementing CI/CD pipelines",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-ph-007",
+      "question": "Placeholder question 7 about monitoring. Which TWO placeholder monitoring configurations are needed?",
+      "options": [
+        "Placeholder Monitoring Config 1",
+        "Placeholder Monitoring Config 2",
+        "Placeholder Monitoring Config 3",
+        "Placeholder Monitoring Config 4"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Placeholder explanation: Configs 2 and 3 together provide full-stack monitoring. Config 1 only monitors infrastructure.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-ph-008",
+      "question": "Placeholder question 8 about performance. Which placeholder caching strategy reduces latency?",
+      "options": [
+        "Placeholder Cache Strategy A",
+        "Placeholder Cache Strategy B",
+        "Placeholder Cache Strategy C",
+        "Placeholder Cache Strategy D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Cache Strategy A reduces database load by caching at the right layer. Strategy B caches too aggressively and causes stale data.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-ph-009",
+      "question": "Placeholder question 9 about org management. Which placeholder org policy prevents this security issue?",
+      "options": [
+        "Placeholder Org Policy 1",
+        "Placeholder Org Policy 2",
+        "Placeholder Org Policy 3",
+        "Placeholder Org Policy 4"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Org Policy 4 blocks the vulnerable configuration. Policies 1 and 2 apply at the wrong scope.",
+      "category": "Bootstrapping and maintaining a Google Cloud organization",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-ph-010",
+      "question": "Placeholder question 10 about incident response. This hard placeholder tests post-incident analysis.",
+      "options": [
+        "Placeholder PIR Action A",
+        "Placeholder PIR Action B",
+        "Placeholder PIR Action C",
+        "Placeholder PIR Action D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: PIR Action B identifies the underlying systemic issue. Action A only addresses the symptom.",
+      "category": "Managing incidents",
+      "difficulty": "hard"
+    }
+  ]
+}

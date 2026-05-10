@@ -1,0 +1,148 @@
+{
+  "examId": "gcp-pca",
+  "version": 0,
+  "placeholder": true,
+  "generatedAt": "2026-05-08",
+  "questions": [
+    {
+      "id": "gcppca-ph-001",
+      "question": "Placeholder question 1 about cloud architecture design. Which placeholder GCP architecture pattern is recommended?",
+      "options": [
+        "Placeholder GCP Pattern A",
+        "Placeholder GCP Pattern B",
+        "Placeholder GCP Pattern C",
+        "Placeholder GCP Pattern D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Pattern B is the recommended GCP architecture for this scenario. Pattern A lacks the required reliability features.",
+      "category": "Designing for security and compliance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppca-ph-002",
+      "question": "Placeholder question 2 about reliability design. Which placeholder approach maximizes availability?",
+      "options": [
+        "Placeholder Reliability Option 1",
+        "Placeholder Reliability Option 2",
+        "Placeholder Reliability Option 3",
+        "Placeholder Reliability Option 4"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Option 4 provides the highest availability SLA. Options 1 and 2 have single points of failure.",
+      "category": "Designing for reliability",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppca-ph-003",
+      "question": "Placeholder question 3 about migration planning. Which TWO placeholder migration strategies should be applied?",
+      "options": [
+        "Placeholder Migration Strategy A",
+        "Placeholder Migration Strategy B",
+        "Placeholder Migration Strategy C",
+        "Placeholder Migration Strategy D"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Placeholder explanation: Strategies A and C together provide a complete migration approach. Strategy B would cause downtime.",
+      "category": "Designing supporting and migration planning",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppca-ph-004",
+      "question": "Placeholder question 4 about managing implementation. Which placeholder implementation approach is correct?",
+      "options": [
+        "Placeholder Implementation A",
+        "Placeholder Implementation B",
+        "Placeholder Implementation C",
+        "Placeholder Implementation D"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Implementation C follows GCP best practices. Implementation A uses deprecated approaches.",
+      "category": "Managing implementation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppca-ph-005",
+      "question": "Placeholder question 5 about security architecture. This hard placeholder tests GCP security design.",
+      "options": [
+        "Placeholder Security Design 1",
+        "Placeholder Security Design 2",
+        "Placeholder Security Design 3",
+        "Placeholder Security Design 4"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Security Design 2 provides defense-in-depth. Design 1 creates security gaps at the network layer.",
+      "category": "Designing for security and compliance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppca-ph-006",
+      "question": "Placeholder question 6 about reliability. This easy placeholder tests basic HA concepts.",
+      "options": [
+        "Placeholder HA Concept A",
+        "Placeholder HA Concept B",
+        "Placeholder HA Concept C",
+        "Placeholder HA Concept D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: HA Concept A is the correct definition for high availability in GCP. Concepts B and C describe related but different scenarios.",
+      "category": "Designing for reliability",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppca-ph-007",
+      "question": "Placeholder question 7 about migration. Which placeholder data migration tool is most appropriate?",
+      "options": [
+        "Placeholder Migration Tool 1",
+        "Placeholder Migration Tool 2",
+        "Placeholder Migration Tool 3",
+        "Placeholder Migration Tool 4"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Tool 4 is optimized for this data volume and migration pattern. Tools 1 and 2 are designed for smaller datasets.",
+      "category": "Designing supporting and migration planning",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppca-ph-008",
+      "question": "Placeholder question 8 about implementation. Which TWO placeholder services should be configured?",
+      "options": [
+        "Placeholder GCP Service A",
+        "Placeholder GCP Service B",
+        "Placeholder GCP Service C",
+        "Placeholder GCP Service D"
+      ],
+      "correctAnswers": [1, 3],
+      "explanation": "Placeholder explanation: Services B and D together implement the required functionality. Service A alone is insufficient.",
+      "category": "Managing implementation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppca-ph-009",
+      "question": "Placeholder question 9 about ensuring solution quality. Which placeholder SRE practice is recommended?",
+      "options": [
+        "Placeholder SRE Practice A",
+        "Placeholder SRE Practice B",
+        "Placeholder SRE Practice C",
+        "Placeholder SRE Practice D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: SRE Practice A establishes proper reliability measurement. Practice B creates overhead without improving reliability.",
+      "category": "Ensuring solution and operations reliability",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppca-ph-010",
+      "question": "Placeholder question 10 about solution quality. This hard placeholder tests observability design.",
+      "options": [
+        "Placeholder Observability Option 1",
+        "Placeholder Observability Option 2",
+        "Placeholder Observability Option 3",
+        "Placeholder Observability Option 4"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Option 3 provides comprehensive observability. Option 1 only covers metrics without logs or traces.",
+      "category": "Ensuring solution and operations reliability",
+      "difficulty": "hard"
+    }
+  ]
+}

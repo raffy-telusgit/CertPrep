@@ -1,0 +1,324 @@
+
+> certprep@0.1.0 test
+> playwright test --project=chromium
+
+
+Running 69 tests using 8 workers
+
+[1A[2K[1/69] [chromium] › tests\phase1.spec.ts:56:5 › Welcome screen exam badges › badge present with svg: sc-900
+[1A[2K[2/69] [chromium] › tests\phase1.spec.ts:56:5 › Welcome screen exam badges › badge present with svg: gcp-pca
+[1A[2K[3/69] [chromium] › tests\phase1.spec.ts:56:5 › Welcome screen exam badges › badge present with svg: az-104
+[1A[2K[4/69] [chromium] › tests\phase1.spec.ts:56:5 › Welcome screen exam badges › badge present with svg: aws-sap
+[1A[2K[5/69] [chromium] › tests\phase1.spec.ts:56:5 › Welcome screen exam badges › badge present with svg: az-900
+[1A[2K[6/69] [chromium] › tests\phase1.spec.ts:56:5 › Welcome screen exam badges › badge present with svg: az-305
+[1A[2K[7/69] [chromium] › tests\phase1.spec.ts:56:5 › Welcome screen exam badges › badge present with svg: gcp-pcd
+[1A[2K[8/69] [chromium] › tests\phase1.spec.ts:56:5 › Welcome screen exam badges › badge present with svg: gcp-pcde
+[1A[2K[9/69] [chromium] › tests\phase1.spec.ts:56:5 › Welcome screen exam badges › badge present with svg: aws-dop
+[1A[2K[10/69] [chromium] › tests\phase1.spec.ts:63:3 › Welcome screen exam badges › all 9 badges are rendered
+[1A[2K[11/69] [chromium] › tests\phase1.spec.ts:80:3 › Mode selector modal › clicking AZ-900 opens dialog with both mode buttons
+[1A[2K[12/69] [chromium] › tests\phase1.spec.ts:88:3 › Mode selector modal › dialog title matches the exam full name
+[1A[2K[13/69] [chromium] › tests\phase1.spec.ts:93:3 › Mode selector modal › Cancel button closes dialog
+[1A[2K[14/69] [chromium] › tests\phase1.spec.ts:105:3 › Practice mode session start › selecting Practice Mode navigates to /exam/az-900
+[1A[2K[15/69] [chromium] › tests\phase1.spec.ts:114:3 › Practice mode session start › practice mode shows no timer
+[1A[2K[16/69] [chromium] › tests\phase1.spec.ts:123:3 › Exam mode session start › selecting Exam Mode navigates to /exam/az-900
+[1A[2K[17/69] [chromium] › tests\phase1.spec.ts:132:3 › Exam mode session start › exam mode shows a visible timer
+[1A[2K[18/69] [chromium] › tests\phase1.spec.ts:145:3 › Question rendering › question text is visible
+[1A[2K[19/69] [chromium] › tests\phase1.spec.ts:152:3 › Question rendering › progress indicator is visible
+[1A[2K[20/69] [chromium] › tests\phase1.spec.ts:156:3 › Question rendering › single-answer question uses radio buttons
+[1A[2K[21/69] [chromium] › tests\phase1.spec.ts:171:3 › Question rendering › multi-answer question uses checkboxes
+[1A[2K[22/69] [chromium] › tests\phase1.spec.ts:194:3 › Show Answer in practice mode › Show Answer button present in practice mode
+[1A[2K[23/69] [chromium] › tests\phase1.spec.ts:198:3 › Show Answer in practice mode › clicking Show Answer reveals Correct label and explanation
+[1A[2K[24/69] [chromium] › tests\phase1.spec.ts:204:3 › Show Answer in practice mode › Show Answer resets when navigating to next question
+[1A[2K[25/69] [chromium] › tests\phase1.spec.ts:212:3 › Show Answer in practice mode › Show Answer NOT visible in exam mode
+[1A[2K[26/69] [chromium] › tests\phase1.spec.ts:222:3 › Question flagging › flag button present with correct aria-label
+[1A[2K[27/69] [chromium] › tests\phase1.spec.ts:226:3 › Question flagging › clicking flag changes aria-label to Remove flag
+[1A[2K[28/69] [chromium] › tests\phase1.spec.ts:231:3 › Question flagging › clicking flag again toggles back to unflagged
+[1A[2K  1) [chromium] › tests\phase1.spec.ts:171:3 › Question rendering › multi-answer question uses checkboxes 
+
+    Error: locator.isVisible: Error: strict mode violation: locator('text=Select all that apply') resolved to 2 elements:
+        1) <p class="text-lg leading-relaxed font-medium flex-1">Placeholder question 4 about cloud concepts. What…</p> aka getByText('Placeholder question 4 about')
+        2) <p class="text-sm text-muted-foreground font-medium">Select all that apply (2 correct answers)</p> aka getByText('Select all that apply (2')
+
+    Call log:
+    [2m    - checking visibility of locator('text=Select all that apply')[22m
+
+
+      172 |     let foundCheckbox = false
+      173 |     for (let i = 0; i < 10; i++) {
+    > 174 |       const isMulti = await page.locator('text=Select all that apply').isVisible()
+          |                                                                        ^
+      175 |       if (isMulti) {
+      176 |         const count = await page.locator('[role="checkbox"]').count()
+      177 |         expect(count).toBeGreaterThanOrEqual(2)
+        at C:\Users\User\Documents\projects\certificationExams\tests\phase1.spec.ts:174:72
+
+    Error Context: test-results\phase1-Question-rendering--add12-er-question-uses-checkboxes-chromium\error-context.md
+
+
+[1A[2K  2) [chromium] › tests\phase1.spec.ts:198:3 › Show Answer in practice mode › clicking Show Answer reveals Correct label and explanation 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Explanation')
+    Expected: visible
+    Error: strict mode violation: locator('text=Explanation') resolved to 2 elements:
+        1) <h5 class="mb-1 font-medium leading-none tracking-tight">Explanation</h5> aka getByRole('heading', { name: 'Explanation' })
+        2) <div class="text-sm [&_p]:leading-relaxed">Placeholder explanation: Service Gamma is correct…</div> aka getByText('Placeholder explanation:')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Explanation')[22m
+
+
+      199 |     await page.locator('button', { hasText: 'Show Answer' }).click()
+      200 |     await expect(page.locator('[aria-label="Correct answer"]').first()).toBeVisible()
+    > 201 |     await expect(page.locator('text=Explanation')).toBeVisible()
+          |                                                    ^
+      202 |   })
+      203 |
+      204 |   test('Show Answer resets when navigating to next question', async ({ page }) => {
+        at C:\Users\User\Documents\projects\certificationExams\tests\phase1.spec.ts:201:52
+
+    Error Context: test-results\phase1-Show-Answer-in-prac-2857c-rrect-label-and-explanation-chromium\error-context.md
+
+
+[1A[2K  3) [chromium] › tests\phase1.spec.ts:204:3 › Show Answer in practice mode › Show Answer resets when navigating to next question 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Explanation')
+    Expected: visible
+    Error: strict mode violation: locator('text=Explanation') resolved to 2 elements:
+        1) <h5 class="mb-1 font-medium leading-none tracking-tight">Explanation</h5> aka getByRole('heading', { name: 'Explanation' })
+        2) <div class="text-sm [&_p]:leading-relaxed">Placeholder explanation: The first option is the …</div> aka getByText('Placeholder explanation: The')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Explanation')[22m
+
+
+      204 |   test('Show Answer resets when navigating to next question', async ({ page }) => {
+      205 |     await page.locator('button', { hasText: 'Show Answer' }).click()
+    > 206 |     await expect(page.locator('text=Explanation')).toBeVisible()
+          |                                                    ^
+      207 |     await page.locator('[aria-label="Next question"]').click()
+      208 |     await expect(page.locator('button', { hasText: 'Show Answer' })).toBeVisible()
+      209 |     await expect(page.locator('text=Explanation')).not.toBeVisible()
+        at C:\Users\User\Documents\projects\certificationExams\tests\phase1.spec.ts:206:52
+
+    Error Context: test-results\phase1-Show-Answer-in-prac-d76fb-navigating-to-next-question-chromium\error-context.md
+
+
+[1A[2K[29/69] [chromium] › tests\phase1.spec.ts:261:3 › Question navigation › Previous button moves back to question 1
+[1A[2K[30/69] [chromium] › tests\phase1.spec.ts:267:3 › Question navigation › Submit button appears on last question instead of Next
+[1A[2K[31/69] [chromium] › tests\phase1.spec.ts:275:3 › Question navigation › question navigator buttons jump to correct question
+[1A[2K[32/69] [chromium] › tests\phase1.spec.ts:285:3 › localStorage persistence on answer › certprep:current-session key exists after session starts
+[1A[2K[33/69] [chromium] › tests\phase1.spec.ts:290:3 › localStorage persistence on answer › current-session answers updated after answering
+[1A[2K[34/69] [chromium] › tests\phase1.spec.ts:304:3 › Session resume banner › resume banner appears after reload mid-session
+[1A[2K[35/69] [chromium] › tests\phase1.spec.ts:312:3 › Session resume banner › resume banner shows correct exam name and mode
+[1A[2K[36/69] [chromium] › tests\phase1.spec.ts:319:3 › Session resume banner › no resume banner when there is no saved session
+[1A[2K  4) [chromium] › tests\phase1.spec.ts:152:3 › Question rendering › progress indicator is visible ──
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=/Question d+ of d+/')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=/Question d+ of d+/')[22m
+
+
+      151 |
+      152 |   test('progress indicator is visible', async ({ page }) => {
+    > 153 |     await expect(page.locator('text=/Question \d+ of \d+/')).toBeVisible()
+          |                                                              ^
+      154 |   })
+      155 |
+      156 |   test('single-answer question uses radio buttons', async ({ page }) => {
+        at C:\Users\User\Documents\projects\certificationExams\tests\phase1.spec.ts:153:62
+
+    Error Context: test-results\phase1-Question-rendering-progress-indicator-is-visible-chromium\error-context.md
+
+
+[1A[2K[37/69] [chromium] › tests\phase1.spec.ts:339:3 › Session resume restores position › Discard removes banner and clears current-session
+[1A[2K[38/69] [chromium] › tests\phase1.spec.ts:351:3 › Session submission › submit navigates to /results/:sessionId
+[1A[2K[39/69] [chromium] › tests\phase1.spec.ts:363:3 › Session submission › AlertDialog asks for confirmation before submitting
+[1A[2K[40/69] [chromium] › tests\phase1.spec.ts:237:3 › Question flagging › flagged question shows ring highlight in navigator
+[1A[2K[41/69] [chromium] › tests\phase1.spec.ts:251:3 › Question navigation › Previous button is disabled on first question
+[1A[2K[42/69] [chromium] › tests\phase1.spec.ts:255:3 › Question navigation › Next button moves to question 2
+[1A[2K  5) [chromium] › tests\phase1.spec.ts:312:3 › Session resume banner › resume banner shows correct exam name and mode 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=AZ-900')
+    Expected: visible
+    Error: strict mode violation: locator('text=AZ-900') resolved to 2 elements:
+        1) <p class="text-sm text-muted-foreground">…</p> aka getByText('AZ-900 — Azure Fundamentals')
+        2) <p class="font-bold text-base">AZ-900</p> aka getByRole('button', { name: 'Select Azure Fundamentals' })
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=AZ-900')[22m
+
+
+      313 |     await startPracticeSession(page)
+      314 |     await page.goto(BASE)
+    > 315 |     await expect(page.locator('text=AZ-900')).toBeVisible()
+          |                                               ^
+      316 |     await expect(page.locator('text=Practice mode')).toBeVisible()
+      317 |   })
+      318 |
+        at C:\Users\User\Documents\projects\certificationExams\tests\phase1.spec.ts:315:47
+
+    Error Context: test-results\phase1-Session-resume-bann-8648a--correct-exam-name-and-mode-chromium\error-context.md
+
+
+[1A[2K[43/69] [chromium] › tests\phase1.spec.ts:398:3 › Results screen › results page shows PASS or FAIL badge
+[1A[2K[44/69] [chromium] › tests\phase1.spec.ts:403:3 › Results screen › results page shows correct count
+[1A[2K[45/69] [chromium] › tests\phase1.spec.ts:408:3 › Results screen › results page has Review Answers section
+[1A[2K[46/69] [chromium] › tests\phase1.spec.ts:413:3 › Results screen › Back to Home button navigates to home
+[1A[2K[47/69] [chromium] › tests\phase1.spec.ts:423:3 › History page › completed session appears in history table
+[1A[2K[48/69] [chromium] › tests\phase1.spec.ts:330:3 › Session resume restores position › clicking Resume navigates back to the exam runner
+[1A[2K  6) [chromium] › tests\phase1.spec.ts:403:3 › Results screen › results page shows correct count ───
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('span:has-text("correct")')
+    Expected: visible
+    Error: strict mode violation: locator('span:has-text("correct")') resolved to 3 elements:
+        1) <span>0 / 10 correct</span> aka getByText('/ 10 correct')
+        2) <span class="line-clamp-2">Placeholder question 8 about Azure architecture. …</span> aka getByRole('button', { name: 'Incorrect Q7. Placeholder' })
+        3) <span class="line-clamp-2">Placeholder question 7 about cloud concepts. Whic…</span> aka getByRole('button', { name: 'Incorrect Q8. Placeholder' })
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('span:has-text("correct")')[22m
+
+
+      403 |   test('results page shows correct count', async ({ page }) => {
+      404 |     await navigateToResults(page)
+    > 405 |     await expect(page.locator('span:has-text("correct")')).toBeVisible()
+          |                                                            ^
+      406 |   })
+      407 |
+      408 |   test('results page has Review Answers section', async ({ page }) => {
+        at C:\Users\User\Documents\projects\certificationExams\tests\phase1.spec.ts:405:60
+
+    Error Context: test-results\phase1-Results-screen-results-page-shows-correct-count-chromium\error-context.md
+
+
+[1A[2K[49/69] [chromium] › tests\phase1.spec.ts:390:3 › Results screen › results page shows a score percentage
+[1A[2K[50/69] [chromium] › tests\phase1.spec.ts:451:3 › History page reset buttons › Reset History button is present
+[1A[2K[51/69] [chromium] › tests\phase1.spec.ts:455:3 › History page reset buttons › Reset Question Tracker button is present
+[1A[2K  7) [chromium] › tests\phase1.spec.ts:339:3 › Session resume restores position › Discard removes banner and clears current-session 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).not.[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  locator('text=Resume previous session')
+    Expected: not visible
+    Received: visible
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "not toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Resume previous session')[22m
+    [2m    8 × locator resolved to <p class="font-semibold">Resume previous session</p>[22m
+    [2m      - unexpected value "visible"[22m
+
+
+      341 |     await page.goto(BASE)
+      342 |     await page.locator('button', { hasText: 'Discard' }).click()
+    > 343 |     await expect(page.locator('text=Resume previous session')).not.toBeVisible()
+          |                                                                    ^
+      344 |     const keys = await getCertprepKeys(page)
+      345 |     expect(keys).not.toContain('certprep:current-session')
+      346 |   })
+        at C:\Users\User\Documents\projects\certificationExams\tests\phase1.spec.ts:343:68
+
+    Error Context: test-results\phase1-Session-resume-rest-820c5--and-clears-current-session-chromium\error-context.md
+
+
+[1A[2K[52/69] [chromium] › tests\phase1.spec.ts:463:3 › History page reset buttons › Reset History opens an AlertDialog
+[1A[2K[53/69] [chromium] › tests\phase1.spec.ts:469:3 › History page reset buttons › Reset Question Tracker opens an AlertDialog
+[1A[2K[54/69] [chromium] › tests\phase1.spec.ts:475:3 › History page reset buttons › Reset Everything opens an AlertDialog
+[1A[2K[55/69] [chromium] › tests\phase1.spec.ts:481:3 › History page reset buttons › cancelling Reset History does NOT clear history
+[1A[2K[56/69] [chromium] › tests\phase1.spec.ts:493:3 › History page reset buttons › confirming Reset History clears history
+[1A[2K[57/69] [chromium] › tests\phase1.spec.ts:505:3 › History page reset buttons › confirming Reset Everything does NOT clear theme
+[1A[2K[58/69] [chromium] › tests\phase1.spec.ts:516:3 › Theme toggle › theme toggle button is visible in the header
+[1A[2K  8) [chromium] › tests\phase1.spec.ts:398:3 › Results screen › results page shows PASS or FAIL badge 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('span').filter({ hasText: /^(PASS|FAIL)$/ })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('span').filter({ hasText: /^(PASS|FAIL)$/ })[22m
+
+
+      398 |   test('results page shows PASS or FAIL badge', async ({ page }) => {
+      399 |     await navigateToResults(page)
+    > 400 |     await expect(page.locator('span', { hasText: /^(PASS|FAIL)$/ })).toBeVisible()
+          |                                                                      ^
+      401 |   })
+      402 |
+      403 |   test('results page shows correct count', async ({ page }) => {
+        at C:\Users\User\Documents\projects\certificationExams\tests\phase1.spec.ts:400:70
+
+    Error Context: test-results\phase1-Results-screen-results-page-shows-PASS-or-FAIL-badge-chromium\error-context.md
+
+
+[1A[2K[59/69] [chromium] › tests\phase1.spec.ts:438:3 › History page › history page shows empty state when no attempts
+[1A[2K[60/69] [chromium] › tests\phase1.spec.ts:532:3 › Theme toggle › dark theme persists after page reload
+[1A[2K[61/69] [chromium] › tests\phase1.spec.ts:540:3 › Theme toggle › light theme persists after page reload
+[1A[2K[62/69] [chromium] › tests\phase1.spec.ts:554:3 › Keyboard shortcuts › pressing 1 selects the first answer option
+[1A[2K[63/69] [chromium] › tests\phase1.spec.ts:561:3 › Keyboard shortcuts › pressing F flags the current question
+[1A[2K[64/69] [chromium] › tests\phase1.spec.ts:567:3 › Keyboard shortcuts › pressing F again unflags the current question
+[1A[2K[65/69] [chromium] › tests\phase1.spec.ts:575:3 › Keyboard shortcuts › pressing ArrowRight advances to next question
+[1A[2K  9) [chromium] › tests\phase1.spec.ts:423:3 › History page › completed session appears in history table 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('span').filter({ hasText: /^(PASS|FAIL)$/ }).first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('span').filter({ hasText: /^(PASS|FAIL)$/ }).first()[22m
+
+
+      433 |     await expect(page.locator('text=AZ-900')).toBeVisible()
+      434 |     await expect(page.locator('text=Practice')).toBeVisible()
+    > 435 |     await expect(page.locator('span', { hasText: /^(PASS|FAIL)$/ }).first()).toBeVisible()
+          |                                                                              ^
+      436 |   })
+      437 |
+      438 |   test('history page shows empty state when no attempts', async ({ page }) => {
+        at C:\Users\User\Documents\projects\certificationExams\tests\phase1.spec.ts:435:78
+
+    Error Context: test-results\phase1-History-page-comple-7d921-on-appears-in-history-table-chromium\error-context.md
+
+
+[1A[2K[66/69] [chromium] › tests\phase1.spec.ts:590:3 › Keyboard shortcuts › pressing 2 selects the second answer option
+[1A[2K[67/69] [chromium] › tests\phase1.spec.ts:459:3 › History page reset buttons › Reset Everything button is present
+[1A[2K[68/69] [chromium] › tests\phase1.spec.ts:521:3 › Theme toggle › clicking toggle to dark persists to localStorage
+[1A[2K[69/69] [chromium] › tests\phase1.spec.ts:582:3 › Keyboard shortcuts › pressing ArrowLeft goes to previous question
+[1A[2K  9 failed
+    [chromium] › tests\phase1.spec.ts:152:3 › Question rendering › progress indicator is visible ───
+    [chromium] › tests\phase1.spec.ts:171:3 › Question rendering › multi-answer question uses checkboxes 
+    [chromium] › tests\phase1.spec.ts:198:3 › Show Answer in practice mode › clicking Show Answer reveals Correct label and explanation 
+    [chromium] › tests\phase1.spec.ts:204:3 › Show Answer in practice mode › Show Answer resets when navigating to next question 
+    [chromium] › tests\phase1.spec.ts:312:3 › Session resume banner › resume banner shows correct exam name and mode 
+    [chromium] › tests\phase1.spec.ts:339:3 › Session resume restores position › Discard removes banner and clears current-session 
+    [chromium] › tests\phase1.spec.ts:398:3 › Results screen › results page shows PASS or FAIL badge 
+    [chromium] › tests\phase1.spec.ts:403:3 › Results screen › results page shows correct count ────
+    [chromium] › tests\phase1.spec.ts:423:3 › History page › completed session appears in history table 
+  60 passed (38.1s)

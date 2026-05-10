@@ -1,0 +1,148 @@
+{
+  "examId": "az-104",
+  "version": 0,
+  "placeholder": true,
+  "generatedAt": "2026-05-08",
+  "questions": [
+    {
+      "id": "az104-ph-001",
+      "question": "Placeholder question 1 about identity management. Which placeholder identity solution meets this requirement?",
+      "options": [
+        "Placeholder Identity Option A",
+        "Placeholder Identity Option B",
+        "Placeholder Identity Option C",
+        "Placeholder Identity Option D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Option B is correct for identity management in this scenario. Option A handles a different aspect of identity.",
+      "category": "Manage Azure identities and governance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az104-ph-002",
+      "question": "Placeholder question 2 about storage. In this placeholder scenario, which storage type is appropriate?",
+      "options": [
+        "Placeholder Storage Type 1",
+        "Placeholder Storage Type 2",
+        "Placeholder Storage Type 3",
+        "Placeholder Storage Type 4"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Storage Type 1 is the correct choice for this workload. Type 2 would be more expensive without added benefit.",
+      "category": "Implement and manage storage",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az104-ph-003",
+      "question": "Placeholder question 3 about compute resources. Which placeholder compute option fits this scenario?",
+      "options": [
+        "Placeholder Compute Option A",
+        "Placeholder Compute Option B",
+        "Placeholder Compute Option C",
+        "Placeholder Compute Option D"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Option D provides the correct compute configuration. Options A and B lack necessary features for this scenario.",
+      "category": "Deploy and manage Azure compute resources",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az104-ph-004",
+      "question": "Placeholder question 4 about networking. Which TWO placeholder network configurations should you implement?",
+      "options": [
+        "Placeholder Network Config 1",
+        "Placeholder Network Config 2",
+        "Placeholder Network Config 3",
+        "Placeholder Network Config 4"
+      ],
+      "correctAnswers": [0, 3],
+      "explanation": "Placeholder explanation: Configurations 1 and 4 together meet the requirements. Configuration 2 alone is insufficient.",
+      "category": "Implement and manage virtual networking",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az104-ph-005",
+      "question": "Placeholder question 5 about monitoring. Which placeholder monitoring solution would you configure?",
+      "options": [
+        "Placeholder Monitor A",
+        "Placeholder Monitor B",
+        "Placeholder Monitor C",
+        "Placeholder Monitor D"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Monitor C provides the required alerting capabilities. Monitor A does not support this alert type.",
+      "category": "Monitor and maintain Azure resources",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az104-ph-006",
+      "question": "Placeholder question 6 about identity governance. This hard placeholder tests role assignment knowledge.",
+      "options": [
+        "Placeholder Role Assignment 1",
+        "Placeholder Role Assignment 2",
+        "Placeholder Role Assignment 3",
+        "Placeholder Role Assignment 4"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Role Assignment 2 follows least-privilege principles. Assignment 1 grants more permissions than required.",
+      "category": "Manage Azure identities and governance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az104-ph-007",
+      "question": "Placeholder question 7 about storage redundancy. Which placeholder redundancy option should you choose?",
+      "options": [
+        "Placeholder Redundancy A",
+        "Placeholder Redundancy B",
+        "Placeholder Redundancy C",
+        "Placeholder Redundancy D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Redundancy A meets the SLA requirements at the lowest cost. Redundancy B provides more protection than needed.",
+      "category": "Implement and manage storage",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az104-ph-008",
+      "question": "Placeholder question 8 about virtual machines. Which TWO placeholder actions should you take?",
+      "options": [
+        "Placeholder VM Action 1",
+        "Placeholder VM Action 2",
+        "Placeholder VM Action 3",
+        "Placeholder VM Action 4"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Placeholder explanation: Actions 2 and 3 together achieve the goal. Action 1 alone is incomplete.",
+      "category": "Deploy and manage Azure compute resources",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az104-ph-009",
+      "question": "Placeholder question 9 about networking. Which placeholder network service provides this functionality?",
+      "options": [
+        "Placeholder Network Service Alpha",
+        "Placeholder Network Service Beta",
+        "Placeholder Network Service Gamma",
+        "Placeholder Network Service Delta"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Service Gamma provides this specific networking functionality. Service Alpha is for a different use case.",
+      "category": "Implement and manage virtual networking",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az104-ph-010",
+      "question": "Placeholder question 10 about resource monitoring. This hard scenario tests understanding of diagnostics.",
+      "options": [
+        "Placeholder Diagnostics Option 1",
+        "Placeholder Diagnostics Option 2",
+        "Placeholder Diagnostics Option 3",
+        "Placeholder Diagnostics Option 4"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Diagnostics Option 4 captures the required data. Options 1 and 2 only capture partial information.",
+      "category": "Monitor and maintain Azure resources",
+      "difficulty": "hard"
+    }
+  ]
+}

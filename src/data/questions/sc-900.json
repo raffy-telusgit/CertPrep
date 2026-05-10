@@ -1,0 +1,148 @@
+{
+  "examId": "sc-900",
+  "version": 0,
+  "placeholder": true,
+  "generatedAt": "2026-05-08",
+  "questions": [
+    {
+      "id": "sc900-ph-001",
+      "question": "Placeholder question 1 about security concepts. Which placeholder security model applies to this scenario?",
+      "options": [
+        "Placeholder Security Model A",
+        "Placeholder Security Model B",
+        "Placeholder Security Model C",
+        "Placeholder Security Model D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Security Model A is the correct framework for this scenario. Model B is for a different threat category.",
+      "category": "Describe security and compliance concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "sc900-ph-002",
+      "question": "Placeholder question 2 about Microsoft Entra. Which placeholder identity feature provides this capability?",
+      "options": [
+        "Placeholder Identity Feature 1",
+        "Placeholder Identity Feature 2",
+        "Placeholder Identity Feature 3",
+        "Placeholder Identity Feature 4"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Feature 3 provides the required identity capability. Feature 1 handles authentication but not authorization.",
+      "category": "Describe Microsoft Entra capabilities",
+      "difficulty": "medium"
+    },
+    {
+      "id": "sc900-ph-003",
+      "question": "Placeholder question 3 about Microsoft security solutions. Which placeholder product addresses this threat?",
+      "options": [
+        "Placeholder Security Product A",
+        "Placeholder Security Product B",
+        "Placeholder Security Product C",
+        "Placeholder Security Product D"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Product D is designed for this specific threat vector. Products A and B handle different attack surfaces.",
+      "category": "Describe Microsoft security solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "sc900-ph-004",
+      "question": "Placeholder question 4 about compliance. Which TWO placeholder compliance features should be configured?",
+      "options": [
+        "Placeholder Compliance Feature 1",
+        "Placeholder Compliance Feature 2",
+        "Placeholder Compliance Feature 3",
+        "Placeholder Compliance Feature 4"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Placeholder explanation: Features 1 and 3 together satisfy the compliance requirement. Feature 2 addresses a different regulation.",
+      "category": "Describe Microsoft compliance solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "sc900-ph-005",
+      "question": "Placeholder question 5 about security concepts. This placeholder tests understanding of Zero Trust principles.",
+      "options": [
+        "Placeholder Zero Trust Option A",
+        "Placeholder Zero Trust Option B",
+        "Placeholder Zero Trust Option C",
+        "Placeholder Zero Trust Option D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Option B correctly applies Zero Trust principles. Option A relies on perimeter-based security which contradicts Zero Trust.",
+      "category": "Describe security and compliance concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "sc900-ph-006",
+      "question": "Placeholder question 6 about Entra capabilities. Which placeholder MFA method is most secure?",
+      "options": [
+        "Placeholder MFA Method 1",
+        "Placeholder MFA Method 2",
+        "Placeholder MFA Method 3",
+        "Placeholder MFA Method 4"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: MFA Method 1 provides phishing-resistant authentication. Methods 2 and 3 are more vulnerable to interception.",
+      "category": "Describe Microsoft Entra capabilities",
+      "difficulty": "medium"
+    },
+    {
+      "id": "sc900-ph-007",
+      "question": "Placeholder question 7 about Microsoft security. This hard placeholder tests integration of security products.",
+      "options": [
+        "Placeholder Integration Option A",
+        "Placeholder Integration Option B",
+        "Placeholder Integration Option C",
+        "Placeholder Integration Option D"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Option D provides the correct integration approach. Options A and B create gaps in the security coverage.",
+      "category": "Describe Microsoft security solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "sc900-ph-008",
+      "question": "Placeholder question 8 about compliance management. Which placeholder compliance tool meets this requirement?",
+      "options": [
+        "Placeholder Compliance Tool 1",
+        "Placeholder Compliance Tool 2",
+        "Placeholder Compliance Tool 3",
+        "Placeholder Compliance Tool 4"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Tool 3 provides the required compliance reporting. Tool 1 only handles policy enforcement.",
+      "category": "Describe Microsoft compliance solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "sc900-ph-009",
+      "question": "Placeholder question 9 about security concepts. This easy placeholder tests basic security terminology.",
+      "options": [
+        "Placeholder Security Term A",
+        "Placeholder Security Term B",
+        "Placeholder Security Term C",
+        "Placeholder Security Term D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Term A is the correct definition. Terms B and C are related but refer to different concepts.",
+      "category": "Describe security and compliance concepts",
+      "difficulty": "easy"
+    },
+    {
+      "id": "sc900-ph-010",
+      "question": "Placeholder question 10 about Entra. Which TWO placeholder identity protection features are needed?",
+      "options": [
+        "Placeholder Protection Feature 1",
+        "Placeholder Protection Feature 2",
+        "Placeholder Protection Feature 3",
+        "Placeholder Protection Feature 4"
+      ],
+      "correctAnswers": [1, 3],
+      "explanation": "Placeholder explanation: Features 2 and 4 together provide comprehensive identity protection. Feature 1 alone is insufficient.",
+      "category": "Describe Microsoft Entra capabilities",
+      "difficulty": "medium"
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "examId": "aws-sap",
+  "version": 0,
+  "placeholder": true,
+  "generatedAt": "2026-05-08",
+  "questions": [
+    {
+      "id": "awssap-ph-001",
+      "question": "Placeholder question 1 about organizational complexity. Which placeholder AWS organization design meets compliance requirements?",
+      "options": [
+        "Placeholder Org Design A",
+        "Placeholder Org Design B",
+        "Placeholder Org Design C",
+        "Placeholder Org Design D"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Org Design C uses proper SCP hierarchies for compliance. Design A does not enforce guardrails at the OU level.",
+      "category": "Design for organizational complexity",
+      "difficulty": "medium"
+    },
+    {
+      "id": "awssap-ph-002",
+      "question": "Placeholder question 2 about new solutions. Which TWO placeholder AWS services should be used for this architecture?",
+      "options": [
+        "Placeholder AWS Service 1",
+        "Placeholder AWS Service 2",
+        "Placeholder AWS Service 3",
+        "Placeholder AWS Service 4"
+      ],
+      "correctAnswers": [0, 3],
+      "explanation": "Placeholder explanation: Services 1 and 4 together implement the required functionality. Service 2 adds unnecessary complexity.",
+      "category": "Design for new solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "awssap-ph-003",
+      "question": "Placeholder question 3 about continuous improvement. Which placeholder optimization approach reduces costs?",
+      "options": [
+        "Placeholder Cost Optimization A",
+        "Placeholder Cost Optimization B",
+        "Placeholder Cost Optimization C",
+        "Placeholder Cost Optimization D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Optimization B identifies the highest-cost resources and applies the right purchasing model. Optimization A applies savings plans incorrectly.",
+      "category": "Continuous improvement for existing solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "awssap-ph-004",
+      "question": "Placeholder question 4 about migration. Which placeholder migration strategy fits this legacy workload?",
+      "options": [
+        "Placeholder Migration Strategy 1",
+        "Placeholder Migration Strategy 2",
+        "Placeholder Migration Strategy 3",
+        "Placeholder Migration Strategy 4"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Migration Strategy 4 is the right R-strategy for this workload. Strategy 1 would require extensive refactoring.",
+      "category": "Accelerate workload migration and modernization",
+      "difficulty": "medium"
+    },
+    {
+      "id": "awssap-ph-005",
+      "question": "Placeholder question 5 about organizational complexity. This hard placeholder tests multi-account security patterns.",
+      "options": [
+        "Placeholder Multi-Account Pattern A",
+        "Placeholder Multi-Account Pattern B",
+        "Placeholder Multi-Account Pattern C",
+        "Placeholder Multi-Account Pattern D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Pattern A implements centralized security with proper delegation. Pattern B creates management overhead without improving security.",
+      "category": "Design for organizational complexity",
+      "difficulty": "hard"
+    },
+    {
+      "id": "awssap-ph-006",
+      "question": "Placeholder question 6 about new solutions. Which placeholder high-availability pattern is appropriate?",
+      "options": [
+        "Placeholder HA Pattern A",
+        "Placeholder HA Pattern B",
+        "Placeholder HA Pattern C",
+        "Placeholder HA Pattern D"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: HA Pattern C provides multi-AZ redundancy. Pattern A uses a single AZ which creates an availability risk.",
+      "category": "Design for new solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "awssap-ph-007",
+      "question": "Placeholder question 7 about continuous improvement. Which TWO placeholder reliability improvements should be made?",
+      "options": [
+        "Placeholder Reliability Improvement 1",
+        "Placeholder Reliability Improvement 2",
+        "Placeholder Reliability Improvement 3",
+        "Placeholder Reliability Improvement 4"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Placeholder explanation: Improvements 2 and 3 address the identified failure modes. Improvement 1 would add latency without improving reliability.",
+      "category": "Continuous improvement for existing solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "awssap-ph-008",
+      "question": "Placeholder question 8 about migration. Which placeholder database migration approach minimizes downtime?",
+      "options": [
+        "Placeholder DB Migration A",
+        "Placeholder DB Migration B",
+        "Placeholder DB Migration C",
+        "Placeholder DB Migration D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: DB Migration A uses online replication to minimize downtime. Migration B requires a full maintenance window.",
+      "category": "Accelerate workload migration and modernization",
+      "difficulty": "medium"
+    },
+    {
+      "id": "awssap-ph-009",
+      "question": "Placeholder question 9 about organizational design. This easy placeholder tests AWS Organizations concepts.",
+      "options": [
+        "Placeholder AWS Org Concept 1",
+        "Placeholder AWS Org Concept 2",
+        "Placeholder AWS Org Concept 3",
+        "Placeholder AWS Org Concept 4"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Org Concept 4 correctly describes the account hierarchy. Concepts 1 and 2 confuse OUs and accounts.",
+      "category": "Design for organizational complexity",
+      "difficulty": "easy"
+    },
+    {
+      "id": "awssap-ph-010",
+      "question": "Placeholder question 10 about new solution design. This hard multi-answer placeholder tests network architecture.",
+      "options": [
+        "Placeholder Network Arch 1",
+        "Placeholder Network Arch 2",
+        "Placeholder Network Arch 3",
+        "Placeholder Network Arch 4",
+        "Placeholder Network Arch 5"
+      ],
+      "correctAnswers": [1, 4],
+      "explanation": "Placeholder explanation: Architectures 2 and 5 together implement the hub-and-spoke network model correctly. Architecture 1 creates routing asymmetry.",
+      "category": "Design for new solutions",
+      "difficulty": "hard"
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "examId": "az-305",
+  "version": 0,
+  "placeholder": true,
+  "generatedAt": "2026-05-08",
+  "questions": [
+    {
+      "id": "az305-ph-001",
+      "question": "Placeholder question 1 about identity and governance design. Which placeholder architecture pattern is recommended?",
+      "options": [
+        "Placeholder Architecture Pattern A",
+        "Placeholder Architecture Pattern B",
+        "Placeholder Architecture Pattern C",
+        "Placeholder Architecture Pattern D"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Pattern C aligns with the governance requirements. Pattern A lacks the required compliance controls.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-ph-002",
+      "question": "Placeholder question 2 about data storage design. Which placeholder storage solution best fits this workload?",
+      "options": [
+        "Placeholder Storage Solution 1",
+        "Placeholder Storage Solution 2",
+        "Placeholder Storage Solution 3",
+        "Placeholder Storage Solution 4"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Solution 1 provides the right balance of performance and cost. Solution 2 would be over-engineered.",
+      "category": "Design data storage solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-ph-003",
+      "question": "Placeholder question 3 about business continuity. Which placeholder DR strategy meets the RTO requirement?",
+      "options": [
+        "Placeholder DR Strategy A",
+        "Placeholder DR Strategy B",
+        "Placeholder DR Strategy C",
+        "Placeholder DR Strategy D"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Placeholder explanation: Strategy B meets the specified RTO. Strategy A would take longer to recover.",
+      "category": "Design business continuity solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-ph-004",
+      "question": "Placeholder question 4 about infrastructure design. Which TWO placeholder components should be included?",
+      "options": [
+        "Placeholder Component X",
+        "Placeholder Component Y",
+        "Placeholder Component Z",
+        "Placeholder Component W"
+      ],
+      "correctAnswers": [0, 3],
+      "explanation": "Placeholder explanation: Components X and W together provide the required functionality. Component Y is redundant in this design.",
+      "category": "Design infrastructure solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-ph-005",
+      "question": "Placeholder question 5 about monitoring solutions. Which placeholder monitoring design is appropriate?",
+      "options": [
+        "Placeholder Monitoring Design 1",
+        "Placeholder Monitoring Design 2",
+        "Placeholder Monitoring Design 3",
+        "Placeholder Monitoring Design 4"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Design 3 provides comprehensive monitoring. Design 1 only monitors a subset of components.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-ph-006",
+      "question": "Placeholder question 6 about data storage. This easy placeholder tests basic storage tier knowledge.",
+      "options": [
+        "Placeholder Storage Tier A",
+        "Placeholder Storage Tier B",
+        "Placeholder Storage Tier C",
+        "Placeholder Storage Tier D"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Tier A is the most cost-effective for this access pattern. Higher tiers provide lower latency but at higher cost.",
+      "category": "Design data storage solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-ph-007",
+      "question": "Placeholder question 7 about business continuity. Which placeholder backup approach meets compliance needs?",
+      "options": [
+        "Placeholder Backup Approach 1",
+        "Placeholder Backup Approach 2",
+        "Placeholder Backup Approach 3",
+        "Placeholder Backup Approach 4"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Placeholder explanation: Approach 4 satisfies the retention and compliance requirements. Approach 1 lacks the required audit logging.",
+      "category": "Design business continuity solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-ph-008",
+      "question": "Placeholder question 8 about infrastructure. Which TWO placeholder network design principles apply?",
+      "options": [
+        "Placeholder Network Principle A",
+        "Placeholder Network Principle B",
+        "Placeholder Network Principle C",
+        "Placeholder Network Principle D"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Placeholder explanation: Principles B and C are both applicable to this network design. Principle A contradicts the security requirements.",
+      "category": "Design infrastructure solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-ph-009",
+      "question": "Placeholder question 9 about governance. This placeholder tests policy design knowledge.",
+      "options": [
+        "Placeholder Policy Design 1",
+        "Placeholder Policy Design 2",
+        "Placeholder Policy Design 3",
+        "Placeholder Policy Design 4"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Placeholder explanation: Policy Design 1 enforces the governance requirements at the right scope. Designs 2 and 3 apply at wrong levels.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-ph-010",
+      "question": "Placeholder question 10 about infrastructure solutions. This hard placeholder tests advanced design decisions.",
+      "options": [
+        "Placeholder Design Decision A",
+        "Placeholder Design Decision B",
+        "Placeholder Design Decision C",
+        "Placeholder Design Decision D"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Placeholder explanation: Decision C is optimal for this complex scenario. Decision A would create performance bottlenecks.",
+      "category": "Design infrastructure solutions",
+      "difficulty": "hard"
+    }
+  ]
+}

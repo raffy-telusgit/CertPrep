@@ -1,0 +1,112 @@
+import type { Exam } from '@/types'
+
+export const EXAMS: Exam[] = [
+  // Microsoft Azure
+  {
+    id: 'az-900',
+    name: 'AZ-900',
+    fullName: 'Azure Fundamentals',
+    vendor: 'azure',
+    durationMinutes: 45,
+    sessionQuestionCount: 60,
+    passingScore: 70,
+    iconSlug: 'microsoftazure',
+    vendorColor: '#0078D4',
+  },
+  {
+    id: 'az-104',
+    name: 'AZ-104',
+    fullName: 'Azure Administrator',
+    vendor: 'azure',
+    durationMinutes: 100,
+    sessionQuestionCount: 60,
+    passingScore: 70,
+    iconSlug: 'microsoftazure',
+    vendorColor: '#0078D4',
+  },
+  {
+    id: 'az-305',
+    name: 'AZ-305',
+    fullName: 'Azure Solutions Architect Expert',
+    vendor: 'azure',
+    durationMinutes: 100,
+    sessionQuestionCount: 60,
+    passingScore: 70,
+    iconSlug: 'microsoftazure',
+    vendorColor: '#0078D4',
+  },
+  {
+    id: 'sc-900',
+    name: 'SC-900',
+    fullName: 'Security, Compliance & Identity',
+    vendor: 'azure',
+    durationMinutes: 45,
+    sessionQuestionCount: 60,
+    passingScore: 70,
+    iconSlug: 'microsoftazure',
+    vendorColor: '#0078D4',
+  },
+  // Google Cloud
+  {
+    id: 'gcp-pca',
+    name: 'PCA',
+    fullName: 'GCP Professional Cloud Architect',
+    vendor: 'gcp',
+    durationMinutes: 120,
+    sessionQuestionCount: 60,
+    passingScore: 70,
+    iconSlug: 'googlecloud',
+    vendorColor: '#4285F4',
+  },
+  {
+    id: 'gcp-pcde',
+    name: 'PCDE',
+    fullName: 'GCP Professional Cloud DevOps Engineer',
+    vendor: 'gcp',
+    durationMinutes: 120,
+    sessionQuestionCount: 60,
+    passingScore: 70,
+    iconSlug: 'googlecloud',
+    vendorColor: '#4285F4',
+  },
+  {
+    id: 'gcp-pcd',
+    name: 'PCD',
+    fullName: 'GCP Professional Cloud Developer',
+    vendor: 'gcp',
+    durationMinutes: 120,
+    sessionQuestionCount: 60,
+    passingScore: 70,
+    iconSlug: 'googlecloud',
+    vendorColor: '#4285F4',
+  },
+  // AWS Professional
+  {
+    id: 'aws-sap',
+    name: 'SAP-C02',
+    fullName: 'AWS Solutions Architect Professional',
+    vendor: 'aws',
+    durationMinutes: 180,
+    sessionQuestionCount: 75,
+    passingScore: 75,
+    iconSlug: 'amazonaws',
+    vendorColor: '#FF9900',
+  },
+  {
+    id: 'aws-dop',
+    name: 'DOP-C02',
+    fullName: 'AWS DevOps Engineer Professional',
+    vendor: 'aws',
+    durationMinutes: 180,
+    sessionQuestionCount: 75,
+    passingScore: 75,
+    iconSlug: 'amazonaws',
+    vendorColor: '#FF9900',
+  },
+]
+
+export const POOL_SIZE_PER_EXAM = 300
+
+export function getExamById(id: string): Exam | undefined {
+  return EXAMS.find((e) => e.id === id)
+}

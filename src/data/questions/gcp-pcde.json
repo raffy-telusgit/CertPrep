@@ -2523,6 +2523,426 @@
       "explanation": "Cloud Bigtable Key Visualizer is a built-in tool in the Cloud Console that renders a heat map of read and write activity across all row key ranges over a selected time window. Hotspots appear as bright bands in the heat map, immediately showing which row key ranges are receiving disproportionate traffic. This is the authoritative tool for diagnosing Bigtable row key design problems. Cloud Profiler shows application-level CPU usage but does not have visibility into Bigtable row key patterns. Cloud Trace can record span attributes but requires custom instrumentation per key and does not aggregate across key ranges. Cloud Monitoring Bigtable metrics do not include a row_key label on the latency metric.",
       "category": "Implementing service monitoring strategies",
       "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-001",
+      "question": "Your GKE deployment experiences traffic spikes every weekday at 9 AM when users log in. Pod count needs to scale from 5 to 40 within 3 minutes. Currently, scaling is slow because new nodes must be provisioned. Which combination of features minimizes scale-out latency?",
+      "options": [
+        "Enable Horizontal Pod Autoscaler (HPA) with CPU-based scaling and rely on the cluster autoscaler to provision new nodes on demand",
+        "Enable HPA for pod scaling, enable the cluster autoscaler with node auto-provisioning, and configure node pool overprovisioning by deploying low-priority placeholder pods that are evicted when real pods need capacity",
+        "Increase the minimum node count of the node pool to 40 so capacity is always available",
+        "Use Vertical Pod Autoscaler (VPA) to increase CPU and memory limits on existing pods instead of scaling out"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Fast scale-out requires both pod and node capacity to be available quickly. HPA handles pod scheduling decisions. Cluster autoscaler adds nodes when pods are unschedulable, but node provisioning takes 2-4 minutes. The overprovisioning pattern deploys low-priority placeholder pods that consume node capacity; when real pods need to schedule, the placeholders are evicted immediately, freeing existing node capacity without waiting for new nodes. This allows pods to schedule within seconds. Keeping 40 minimum nodes is wasteful and expensive overnight. VPA adjusts resource limits vertically per pod but does not increase pod count to handle more concurrent load.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-002",
+      "question": "Your Cloud Run service processes image uploads. Each invocation downloads a large ML model (500MB) from Cloud Storage at startup, taking 45 seconds. This causes severe cold start latency. Which TWO strategies MOST effectively reduce cold start time for this workload? (Choose TWO)",
+      "options": [
+        "Set the minimum instances to a non-zero value so at least N instances are always warm and the model is already loaded",
+        "Store the model in a Cloud Storage bucket mounted via Cloud Storage FUSE inside the Cloud Run container",
+        "Bundle the ML model directly into the container image so it is available at container start without a network download",
+        "Increase the Cloud Run request timeout to 300 seconds to accommodate the 45-second startup"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Two complementary strategies work here: (1) setting minimum instances keeps warm instances alive between requests, completely eliminating cold starts for most traffic; (2) bundling the model in the container image means even cold-started instances have the model on local disk and avoid the 45-second network download. Cloud Storage FUSE mounts are lazy-loaded and add I/O overhead; they do not eliminate the download latency and may make it worse. Increasing the timeout accommodates the slow startup but does not fix the underlying latency problem for users waiting on cold starts.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-003",
+      "question": "A Cloud Run service processes requests that each spawn 50 lightweight goroutines. The service is CPU-bound. Current configuration is 1 vCPU and concurrency of 80. You observe that CPU is pegged at 100% and requests are queueing. Which configuration change provides the most direct performance improvement?",
+      "options": [
+        "Increase the concurrency setting from 80 to 1000 to allow more simultaneous requests",
+        "Increase the CPU allocation to 4 vCPUs and adjust concurrency to match the workload's parallelism capacity; more CPU allows the service to process more concurrent requests efficiently",
+        "Reduce the concurrency to 1 so each instance handles only one request at a time, reducing CPU contention",
+        "Switch to Cloud Run jobs which have higher CPU limits than Cloud Run services"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The service is CPU-bound: 100% CPU utilization means the single vCPU cannot process requests fast enough. Increasing to 4 vCPUs gives the service more processing capacity for its goroutines. Concurrency should be tuned accordingly -- if each request uses significant CPU, allowing fewer concurrent requests per instance (so each gets more CPU time) may also help, but the primary fix is adding CPU capacity. Increasing concurrency beyond CPU capacity deepens the queue without providing more throughput. Reducing concurrency to 1 limits throughput further. Cloud Run jobs are for batch workloads, not serving HTTP requests.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-004",
+      "question": "Your application on GKE is experiencing variable load. During peak hours, pods use 800m CPU but the Deployment requests 200m CPU per pod. The HPA is set to target 80% CPU utilization. Pods are being evicted by the cluster due to resource contention during peaks. What is the BEST fix?",
+      "options": [
+        "Increase the CPU request to 1000m per pod to match or exceed the actual peak usage; this ensures pods are scheduled on nodes with sufficient capacity and are not evicted under load",
+        "Remove the CPU request entirely so pods can use any available CPU without reservation",
+        "Reduce the HPA target utilization to 50% so more pods are created before CPU is fully saturated",
+        "Switch to Vertical Pod Autoscaler (VPA) in auto mode; it will increase CPU limits automatically during peaks"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Kubernetes scheduling and eviction decisions are based on pod resource requests, not limits. Pods with low requests are placed on nodes that may not have sufficient actual CPU, leading to throttling and contention. When the node is under pressure, pods with low requests are the first candidates for eviction. Setting the CPU request to match or slightly exceed the expected peak usage (1000m or higher) ensures the scheduler places pods on nodes with adequate capacity. Removing requests makes scheduling unpredictable. Lowering HPA target creates more pods but each pod is still undersized. VPA in auto mode can help but it restarts pods to apply new resource values, which may not be acceptable during peaks.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-005",
+      "question": "Your GKE-based event-driven worker service consumes messages from a Pub/Sub subscription. During peak hours, the subscription backlog grows large and you need to scale out workers quickly based on queue depth, not CPU. Which autoscaling approach should you use?",
+      "options": [
+        "HPA with a CPU target of 20% so workers scale out aggressively before CPU is saturated",
+        "KEDA (Kubernetes Event-Driven Autoscaler) with a Pub/Sub scaler configured to scale based on the number of unacked messages in the subscription",
+        "Cluster autoscaler with node auto-provisioning; it detects pending pods and scales the cluster",
+        "VPA with a memory-based policy; Pub/Sub consumer memory grows with backlog size"
+      ],
+      "correctAnswers": [1],
+      "explanation": "KEDA is specifically designed for event-driven scaling. Its Pub/Sub scaler reads the subscription's unacked message count (oldest_unacked_message_age or num_undelivered_messages) and scales the Deployment replicas proportionally to the queue depth. This provides direct, queue-depth-driven autoscaling without proxying through CPU or memory metrics. HPA with low CPU target is an indirect proxy that may not correlate well with queue depth. The cluster autoscaler handles node-level scaling but needs pod-level scaling (like KEDA) to create the pods that trigger node provisioning. VPA adjusts resource limits, not replica count.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-006",
+      "question": "Your application serves a globally distributed user base with static assets (JS, CSS, images) that change only on deployments (every few weeks). Users in Asia report slow page loads because assets are served from a single us-central1 origin. Which GCP service eliminates most of the latency for these users?",
+      "options": [
+        "Deploy additional Cloud Run instances in Asia-Pacific regions and update DNS to use geolocation routing",
+        "Enable Cloud CDN on the Cloud Load Balancing backend serving the static assets; Cloud CDN caches content at Google's global edge PoPs, serving assets from the nearest edge location",
+        "Compress the static assets with Brotli encoding to reduce transfer size",
+        "Increase the origin server's egress bandwidth limit to support faster cross-Pacific transfers"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud CDN integrates with Cloud Load Balancing to cache cacheable responses at Google's global edge Points of Presence (PoPs). Users in Asia receive assets from the nearest edge PoP rather than from the us-central1 origin, eliminating most of the transcontinental round-trip latency. For static assets that rarely change, CDN is the highest-impact optimization. Deploying additional instances handles compute load but is more expensive and does not cache static assets as efficiently. Compression reduces transfer size but not round-trip latency. Increasing origin bandwidth helps throughput but not latency for distant users.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-007",
+      "question": "You deployed a new version of your service and Cloud CDN is still serving stale cached content to users. You need to immediately invalidate the cache for all paths under /api/v2/. Which Cloud CDN action achieves this?",
+      "options": [
+        "Redeploy the Cloud Run service; redeployment automatically invalidates all associated CDN cache entries",
+        "Use the gcloud compute url-maps invalidate-cdn-cache command (or the Cloud Console Cache Invalidation feature) with the path pattern /api/v2/* to purge all cached entries matching that prefix",
+        "Wait for the CDN cache TTL to expire; Cloud CDN does not support manual invalidation",
+        "Delete and recreate the load balancer backend service to flush all cached content"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud CDN supports cache invalidation via the gcloud compute url-maps invalidate-cdn-cache command or the Cloud Console. You specify a path prefix or pattern (e.g., /api/v2/*) and Cloud CDN purges all cached content matching that path from all edge PoPs. This takes effect within a few minutes. Redeployment does not trigger automatic CDN invalidation. Cloud CDN does support manual invalidation -- it is a key operational feature. Deleting and recreating the backend service is an extreme and disruptive approach that would cause downtime.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-008",
+      "question": "Your e-commerce application reads product catalog data on every request. The catalog is stored in Cloud Spanner and contains 500,000 products. Catalog data changes only when products are added or removed (a few times per day). Read latency from Spanner is 20ms per query. You want to reduce latency to under 2ms for catalog reads. Which caching solution is MOST appropriate?",
+      "options": [
+        "Increase Cloud Spanner node count to reduce read latency through more distributed processing",
+        "Enable Cloud Spanner stale reads with a 15-second staleness; this reduces latency by reading from the nearest replica",
+        "Introduce a Cloud Memorystore for Redis cache in front of Spanner; cache full catalog query results with a TTL aligned to the update frequency; serve reads from Redis and fall through to Spanner on cache miss",
+        "Use Cloud CDN to cache Spanner query responses at the edge"
+      ],
+      "correctAnswers": [2],
+      "explanation": "For data that changes infrequently (a few times per day), an in-memory cache like Cloud Memorystore for Redis delivers sub-millisecond read latency by eliminating the database query for the majority of requests. Setting a TTL of minutes to hours and invalidating the cache when catalog changes occur gives excellent performance while ensuring freshness. Cloud Spanner node scaling reduces latency but cannot achieve sub-2ms for 500K-row queries. Stale reads reduce latency somewhat (to ~5ms) but not to sub-2ms. Cloud CDN caches HTTP responses, not raw database query results; applying it to Spanner queries requires additional infrastructure.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-009",
+      "question": "Your GKE application connects to a Cloud SQL PostgreSQL database. Under high load, you observe that the application opens thousands of short-lived connections and the database CPU spikes to 90% even though query throughput is modest. What is the MOST likely cause and fix?",
+      "options": [
+        "The database needs more vCPUs; scale up the Cloud SQL instance to a larger machine type",
+        "The application is not using connection pooling; each request opens and closes a new database connection, overwhelming the database with connection overhead; deploy PgBouncer (Cloud SQL Auth Proxy with pooling or a sidecar) to pool connections",
+        "The Cloud SQL instance is in a different region than the GKE cluster, causing high latency per query",
+        "The application needs read replicas; all reads should be redirected to replicas to reduce load on the primary"
+      ],
+      "correctAnswers": [1],
+      "explanation": "PostgreSQL connection establishment is expensive: each new connection requires authentication, process forking, and memory allocation. Thousands of short-lived connections generate massive CPU overhead disproportionate to the actual query load. Connection pooling (via PgBouncer, the Cloud SQL Auth Proxy's built-in pooling mode, or an application-level pool) multiplexes many application connections onto a small set of persistent database connections, dramatically reducing the connection overhead. Scaling up the instance treats the symptom. Cross-region latency would appear as high query latency, not CPU spikes. Read replicas distribute read load but do not solve connection overhead on the primary.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-010",
+      "question": "Your application queries Cloud Firestore and the team notices that some collection queries are extremely slow (10+ seconds) when filtering by a field that is not the document ID. Cloud Logging shows a warning: 'This query requires an index'. What is the correct fix?",
+      "options": [
+        "Switch to Cloud Datastore mode; Firestore in Datastore mode does not require indexes",
+        "Create a composite index or single-field index in Firestore for the queried field and collection combination; Firestore requires explicit indexes for queries that filter or sort on non-ID fields",
+        "Increase Firestore read capacity units to handle the high-latency queries faster",
+        "Restructure the data to use a flat collection per filter value, eliminating the need for the index"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Firestore in Native mode requires indexes for queries that filter or order on fields other than the document ID. Without an index, Firestore must do a full collection scan, which is both slow and returns a warning in logs. Creating the appropriate index (single-field or composite, depending on the query) allows Firestore to execute the query efficiently using the index B-tree. Cloud Datastore mode also requires indexes for non-ancestor queries. There are no Firestore 'capacity units' that can be scaled. Restructuring data to avoid indexes is a design workaround but is not always practical.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-011",
+      "question": "Your Cloud Spanner database is experiencing hotspot issues: one node handles disproportionate write load. Investigation shows that all row keys are prefixed with a sequential timestamp. What schema change resolves this?",
+      "options": [
+        "Increase the number of Cloud Spanner nodes to distribute the hotspot load across more nodes",
+        "Hash or reverse the timestamp in the row key prefix, or use UUID-based keys, so that writes are distributed uniformly across all Spanner splits instead of sequentially hitting the same split",
+        "Add more columns to the table to increase row size, which forces Cloud Spanner to split rows more frequently",
+        "Use Cloud Bigtable instead of Cloud Spanner; Bigtable handles sequential timestamp keys better"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Spanner distributes data across splits by key range. Sequential timestamp-prefixed keys cause all new writes to hit the same end-of-range split (hotspot), because Spanner always writes to the current maximum key. Reversing the timestamp bits, hashing the key prefix, or using random UUIDs distributes writes uniformly across all splits. Adding more nodes increases overall capacity but does not eliminate the hotspot -- the bottleneck is the single split receiving all writes. Cloud Bigtable also suffers from sequential key hotspots; this is a general distributed database problem, not Spanner-specific.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-012",
+      "question": "Your GKE pods running a Node.js API service are consuming significantly more memory over time, eventually causing OOM kills after 6-8 hours. Cloud Profiler is enabled. Which Cloud Profiler profile type should you collect to diagnose the memory leak?",
+      "options": [
+        "CPU time profile -- identifies functions that consume the most processor time",
+        "Heap profile -- shows which objects are allocated in heap memory and which functions retain the most memory, identifying the source of memory growth",
+        "Wall time profile -- shows elapsed time per function including I/O wait, which may indicate slow memory deallocation",
+        "Thread contention profile -- shows which threads are waiting for locks, indicating potential memory-related deadlocks"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A heap profile captures the in-use heap allocations at sampling time, showing which data structures and which code paths are responsible for retaining memory. Comparing heap profiles taken at different times reveals which allocations are growing, pointing directly to the memory leak. CPU time profiles show processor usage, not memory retention. Wall time includes I/O wait and is useful for latency analysis, not memory leak detection. Thread contention profiles diagnose synchronization issues, not memory growth.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-013",
+      "question": "Your Cloud Run service handles both short-lived API requests (under 100ms) and long-running report generation requests (up to 5 minutes). The long-running requests are causing timeouts for API requests because they share the same concurrency pool. What is the BEST architectural change?",
+      "options": [
+        "Increase the Cloud Run request timeout to 5 minutes for the combined service",
+        "Separate the two workloads into two Cloud Run services: one optimized for low-latency API requests (low concurrency, fast timeout) and one for report generation (higher timeout, lower concurrency, possibly using Cloud Run jobs for true batch work)",
+        "Set Cloud Run concurrency to 1 so API and report requests never share a container instance",
+        "Increase the number of minimum instances so more containers are available to handle both workload types simultaneously"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Mixing latency-sensitive and long-running workloads in the same service creates interference: long-running requests hold concurrency slots, increasing latency for API requests even when they are otherwise fast. Separating them into two Cloud Run services allows independent scaling, timeout configuration, and concurrency tuning for each workload profile. Report generation is also a natural fit for Cloud Run jobs (asynchronous, not HTTP-triggered). Setting concurrency to 1 makes the problem worse by reducing throughput for both types. Adding minimum instances helps availability but not the contention between workload types.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-014",
+      "question": "Your team is optimizing a GKE workload for cost and performance. The current pods use 2 CPU and 4GB memory requests, but Cloud Monitoring shows they actually use 0.3 CPU and 0.8GB on average. Which Kubernetes feature automatically right-sizes pod resource requests based on observed usage?",
+      "options": [
+        "Horizontal Pod Autoscaler (HPA) -- it reduces pod count when utilization is low, effectively right-sizing",
+        "Vertical Pod Autoscaler (VPA) -- it analyzes historical resource usage and recommends or automatically updates CPU and memory requests to match actual consumption",
+        "Cluster autoscaler -- it resizes nodes based on workload demand, indirectly right-sizing pods",
+        "LimitRange -- it sets maximum resource limits per namespace, preventing over-allocation"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Vertical Pod Autoscaler (VPA) monitors the historical CPU and memory usage of pods and provides recommendations (in recommendation mode) or automatically updates the resource requests in the pod spec (in auto mode) to match actual consumption. This prevents over-provisioning (wasted capacity and cost) and under-provisioning (throttling and OOM). HPA adjusts replica count, not per-pod resource sizing. The cluster autoscaler works at the node level, not the pod resource level. LimitRange sets caps but does not right-size based on usage history.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-015",
+      "question": "You are building a session management system for a high-traffic web application deployed on GKE. Session data is small (under 1KB per session) but must be read on every request with sub-millisecond latency. Cloud Memorystore for Redis is the chosen caching layer. Which Redis data structure and access pattern is MOST appropriate for storing and retrieving session data?",
+      "options": [
+        "Store each session as a Redis String with the session ID as the key and a JSON-serialized object as the value; use GET and SET with an expiry (SETEX) to read and write sessions with automatic TTL-based expiration",
+        "Store all sessions in a single Redis Hash where the field is the session ID; retrieve all sessions with HGETALL on every request",
+        "Store sessions in a Redis List (one list per user); append new session data with RPUSH and read with LRANGE",
+        "Use Redis Pub/Sub to broadcast session updates to all application pods simultaneously"
+      ],
+      "correctAnswers": [0],
+      "explanation": "For session storage, a String per session (key = session_id, value = serialized session data) with SETEX (set with expiry) is the standard, optimal Redis pattern. GET and SETEX are O(1) operations with predictable sub-millisecond latency. The TTL handles session expiration automatically without background cleanup jobs. Storing all sessions in one Hash with HGETALL retrieves all sessions on every request, which is O(N) and catastrophically slow for many sessions. Redis Lists are ordered sequences, not key-value lookups, and are inappropriate for session access by ID. Pub/Sub is a messaging pattern, not a storage pattern.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-016",
+      "question": "Your GKE Deployment has a readinessProbe configured with initialDelaySeconds: 5. A newly deployed pod's application takes 45 seconds to initialize before it can handle requests. During the 40-second gap (after the first readiness check fails), the pod receives traffic and returns errors. What configuration change resolves this?",
+      "options": [
+        "Remove the readinessProbe entirely so the pod is considered ready immediately upon starting",
+        "Increase initialDelaySeconds to 50 seconds, or use a startupProbe with a sufficient failureThreshold*periodSeconds to cover the initialization period; the pod will not receive traffic until the readiness probe passes",
+        "Add a livenessProbe with the same initialDelaySeconds to restart the pod faster if it is not ready",
+        "Set terminationGracePeriodSeconds to 50 so the pod has more time to become ready before being terminated"
+      ],
+      "correctAnswers": [1],
+      "explanation": "A readinessProbe controls whether a pod receives traffic from a Service. With initialDelaySeconds: 5, the first readiness check runs 5 seconds after the container starts, which is 40 seconds before the application is ready. If the probe fails, the pod is removed from the Service endpoint list; however, if the probe runs too early and the application is not yet listening, Kubernetes may briefly add the pod to endpoints between probe cycles. The correct fix is to set initialDelaySeconds to at least 50 seconds, or better, use a startupProbe (designed specifically for slow-starting containers) with a failureThreshold that covers the startup window. Removing the readiness probe would route traffic to unready pods. A livenessProbe controls restart behavior, not traffic routing. terminationGracePeriodSeconds controls shutdown, not startup.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-017",
+      "question": "Your application makes 50 independent reads to Cloud Firestore on each request, executing them serially. The service latency is dominated by these sequential reads (each taking ~5ms = 250ms total). How do you reduce this latency without changing the data model?",
+      "options": [
+        "Use Firestore transactions to batch all 50 reads into a single atomic operation",
+        "Execute all 50 Firestore reads in parallel using concurrent goroutines, async/await, or Promise.all() in the application code; total latency becomes approximately 1 read's latency (~5ms) rather than 50x5ms = 250ms",
+        "Enable Firestore offline persistence so the client caches all reads locally",
+        "Move the 50 documents into a single Firestore document as an array field to reduce the read count to 1"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The reads are independent, so there is no correctness reason to execute them sequentially. Parallelizing all 50 reads using the language's concurrency primitives (goroutines, async/await, Promise.all) means they execute simultaneously against Firestore; total latency drops from 50 * 5ms = 250ms to approximately one round-trip (~5ms). Firestore transactions are for atomic multi-document writes or reads that must be consistent relative to each other; they do not batch reads into a single network call. Offline persistence helps offline scenarios but adds stale data risk in a server application. Merging documents into an array changes the data model and breaks the ability to read individual documents independently.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-018",
+      "question": "Your GKE cluster is under-utilizing nodes: average CPU utilization is 15% across all nodes. You want to reduce node count and cost while maintaining workload availability. Which GCP feature should you enable?",
+      "options": [
+        "Manually reduce the node pool size by deleting nodes; Kubernetes will reschedule pods automatically",
+        "Enable the cluster autoscaler with a minimum node count of 1; it will automatically remove underutilized nodes and reschedule their pods to the remaining nodes, subject to PodDisruptionBudget constraints",
+        "Enable node auto-provisioning to create a new smaller node pool; delete the old pool manually",
+        "Switch all workloads to spot VMs to reduce cost without changing node count"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The cluster autoscaler monitors node utilization and removes nodes that are underutilized (all their pods can be rescheduled onto other nodes) subject to PodDisruptionBudgets and other constraints. Enabling it with a minimum count ensures baseline capacity is maintained. Scale-down is automatic and safe for properly configured workloads. Manual node deletion is risky and does not respect PodDisruptionBudgets. Node auto-provisioning creates and removes entire node pools dynamically but requires defining resource limits; it is more complex than enabling autoscaler on an existing pool. Spot VMs reduce the per-node cost but do not reduce node count.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-019",
+      "question": "Your team uses Cloud Load Balancing with a global external Application Load Balancer. The backend GKE service returns large JSON responses (2-10MB) and backend CPU is high from serialization. Cloud CDN is not applicable because responses are user-specific. Which load balancer feature can reduce backend CPU and latency for these large responses?",
+      "options": [
+        "Enable Cloud CDN on the backend service; personalized responses can be cached with a Vary header",
+        "Enable gzip or Brotli response compression in the backend application; the load balancer transparently forwards compressed responses to clients that advertise Accept-Encoding support",
+        "Increase the load balancer's connection timeout to allow more time for large response serialization",
+        "Switch to a regional internal Application Load Balancer which has lower latency for large responses"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Enabling compression (gzip or Brotli) in the application compresses large JSON responses before transmission. A 2-10MB JSON payload typically compresses to 10-30% of its original size, significantly reducing bandwidth and transfer time. Backend CPU for compression is lower than for transferring raw bytes over the wire, and the client decompresses efficiently. Cloud CDN with Vary headers does not work reliably for truly personalized responses (different per user session). Connection timeouts do not affect serialization CPU. Switching to a regional internal load balancer changes routing topology but does not reduce response size.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-020",
+      "question": "Your team is designing a Cloud Spanner-backed application that will execute large analytical queries alongside transactional workloads. You are concerned about analytical queries consuming all read capacity and impacting transaction latency. Which Cloud Spanner feature addresses this?",
+      "options": [
+        "Use Cloud Spanner partitioned queries for analytics; they run on separate infrastructure from transactional reads",
+        "Create a Cloud Spanner backup before running analytical queries to protect the data",
+        "Configure request priority on analytical queries using RequestOptions.priority = LOW; transactional queries set MEDIUM or HIGH priority so they get preference under contention",
+        "Route analytical queries to a Cloud Spanner read replica instance in a different region"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Cloud Spanner supports request priority (HIGH, MEDIUM, LOW) via RequestOptions at the query or transaction level. Setting analytical queries to LOW priority ensures they yield CPU and I/O resources to MEDIUM or HIGH priority transactional queries under contention. This allows both workload types to coexist on the same instance without analytical queries starving transactions. Partitioned queries improve query parallelism but do not isolate resources. Creating a backup is unrelated to query performance isolation. Cloud Spanner does not have a traditional read replica model in the way relational databases do; its multi-region configurations replicate for availability and regional read performance.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-021",
+      "question": "You are profiling a Go service on GKE using Cloud Profiler and notice that a function called parseUserData is consuming 60% of CPU time. This function deserializes the same user record on every request, but the user data changes at most once per hour. What optimization would have the GREATEST impact?",
+      "options": [
+        "Rewrite parseUserData in C and use CGO bindings to call it from Go",
+        "Cache the deserialized user record in Cloud Memorystore for Redis or in an in-process cache (e.g., a sync.Map with TTL) so parseUserData is called only once per hour per user, not on every request",
+        "Increase the Cloud Run CPU allocation to reduce the impact of the expensive function",
+        "Run parseUserData in a separate goroutine so it does not block the request handler"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The function consumes 60% of CPU deserializing data that changes infrequently. Caching the result -- either in-process (in a time-aware map) or in Redis (shared across pods) -- means the expensive deserialization runs at most once per hour per user, and all subsequent requests serve from cache at negligible cost. This directly eliminates the bottleneck identified by Cloud Profiler. Rewriting in C is a major engineering effort for a problem solvable by caching. Increasing CPU allocation is expensive and treats the symptom. Running in a background goroutine makes it non-blocking but the CPU usage still accumulates.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-022",
+      "question": "Your Cloud Run service is configured with concurrency 80 and you are observing 429 Too Many Requests errors under heavy load. Cloud Monitoring shows maximum_concurrent_requests is regularly hitting 80 per instance. What are TWO valid approaches to resolve this?",
+      "options": [
+        "Increase the Cloud Run service concurrency setting above 80 if the application can handle more concurrent requests without degrading; this allows each instance to serve more requests before a new instance is spun up",
+        "Decrease concurrency to 1 to prevent request queuing within an instance",
+        "Increase the maximum number of instances for the Cloud Run service so more instances are available to handle the load",
+        "Switch to an HTTP/1.1 only protocol; HTTP/2 multiplexing causes concurrency issues on Cloud Run"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Two valid fixes for concurrency-driven 429 errors: (1) if the application is not CPU- or memory-bound at 80 concurrent requests, increase the concurrency limit to allow each instance to handle more requests simultaneously; (2) increase the maximum instance count so Cloud Run scales out more instances to handle load peaks. Both approaches increase the total request-handling capacity of the service. Decreasing concurrency to 1 is the opposite of what is needed. HTTP/2 multiplexing is a feature, not a cause of concurrency issues, and Cloud Run fully supports it.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-023",
+      "question": "Your GKE cluster autoscaler is not scaling down nodes even though CPU utilization is low. Investigation shows that certain pods cannot be rescheduled because they have a PodDisruptionBudget (PDB) with maxUnavailable: 0 and minAvailable equal to the current replica count. What is the effect of this PDB on cluster autoscaler behavior?",
+      "options": [
+        "The cluster autoscaler ignores PodDisruptionBudgets when making scale-down decisions",
+        "The PDB prevents the cluster autoscaler from draining pods from the underutilized node because evicting any pod would violate the PDB (minAvailable would not be satisfied); as a result, the node cannot be removed",
+        "The PDB only affects rolling updates, not cluster autoscaler scale-down events",
+        "The cluster autoscaler will evict pods violating the PDB but add them back on the remaining nodes within 30 seconds"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The cluster autoscaler respects PodDisruptionBudgets when deciding to drain a node for scale-down. If draining a node requires evicting a pod and that eviction would violate the PDB (e.g., minAvailable = replica count means zero pods can be disrupted), the autoscaler cannot evict the pod and therefore cannot drain or remove the node. To allow scale-down, the PDB should be configured to allow at least one pod disruption (e.g., minAvailable = replicas - 1 or maxUnavailable: 1). PDBs are fully respected by the cluster autoscaler in its scale-down calculations.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-024",
+      "question": "Your application stores user-uploaded images in Cloud Storage. Thumbnails are generated on-demand by a Cloud Run service and served to users. Thumbnail generation takes 800ms. For popular images, the same thumbnail is regenerated on every request. What is the BEST optimization?",
+      "options": [
+        "Increase Cloud Run minimum instances to ensure the thumbnail service is always warm",
+        "Generate thumbnails at upload time and store them in Cloud Storage; serve thumbnails directly from Cloud Storage (optionally via Cloud CDN) instead of regenerating on each request",
+        "Cache the raw image in Cloud Memorystore so the Cloud Run service reads from Redis instead of Cloud Storage",
+        "Use a larger Cloud Run CPU allocation so thumbnail generation takes 200ms instead of 800ms"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Regenerating the same thumbnail on every request wastes compute and adds latency. The correct optimization is to generate thumbnails once (either at upload time via a Cloud Storage trigger or lazily on first request) and store them in Cloud Storage. Subsequent requests serve the pre-generated thumbnail file directly, eliminating the 800ms generation cost. Cloud CDN can further cache frequently accessed thumbnails at the edge. Keeping the Cloud Run service warm reduces cold start latency but not the per-request generation cost. Caching the raw image in Redis speeds up the read of the original but does not eliminate the generation step. CPU upgrades reduce generation time but do not eliminate redundant work.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-025",
+      "question": "Your team wants to load test a new GKE service before launch. The service must handle 10,000 requests per second with p99 latency under 200ms. You want to run the load test from within GCP to avoid egress charges and network variability from on-premises. Which approach is correct?",
+      "options": [
+        "Use Cloud Scheduler to trigger 10,000 Cloud Run invocations per second as the load generator",
+        "Deploy a distributed load testing tool (such as k6, Locust, or JMeter) on GKE in the same VPC as the service under test; scale the load generator pods to generate 10,000 RPS while measuring latency",
+        "Enable Cloud CDN and use the CDN's traffic replay feature to simulate 10,000 RPS",
+        "Use Cloud Monitoring synthetic monitors at 1-second intervals to generate the required load"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Distributed load testing tools like k6 or Locust, deployed as GKE workloads, can generate high request volumes from within the same VPC as the target service, avoiding egress costs and internet variability. Scaling load generator pods provides horizontal scalability to reach 10,000 RPS. Cloud Scheduler is designed for low-frequency cron jobs and cannot trigger 10,000 parallel HTTP requests per second. Cloud CDN does not have a traffic replay feature. Cloud Monitoring synthetic monitors run at intervals of 1-15 minutes, not 10,000 RPS.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-026",
+      "question": "Your application running on GKE experiences intermittent latency spikes correlated with garbage collection pauses in the JVM. Cloud Profiler shows GC taking 500ms every 30 seconds. Which TWO JVM tuning strategies can reduce GC pause impact for a latency-sensitive service?",
+      "options": [
+        "Switch from the default G1GC collector to ZGC or Shenandoah, which are low-pause GC algorithms designed to limit stop-the-world pauses to sub-millisecond durations",
+        "Increase the JVM heap size (-Xmx) so GC runs less frequently; the pauses will be the same duration but less frequent",
+        "Reduce the heap size to force more frequent but shorter GC cycles, improving p99 latency consistency",
+        "Set Pod resource limits to request more CPU on GKE; additional CPU allows GC to complete faster"
+      ],
+      "correctAnswers": [0, 3],
+      "explanation": "Two effective approaches: (1) Low-latency GC collectors (ZGC, Shenandoah) are explicitly designed to minimize stop-the-world pauses by doing most GC work concurrently with application threads, reducing pauses from hundreds of milliseconds to single-digit milliseconds. (2) GC is a CPU-intensive operation; if the pod is CPU-throttled (due to low CPU limits), GC threads cannot complete quickly, extending pauses. Ensuring adequate CPU limits allows GC to run at full speed. Increasing heap size reduces GC frequency but does not reduce pause duration per cycle; for a service with 500ms pauses, less frequent 500ms pauses may still be unacceptable. Reducing heap size increases GC frequency, potentially worsening overall throughput.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-027",
+      "question": "Your application uses Cloud Memorystore for Redis. During peak load, the Redis instance's CPU reaches 80% and latency increases. The workload consists of many small GET and SET operations. Which scaling option for Memorystore for Redis is most appropriate?",
+      "options": [
+        "Enable Redis Cluster mode with sharding; distribute the keyspace across multiple shards to spread CPU and memory load",
+        "Increase the Redis instance tier from Basic to Standard; Standard provides higher CPU allocation",
+        "Add a read replica to the Redis instance; all GET operations will be served from the replica",
+        "Enable the Redis AUTH token; authenticated connections have lower overhead and reduce CPU usage"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Cloud Memorystore for Redis Cluster (sharded mode) distributes the keyspace and command processing across multiple primary shards, multiplying the available CPU and memory capacity linearly with shard count. For CPU-bound workloads with many small operations, horizontal sharding is the correct scaling approach. Memorystore's Basic vs Standard tier difference is high availability (Standard has a replica for failover), not CPU scaling. Read replicas help with read-heavy workloads but a mixed GET/SET workload still sends all SETs to the primary, which is the CPU bottleneck. AUTH has negligible CPU overhead and does not address scaling.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-028",
+      "question": "You are designing a GKE deployment for a batch processing service that only runs during business hours (8 AM - 6 PM on weekdays) and should have zero running pods outside those hours to minimize cost. Which autoscaling approach achieves scheduled scaling with zero pods outside business hours?",
+      "options": [
+        "Set HPA minReplicas to 0 and maxReplicas to 20; Kubernetes will automatically scale to zero when there is no CPU load",
+        "Use Cloud Scheduler to trigger a Cloud Run job that calls the Kubernetes API to patch the Deployment's replica count to 0 at 6 PM and to the desired count at 8 AM",
+        "Configure Kubernetes Cron Jobs to deploy and delete the Deployment on a schedule",
+        "Use KEDA with a cron scaler trigger configured to scale to 0 outside business hours and to the desired replica count during business hours, handled natively by KEDA without external tooling"
+      ],
+      "correctAnswers": [3],
+      "explanation": "KEDA natively supports a cron scaler that scales a Deployment to a specified replica count on a cron schedule, including scaling to 0 outside the defined windows. This is the cleanest solution: no external tooling, the scaling logic lives in a Kubernetes ScaledObject manifest, and KEDA handles the transitions. HPA cannot scale to 0 replicas (minReplicas must be at least 1 unless using KEDA's HPA integration). A Cloud Scheduler + Cloud Run solution works but requires external orchestration and service account management. CronJobs create Job resources, not scale existing Deployments.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-029",
+      "question": "Your team's Cloud Run service is handling user authentication requests. Response time is critical (target p99 under 50ms). The service validates JWT tokens by fetching the public key from an external JWKS endpoint on every request. The JWKS endpoint has ~20ms latency. How do you eliminate this per-request latency?",
+      "options": [
+        "Increase the Cloud Run instance CPU to make the JWKS fetch faster",
+        "Cache the JWKS public keys in the service's in-memory cache with a refresh interval matching the key rotation schedule (e.g., hourly); validate tokens using the cached keys on every request without a network call",
+        "Use Cloud Memorystore to store the JWKS response so all Cloud Run instances share a single cached copy",
+        "Disable JWT validation in production and rely on network-level mTLS for authentication"
+      ],
+      "correctAnswers": [1],
+      "explanation": "JWKS public keys change rarely (typically on key rotation schedules of hours to days). Caching them in the service's in-memory store with a periodic refresh eliminates the 20ms per-request network call to the JWKS endpoint. In-process caching is faster than Redis (sub-microsecond vs sub-millisecond) and avoids an additional network hop. All JWT validation happens locally using the cached keys. Cloud Memorystore is a valid alternative for sharing keys across a large fleet of instances, but for a single service, in-process caching is simpler and faster. Disabling JWT validation is a security vulnerability. CPU allocation does not reduce network latency.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-030",
+      "question": "Your organization runs a multi-region GKE application served by a global Application Load Balancer. Users in Europe report consistently higher latency (300ms) compared to US users (50ms). Both regions have GKE backends configured. Cloud Monitoring shows that European users are being routed to the US backend despite the European backend having capacity. What is the MOST likely cause?",
+      "options": [
+        "The European GKE cluster has insufficient CPU; it is failing health checks and the load balancer is routing around it",
+        "The load balancer backend service is not configured with a NEG (Network Endpoint Group) for the European cluster, so the load balancer cannot see the European backends and routes all traffic to the US",
+        "Cloud CDN is not enabled; enabling it would allow European users to be served from a European edge PoP",
+        "The European backend has a higher backend latency than the US backend, so the load balancer's least-latency routing algorithm prefers the US backend"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Global Application Load Balancers use Network Endpoint Groups (NEGs) to route traffic to GKE backends. If the European GKE cluster's pods are not registered in a NEG attached to the backend service, the load balancer has no healthy European endpoints and falls back to the US backend for all traffic. This is a common misconfiguration when adding a second region to an existing load balancer setup. A failing health check (option A) would also cause fallback but the question states the European backend has capacity, suggesting the pods are healthy but not registered. Cloud CDN caches static content but does not resolve backend routing misconfiguration. The load balancer routes to the nearest healthy backend, so if the European NEG is properly registered, it would use it.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
     }
   ]
 }

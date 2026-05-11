@@ -4352,6 +4352,247 @@
       "explanation": "Cloud Deploy natively integrates with Cloud Run and supports canary deployment strategies. You define a canaryDeployment configuration with percentage phases (5%, 100%) and postdeploy verification jobs that query Cloud Monitoring to evaluate the error rate metric. If verification passes, Cloud Deploy advances to the next phase; if it fails, it triggers rollback. This is the cleanest integrated approach for progressive delivery. While Cloud Workflows with manual API calls also work, Cloud Deploy provides built-in rollback, approval gates, and pipeline visualization that a custom workflow lacks.",
       "category": "Applying SRE practices to a service",
       "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-031",
+      "question": "You enable Cloud Profiler on a GKE Java service. The heap profile shows that a large number of Request objects are retained in memory for 10 minutes after each request completes. CPU profiles appear normal. What does this heap profile finding indicate and what is the appropriate next step?",
+      "options": [
+        "The heap profile indicates normal behavior; Java garbage collection retains objects for 10 minutes by design",
+        "The heap profile indicates a memory leak or unintended object retention: Request objects are not being garbage collected after request completion, likely due to a static collection or callback holding references. Investigate the code path that stores Request objects to find the unintended reference holder.",
+        "The heap profile shows that CPU is under-allocated; add more CPU to the pod to speed up garbage collection",
+        "Cloud Profiler heap profiles only show allocation rate, not retained objects; the finding is not actionable"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud Profiler heap profiles show live object allocations in the heap at a point in time. If Request objects remain in the heap 10 minutes after requests complete, they are not being garbage collected, which means live references are holding them in memory. Common causes include: a static cache or map that stores requests without TTL, a request-scoped object registered in a global registry, or a callback/listener that captures a reference. The correct next step is to trace the reference chain from the retained Request objects to find the root reference holder.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-032",
+      "question": "Your team wants to use Cloud Profiler for continuous profiling of a Cloud Run service in production. What is a key advantage of continuous profiling over periodic load-test-based profiling?",
+      "options": [
+        "Continuous profiling produces exact deterministic measurements while load test profiling is approximate",
+        "Continuous profiling captures actual production traffic patterns including real user behavior, seasonal variations, and rare code paths that load tests may not exercise; this surfaces hotspots that only appear under production conditions",
+        "Continuous profiling in Cloud Run is free while load-test profiling incurs additional costs",
+        "Continuous profiling automatically fixes hotspots it discovers without requiring code changes"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Load tests use synthetic traffic that approximates production patterns but may miss rare code paths, unusual query patterns, specific user segments, or seasonal traffic variations. Continuous profiling on production workloads captures the actual distribution of operations as executed by real users. This makes it possible to find hotspots that only emerge under specific production conditions. Cloud Profiler is designed to have very low overhead (typically under 1%) making it safe for always-on production use. It does not automatically fix hotspots; it identifies them.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-033",
+      "question": "Cloud Profiler shows that a Python Cloud Run service spends 40% of its CPU time in a JSON serialization function that is called on every response. The function converts a SQLAlchemy ORM object to a JSON dict. What is the MOST effective optimization strategy?",
+      "options": [
+        "Scale up the Cloud Run instance to use more CPU so the serialization takes less wall-clock time",
+        "Profile the specific serialization code path to identify inefficiencies; consider replacing the ORM-to-dict conversion with a native dict construction or using a faster JSON library (e.g., orjson); cache serialized responses for read-heavy endpoints where the underlying data does not change frequently",
+        "Move the serialization to a background thread so it does not block the main request handling thread",
+        "Switch from Python to Go to eliminate the serialization overhead"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "When profiling reveals a specific function consuming disproportionate CPU, the most effective approach is to optimize the hot code path directly. ORM serialization is often slow due to lazy-loading relationships, attribute inspection, and full dict construction. Replacing with native dict construction avoids ORM overhead, and using a faster JSON library like orjson (written in Rust) can provide 5-10x speedup over stdlib json. Caching serialized outputs for read-heavy data eliminates repeated serialization entirely. Adding CPU shifts cost without fixing the root cause. Rewriting in Go is disproportionate to the scope of the problem.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-034",
+      "question": "You are using Cloud Trace to analyze a GKE microservice. The latency distribution shows a bimodal pattern: 80% of traces complete in under 50ms, but 20% take over 800ms. All slow traces share a common span for an external database call. What does this pattern indicate and what should you investigate?",
+      "options": [
+        "The bimodal distribution indicates two separate user populations with different network latency to your service",
+        "The common slow span pointing to the database call suggests the database is experiencing intermittent saturation or lock contention; investigate the database query execution plans, connection pool utilization, and whether the slow queries correlate with high write activity on the same tables",
+        "The 20% slow traces are caused by Cloud Trace sampling overhead; disable tracing for those requests",
+        "The bimodal pattern is normal for services using HTTP keep-alive connections; no action needed"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A bimodal latency distribution (fast path vs slow path) where the slow traces share a common database span strongly suggests intermittent database contention. This can be caused by: lock contention from concurrent write transactions, connection pool exhaustion causing requests to queue for a connection, query plan regression under specific data distributions, or index misses for a subset of query patterns. The next step is to correlate slow trace timestamps with database-level metrics (CPU, lock wait time, active connections) and examine query execution plans for the slow span's queries.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-035",
+      "question": "Your team is configuring Cloud Trace sampling for a high-traffic GKE service that processes 50,000 requests per second. You want meaningful latency analysis without excessive trace storage costs. What sampling strategy should you use?",
+      "options": [
+        "Sample 100% of all requests to ensure complete coverage of all trace paths",
+        "Use probability sampling at 0.1% (50 traces/second), which provides statistically representative samples of the latency distribution at high traffic volumes while controlling storage costs; increase the sampling rate for specific high-value endpoints or during incident investigation",
+        "Sample only requests that return HTTP 5xx errors to focus storage on failures",
+        "Disable sampling entirely and use Cloud Logging latency fields instead of Cloud Trace"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "At 50,000 RPS, 100% sampling would produce an enormous volume of trace data, driving up storage costs and export bandwidth significantly. A 0.1% probability sample at this traffic level still produces 50 traces/second, providing statistically robust latency distribution analysis. Adaptive or tail-based sampling (increasing rate for slow requests) can also be used. Error-only sampling misses the performance characteristics of successful requests, which is needed for latency analysis. Cloud Logging latency fields can complement traces but lack the span-level detail needed for deep latency bottleneck analysis.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-036",
+      "question": "Cloud Trace shows that a Cloud Run service has a consistently high span duration for calls to a Cloud Firestore collection query. The query retrieves all documents in a collection and filters in application code. What is the MOST impactful optimization?",
+      "options": [
+        "Increase the Cloud Run instance CPU to process the in-memory filter faster",
+        "Create a Firestore composite index that covers the filter fields and use a server-side query with a where() clause, so Firestore returns only matching documents instead of the full collection",
+        "Switch from Cloud Firestore to Cloud Bigtable which has faster scan performance",
+        "Cache the full collection in memory in the Cloud Run instance to avoid repeated Firestore reads"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Fetching entire collections and filtering in application code is a classic Firestore anti-pattern. Firestore is designed for indexed queries: by creating a composite index on the filter fields and using a server-side where() clause, Firestore returns only the matching documents over the network. This reduces both data transfer and client-side processing. The improvement is often 10-100x for selective queries. Adding CPU shifts the processing cost but does not reduce network transfer. Switching to Bigtable is an architectural overhaul for a problem that proper indexing solves. In-memory caching helps for repeated reads of static data but does not fix the query pattern.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-037",
+      "question": "Your organization wants to reduce Cloud Spanner costs. You have identified that 60% of your Spanner compute capacity is used for read-heavy analytics queries that run during business hours, alongside OLTP transactions that run continuously. What is the MOST cost-effective optimization?",
+      "options": [
+        "Increase Spanner processing units to give analytics queries more capacity, then scale back down manually at night",
+        "Purchase a 1-year committed use discount (CUD) for your baseline Spanner capacity; use Spanner data boost for analytics queries so they run on isolated compute without consuming OLTP instance capacity, allowing you to right-size the OLTP instance",
+        "Migrate all analytics to BigQuery fed by a Dataflow pipeline from Spanner change streams; purchase a flat-rate BigQuery reservation for analytics, keeping the Spanner instance sized only for OLTP",
+        "Run analytics queries during off-peak hours using Cloud Scheduler to avoid competing with OLTP"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud Spanner Data Boost allows analytics queries to run on isolated, serverless compute that does not consume the Spanner instance's processing units. This means you can right-size the Spanner instance for OLTP load and run analytics independently without over-provisioning. Purchasing a 1-year CUD for the baseline OLTP capacity provides cost savings on that portion. This combination directly addresses the cost driver (over-provisioned instance to handle analytics peaks) without requiring architectural changes. BigQuery migration is a valid long-term strategy but is a major project. Off-peak scheduling works for batch analytics but not for business-hours reporting requirements.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-038",
+      "question": "Your team is reviewing infrastructure costs and finds that 40 GKE nodes have average CPU utilization of 8% over the past 30 days. You want to reduce costs while maintaining the ability to handle occasional 5x traffic spikes. Which approach achieves the BEST cost-to-reliability trade-off?",
+      "options": [
+        "Delete 35 of the 40 nodes immediately to reduce costs by 87.5%",
+        "Enable GKE cluster autoscaler with appropriate min and max node counts; use Spot VMs for non-critical workloads to reduce per-node cost; right-size pod resource requests using VPA recommendations so the autoscaler can pack more pods per node, reducing the node count needed for baseline load",
+        "Migrate all GKE workloads to Cloud Run to eliminate node management entirely",
+        "Purchase committed use discounts for all 40 nodes to reduce the hourly cost without changing the node count"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The most effective combination for cost optimization with reliability headroom is: (1) autoscaling (cluster autoscaler) so the cluster scales down for low-traffic periods and up for spikes; (2) Spot VMs for fault-tolerant workloads (70-80% cheaper than on-demand); (3) VPA-based pod right-sizing to increase bin packing density, reducing the number of nodes needed for the same workload. This approach scales dynamically rather than running excess fixed capacity. Deleting 35 nodes without autoscaling eliminates spike headroom. Cloud Run migration is a major refactoring. CUDs reduce cost of existing nodes but do not eliminate unused capacity.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-039",
+      "question": "Your Cloud Storage bucket stores user-uploaded log files. Files are accessed frequently for the first 7 days after upload, then rarely accessed for 90 days, then never accessed. Currently all files use Standard storage class. What storage tiering policy minimizes cost?",
+      "options": [
+        "Move all files immediately to Coldline storage to minimize storage costs",
+        "Configure an Object Lifecycle Management policy that transitions objects to Nearline after 7 days (to cover the occasional access period) and to Archive after 90 days (for the never-accessed period, where retrieval cost is acceptable given zero expected access)",
+        "Use Standard storage for all files since retrieval costs for Nearline and Coldline are too high",
+        "Delete files after 90 days since they are never accessed; this minimizes cost more than tiering"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud Storage Object Lifecycle Management automatically transitions objects between storage classes based on age rules. Standard storage costs the most per GB but has no retrieval fees. Nearline is cheaper per GB with a minimum storage duration of 30 days and a retrieval fee per GB; suitable for data accessed less than once per month. Archive is cheapest per GB with a minimum 365-day duration and higher retrieval fee; appropriate for data accessed less than once per year or never. The lifecycle policy (Standard for 0-7 days, Nearline for 7-90 days, Archive after 90 days) matches the access pattern to the cheapest appropriate tier at each stage.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-040",
+      "question": "Your organization runs batch ML training jobs on GKE that each take 4-8 hours to complete. The jobs are fault-tolerant and can resume from checkpoints. Your current spend is $50,000/month on N2 on-demand VMs for these jobs. What is the MOST cost-effective compute option?",
+      "options": [
+        "Purchase 3-year committed use discounts for N2 instances to reduce costs by 60%",
+        "Use Spot VMs (formerly preemptible VMs) for the ML training jobs; Spot VMs offer 60-91% cost savings over on-demand prices and the jobs can tolerate preemption because they checkpoint frequently enough to resume from the last saved state",
+        "Switch to Cloud TPUs which are faster so the jobs finish sooner and cost less overall",
+        "Schedule jobs to run during weekends when GCP pricing is lower"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Spot VMs provide 60-91% cost savings over on-demand prices and are ideal for fault-tolerant, checkpoint-enabled batch workloads. ML training jobs that checkpoint are explicitly the target use case: if a Spot VM is preempted, the job resumes from the last checkpoint with minimal work loss. GKE supports Spot VM node pools with automatic restarts of evicted pods. 3-year CUDs also provide large discounts (~60%) but require long-term commitment and do not provide the same savings as Spot pricing for jobs that tolerate interruption. GCP pricing does not vary by day of week.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-041",
+      "question": "Your team is choosing between a zonal and regional GKE cluster for a user-facing API service that requires 99.99% availability. What is the PRIMARY trade-off between zonal and regional clusters?",
+      "options": [
+        "Zonal clusters are always cheaper; regional clusters provide no reliability benefit",
+        "A zonal cluster runs all nodes in a single zone; a zone outage causes complete service unavailability. A regional cluster distributes nodes across 3 zones in a region; a single zone outage only affects 1/3 of capacity, allowing the service to continue serving traffic with degraded capacity. The trade-off is higher cost (3x zone distribution) versus higher availability.",
+        "Regional clusters always have higher network latency than zonal clusters because traffic crosses zones",
+        "Zonal clusters support HPA; regional clusters do not support horizontal pod autoscaling"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The core trade-off is availability versus cost. Zonal clusters concentrate all nodes in one zone: a zone outage (which GCP SLA does not guarantee against) takes down the entire cluster. Regional clusters spread nodes across 3 zones in the region: any single zone failure leaves 2/3 of capacity running, and the cluster continues serving traffic (though at reduced capacity until autoscaling adds replacement nodes). For a 99.99% availability SLO, zonal clusters cannot reliably meet the target during zone maintenance or outages. The additional cost is the 3x zone distribution of at least 1 node per zone minimum.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-042",
+      "question": "You are deploying a global web application that serves both dynamic API responses and static assets. You want to minimize latency for users worldwide while minimizing backend load. Which load balancer and caching configuration is MOST appropriate?",
+      "options": [
+        "Use a regional Network Load Balancer (TCP/UDP) in each region with backend GKE clusters",
+        "Use a global external Application Load Balancer with Cloud CDN enabled; configure Cache-Control headers so static assets (JS, CSS, images) are cached at CDN edge nodes globally, while dynamic API requests bypass CDN and hit backend GKE instances directly",
+        "Deploy multiple regional Application Load Balancers and use Cloud DNS geolocation routing to direct users to the nearest region",
+        "Use a global HTTP(S) Load Balancer without CDN; serve all content from backend GKE pods to ensure content is always fresh"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A global Application Load Balancer with Cloud CDN enabled is the optimal configuration for global web applications with mixed content. CDN edge nodes cache static assets at 130+ Google edge locations globally, serving them with sub-10ms latency to nearby users without hitting backends. Dynamic API requests (with Cache-Control: no-cache or no-store) bypass CDN and go directly to backend instances. This combination minimizes latency for static content and reduces backend load significantly. Regional NLBs do not support application-layer routing or CDN integration. Multiple regional ALBs with DNS geolocation routing is more complex with no performance advantage over a global ALB for most traffic patterns.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-043",
+      "question": "Your GKE service is receiving traffic from two geographic regions: North America and Europe. Currently all traffic is served by a single us-central1 cluster. Users in Europe report p99 latency of 350ms compared to 45ms for North American users. What is the MOST effective change to improve European user latency?",
+      "options": [
+        "Increase the number of pods in us-central1 to handle European traffic faster",
+        "Deploy the service to a European GKE cluster (e.g., europe-west1); configure the global Application Load Balancer to route each user to the nearest healthy backend using anycast routing so European users are served by the EU cluster",
+        "Enable Cloud CDN for the API responses to cache them closer to European users",
+        "Switch from HTTPS to HTTP to reduce TLS handshake latency for European users"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The 350ms p99 latency for European users is dominated by round-trip time across the Atlantic (approximately 80-100ms baseline). Deploying a cluster in a European region and using Google's global Application Load Balancer with anycast routing directs European users to the nearest regional backend, reducing RTT to under 20ms for most European locations. Adding pods in us-central1 reduces queueing but cannot eliminate geographic latency. CDN caching helps for static assets but not dynamic API responses. Removing TLS saves one round trip but does not address the fundamental geographic distance problem.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-044",
+      "question": "You are choosing a load balancer for a service that processes real-time WebSocket connections between users in a multiplayer game. Connections must be sticky (same server handles all messages for a session) and the service runs in a single region. Which load balancer type is MOST appropriate?",
+      "options": [
+        "Global external Application Load Balancer; it supports WebSockets and routes to the fastest backend globally",
+        "Regional external Application Load Balancer or a Network Load Balancer configured with session affinity; session affinity (based on client IP or cookie) routes all packets from the same connection to the same backend, which is required for stateful WebSocket connections",
+        "Cloud CDN with WebSocket pass-through mode to cache WebSocket frames at edge nodes",
+        "Internal Application Load Balancer; WebSocket connections require internal load balancers for sticky sessions"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "WebSocket connections are stateful: all messages for a session must reach the same backend server. A regional Application Load Balancer or Network Load Balancer with session affinity (client IP hash or cookie-based) ensures this. The global Application Load Balancer also supports WebSockets and session affinity, but for a single-region deployment a regional load balancer is the simpler choice and has slightly lower latency (no premium tier routing overhead). Cloud CDN does not support WebSocket caching. Internal load balancers serve backend-to-backend traffic, not user-facing internet traffic.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-045",
+      "question": "Your Cloud SQL PostgreSQL instance is the read bottleneck for a GKE application. Write load is low (< 100 writes/second) but read load is high (5,000 reads/second). Adding a read replica is being considered. What are the key considerations for using Cloud SQL read replicas to offload read traffic? (Choose TWO)",
+      "options": [
+        "Read replicas in Cloud SQL support synchronous replication, guaranteeing zero data lag between primary and replica",
+        "Read replicas use asynchronous replication, which means there can be a small replication lag; applications reading from the replica may see slightly stale data and must be designed to tolerate eventual consistency for reads that do not require the latest write",
+        "The application connection string must be updated to direct read queries to the replica endpoint and write queries to the primary endpoint, since Cloud SQL does not automatically route reads to replicas",
+        "Cloud SQL read replicas can be promoted to primary automatically without any application changes if the primary fails"
+      ],
+      "correctAnswers": [
+        1,
+        2
+      ],
+      "explanation": "Cloud SQL read replicas use asynchronous replication. This means there is a replication lag between the primary and replica; applications reading from the replica may receive stale data for recently written records. Applications must be designed to tolerate this for read use cases where eventual consistency is acceptable. Additionally, Cloud SQL does not provide automatic read/write splitting: the application code or connection proxy must explicitly route read queries to the replica endpoint and write queries to the primary. Promotion of read replicas to primary is possible but requires manual action or custom automation, not automatic failover.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
     }
   ]
 }

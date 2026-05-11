@@ -3871,6 +3871,246 @@
       "explanation": "Istio (which can be enabled on GKE as Anthos Service Mesh or installed directly) provides fault injection as a traffic management feature via VirtualService resources. You can configure httpFault rules to inject specific HTTP status codes (abort fault) or delays for a configurable percentage of requests, entirely at the service mesh level without any application code changes. Cloud Armor handles security policies and rate limiting, not fault injection. Cloud Load Balancer health checks affect backend health, not individual request responses. Cloud Functions proxies require architectural changes.",
       "category": "Applying SRE practices to a service",
       "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-031",
+      "question": "Your team defines an SLO for a streaming data pipeline: 99% of messages must be processed within 60 seconds of ingestion, measured over a 7-day rolling window. After a week of operation, you observe that 98.1% of messages meet this target. How should you interpret this result and what action is appropriate?",
+      "options": [
+        "The SLO is met because 98.1% is close to 99%; no action needed",
+        "The SLO is violated because 98.1% is below the 99% target; calculate the error budget consumed, conduct root cause analysis on the 1.9% of slow messages, and implement fixes before the budget is exhausted",
+        "Raise the SLO to 98% retroactively so the measurement shows compliance",
+        "The measurement window is too short; wait 30 days before evaluating SLO compliance"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "An SLO of 99% means any compliance below 99% is a violation. At 98.1%, the error rate is 1.9% against an allowed 1.0%. The error budget (1% of messages allowed to be slow over 7 days) is already exhausted. The correct response is to acknowledge the violation, quantify how much budget was consumed, analyze the slow message population to find the cause, and implement fixes. Retroactively lowering the SLO games the metric. The 7-day window is a valid measurement window defined by the team.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-032",
+      "question": "Your GKE application uses ConfigMap values for feature flags. You want to update a feature flag without restarting pods. Which approach achieves this while maintaining operational safety?",
+      "options": [
+        "Delete the existing pods; they will restart with the new ConfigMap values automatically",
+        "Mount the ConfigMap as a volume file; Kubernetes automatically updates the mounted file within the kubelet sync period (typically 1-2 minutes); design the application to periodically re-read the file to pick up changes without a restart",
+        "Update the ConfigMap and trigger a rolling restart via kubectl rollout restart to apply the new values",
+        "ConfigMap changes always require a full pod restart; there is no way to update ConfigMap values in a running pod"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "When a ConfigMap is mounted as a volume (file mount), Kubernetes updates the mounted file automatically within the kubelet sync period without requiring pod restarts. If the application is designed to periodically re-read configuration from the file (or uses inotify), the feature flag update takes effect automatically. This is the recommended pattern for live configuration updates. ConfigMaps injected as environment variables (not volume mounts) do require pod restarts. A rolling restart applies changes but restarts pods, which may cause brief disruption.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-033",
+      "question": "Your organization wants to reduce alert fatigue for the on-call SRE team. Currently, the team receives an average of 120 alerts per week, of which only 15 require human action. Which approach BEST addresses alert quality?",
+      "options": [
+        "Increase the alerting threshold for all existing policies to reduce the total alert count",
+        "Audit all alerting policies; remove or raise thresholds for actionable-rate alerts below 20%, consolidate correlated alerts into single notifications using Cloud Monitoring alert grouping or incident management tools, and add runbook links to all remaining alerts",
+        "Disable all non-critical alerts so the on-call engineer only receives pages for complete outages",
+        "Hire a dedicated alert triage engineer to review incoming alerts before paging the on-call SRE"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Alert fatigue occurs when alert volume exceeds the capacity of the team to respond meaningfully. The recommended approach is a combination of: auditing and removing low-signal alerts (actionable rate < 20%), grouping correlated alerts to reduce notification count, and enriching remaining alerts with runbook links to speed response. Blanket threshold increases may miss real incidents. Disabling non-critical alerts creates blind spots. Adding a triage engineer is an expensive operational solution that does not fix the underlying alert quality problem.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-034",
+      "question": "You want to implement a canary deployment for a GKE service using Cloud Deploy with a custom canary strategy. The canary should receive 10% of traffic initially, then 50%, then 100% if metrics are healthy. Which Cloud Deploy feature supports this?",
+      "options": [
+        "Cloud Deploy does not support canary deployments; use a separate CI/CD tool",
+        "Use Cloud Deploy canary deployments with a canaryDeployment strategy in the delivery pipeline, defining percentage stages (10%, 50%, 100%) and optional verification jobs that check Cloud Monitoring metrics before advancing to the next stage",
+        "Manually update the GKE Deployment replica count to split traffic 10/90 between the new and old versions",
+        "Configure Cloud Load Balancing traffic splitting to route 10% to the new service version and 90% to the old version"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud Deploy natively supports canary deployments through the canaryDeployment configuration in delivery pipeline stage targets. You define percentage phases and optional postdeploy verification jobs (Cloud Run jobs or container jobs) that evaluate Cloud Monitoring metrics or run automated tests before the pipeline advances each phase. This integrates the entire canary lifecycle into the delivery pipeline with approval gates and rollback support. Manual replica manipulation does not implement traffic splitting. Load balancer traffic splitting is possible but disconnected from the deployment pipeline.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-035",
+      "question": "An SRE team is establishing on-call rotation health targets. Which metric BEST measures whether the on-call rotation is sustainable?",
+      "options": [
+        "Total number of deployments per week",
+        "Average number of actionable pages per on-call shift, with a target of fewer than 2 per 12-hour shift to allow adequate rest and cognitive capacity",
+        "Total lines of code written by on-call engineers during their shift",
+        "Number of engineers in the rotation"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "On-call sustainability is measured by the interrupt burden on engineers. The Google SRE book recommends fewer than 2 actionable incidents per 12-hour shift as a target for sustainability, ensuring engineers have capacity for deep work, documentation, and rest. Too many pages causes burnout and increases MTTR due to cognitive overload. Deployment count and lines of code are productivity metrics, not sustainability metrics. Rotation size affects individual burden but is a structural metric, not a health signal.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-practices-036",
+      "question": "Your team is building automation to detect and remediate a common incident pattern: a GKE pod repeatedly fails its liveness probe due to a memory leak that grows over 24 hours. An automated remediation should restart the affected pod and notify the on-call engineer. Which approach implements this with the least custom code?",
+      "options": [
+        "Write a Kubernetes operator that watches pod events and restarts pods with high memory usage",
+        "Tune the Kubernetes liveness probe to detect the unhealthy state; the kubelet automatically restarts failing pods. Separately, configure a Cloud Monitoring alerting policy on container restart count to notify the on-call engineer when restarts exceed a threshold",
+        "Configure a Cloud Scheduler job that restarts all pods every 12 hours to prevent memory accumulation",
+        "Write a Cloud Functions function triggered by a Pub/Sub push of Cloud Monitoring metric alerts that calls the Kubernetes API to restart pods"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Kubernetes liveness probes with the kubelet restart mechanism already implement automated pod remediation with zero custom code. Configuring a Cloud Monitoring alert on container restart count (container.googleapis.com/container/restart_count) provides the notification to on-call engineers. This two-part approach (liveness probe for remediation, alert for notification) requires only configuration, not custom code. Writing a Kubernetes operator or Cloud Functions function involves significant development effort for a problem that existing platform primitives already solve.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-037",
+      "question": "Your service has a 30-day rolling SLO window. An incident 28 days ago consumed 40% of the error budget. That incident is about to roll out of the 30-day window. What happens to the error budget after the incident rolls out of the window?",
+      "options": [
+        "The error budget permanently decreases by 40% as a record of the incident",
+        "Once the incident window rolls out of the 30-day measurement period, those bad events are no longer counted in the current window. The error budget effectively recovers as the incident falls out of the rolling window, assuming recent performance has been good",
+        "The 30-day rolling window is paused whenever an incident occurs, so the incident never rolls out",
+        "Error budgets are reset manually at the start of each quarter, not on a rolling basis"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A rolling SLO window evaluates compliance over the most recent N days. As time advances, old events (including incident-caused failures) fall out of the window and are replaced by newer, healthier measurements. If the service has been performing well for the 28 days since the incident, the error budget will recover as the incident rolls out of the window. This is the intended behavior of rolling windows; it incentivizes continuous improvement rather than permanent penalization for past incidents.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-practices-038",
+      "question": "Your team wants to create a Service Level Objective for a Cloud Pub/Sub-backed event processing pipeline. The pipeline must process each message within 30 seconds. You want to track this as an SLO. What is the CORRECT way to define the SLI for this pipeline?",
+      "options": [
+        "SLI = (number of messages published to the topic per minute)",
+        "SLI = (number of messages where processing_time <= 30 seconds) / (total messages processed), expressed as a ratio",
+        "SLI = (average message processing time across all messages in a 1-hour window)",
+        "SLI = (Pub/Sub subscription undelivered_message_count at any given moment)"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A well-formed SLI for a processing pipeline is a ratio: the count of events that met the performance target divided by total events. This directly reflects the user-visible outcome (was my message processed on time?) and is easily compared to an SLO percentage target. Throughput (messages per minute) measures capacity, not correctness or timeliness. Average processing time masks tail latency and does not map to a percentage SLO. Undelivered message count is a saturation metric, not an SLI for processing time compliance.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-039",
+      "question": "You are troubleshooting a production incident. Cloud Monitoring shows that traffic (requests/second) to your GKE service is within normal range, but error rate has spiked from 0.1% to 12% in the last 5 minutes. CPU and memory are normal. The four golden signals are traffic, latency, errors, and saturation. Based on this data, which signals are anomalous and what is the NEXT best investigation step?",
+      "options": [
+        "Traffic is anomalous; scale up the deployment to handle increased load",
+        "Errors is the anomalous signal; investigate recent deployments, dependency health, and application error logs in Cloud Logging to identify the root cause of the error spike",
+        "Saturation is the anomalous signal; increase pod memory limits immediately",
+        "Latency is the anomalous signal; check the load balancer backend latency metrics"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "With traffic and resource utilization (CPU/memory) normal, the error signal is the primary anomaly. Normal traffic with spiking errors points to an application-level failure rather than a capacity or traffic issue. The next investigation step is to query Cloud Logging for recent error messages from the service, check for recent deployments or configuration changes, and inspect dependency health (database, external APIs). Scaling up would not fix application errors. Memory limits are not relevant when memory is normal. Latency is not described as anomalous in the scenario.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-040",
+      "question": "Your organization wants to implement chaos engineering at maturity level 3 (automated chaos in production with guardrails). Which set of capabilities BEST characterizes this maturity level?",
+      "options": [
+        "Manually running chaos experiments in dev environments once per year and reviewing results in a quarterly meeting",
+        "Automated chaos experiments scheduled to run during business hours in production, with automatic abort conditions (SLO burn rate, error rate thresholds) that halt the experiment if steady-state is violated, and results automatically fed into postmortem tracking",
+        "Running chaos experiments only in staging, with human approval required before each experiment",
+        "Deploying broken versions to production intentionally on a weekly basis to test recovery procedures"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Mature chaos engineering in production requires: (1) automation so experiments run consistently without manual triggers; (2) steady-state hypothesis validation so the system knows what normal looks like; (3) automatic abort/stop conditions (such as SLO burn rate exceeding a threshold) that protect users if the experiment causes unexpected harm; and (4) systematic result tracking to drive improvements. Manual yearly experiments and human-approval gates are lower-maturity practices. Deploying broken versions is not a controlled chaos experiment.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-041",
+      "question": "Your team is preparing for a load test of a new GKE service that must handle 20,000 RPS at launch. The service uses Cloud Spanner as its database. What steps should you take BEFORE running the load test to ensure accurate and safe results?",
+      "options": [
+        "Run the load test directly against production to get the most realistic results",
+        "Pre-provision sufficient Cloud Spanner capacity (processing units), warm up Spanner with a gradual ramp of traffic before the peak load phase, ensure the test environment mirrors production schema and query patterns, and monitor Spanner CPU and latency during the test",
+        "Use Spanner in a different region for load testing to avoid any impact on production data",
+        "Skip the Spanner load test; only test the application layer since Spanner is managed and scales automatically"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud Spanner requires pre-provisioning of sufficient processing units (PUs) before running load tests at high RPS. Spanner also benefits from traffic ramp-up to allow internal load balancing to distribute load across nodes before hitting peak. The test environment must mirror production schema and query patterns to produce representative results. Spanner does not auto-scale on demand; it requires manual capacity provisioning. Running load tests in production risks impacting real users. Using a different region changes network latency and is not representative.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-042",
+      "question": "Your SRE team is designing the on-call escalation policy for a critical e-commerce platform. The policy must ensure that an incident is acknowledged within 5 minutes of an alert firing. Which Cloud Monitoring or incident management configuration achieves this?",
+      "options": [
+        "Configure alerting policies to send emails to a team alias; engineers check email during business hours",
+        "Integrate Cloud Monitoring alerting with an incident management platform (such as PagerDuty or Opsgenie) configured with escalation rules: page the primary on-call engineer immediately, escalate to the secondary engineer after 3 minutes if not acknowledged, escalate to the manager after another 2 minutes",
+        "Create a Pub/Sub topic that receives alert notifications; write a BigQuery streaming insert to log all alerts for review during the next business day",
+        "Configure alerting to post to a Slack channel; team members are expected to monitor the channel continuously"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A 5-minute acknowledgement SLA requires automated escalation with mobile push/SMS/voice notifications, not asynchronous channels like email or Slack. Integrating Cloud Monitoring alerting with an incident management platform that supports escalation policies (escalate to secondary after N minutes, then to manager) is the standard approach to guarantee response time SLAs. Email-only and Slack-based alerting depend on humans actively monitoring channels, which is unreliable for night or weekend incidents. BigQuery logging is a detective control, not an alerting mechanism.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-043",
+      "question": "Your team wants to implement graceful handling of dependency unavailability using exponential backoff with jitter when retrying failed Cloud Bigtable reads. Why is jitter important in the retry strategy?",
+      "options": [
+        "Jitter increases the average wait time so the service makes fewer total requests",
+        "Jitter randomizes the retry interval, preventing synchronized retry storms where all instances retry at the same moment after a dependency recovers, which would re-saturate the recovering dependency",
+        "Jitter ensures that retries always happen faster than the base backoff interval",
+        "Jitter is a Cloud Bigtable API feature that automatically space out requests from different clients"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Without jitter, all instances that experienced the same failure start their retry timers at the same time and will retry in synchronized waves. When the dependency recovers, it receives a burst of simultaneous retries that can re-cause the overload that triggered the failure. Adding jitter (random noise to the backoff interval) spreads retries over time, smoothing the recovery load on the dependency. This is a critical component of resilient retry logic in distributed systems. Jitter does not reduce total requests or speed up retries; it distributes them. Jitter is an application-level pattern, not a Bigtable API feature.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-044",
+      "question": "Your team is reviewing SLO compliance for Q1. The checkout service met its 99.9% availability SLO every month. The product team proposes reducing SRE involvement to free up engineering time for new features. What is the BEST SRE response to this proposal?",
+      "options": [
+        "Agree immediately since good SLO compliance means the service no longer needs SRE attention",
+        "Acknowledge the strong Q1 performance, but note that SRE involvement enables the reliability that produces good compliance; propose reducing toil-focused on-call time while maintaining reliability engineering work such as capacity planning, dependency reviews, and automated testing",
+        "Reject the proposal; SRE effort must remain constant regardless of compliance metrics",
+        "Transfer full ownership to the product team and remove SRE from the service entirely"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Good SLO compliance is a result of SRE practices, not evidence that SRE is no longer needed. The appropriate response is to distinguish between toil (operational work that scales with traffic) and engineering work (capacity planning, reliability improvements, automation) and negotiate a rebalancing rather than outright reduction. SREs should continuously look for opportunities to reduce toil through automation, which frees up time for feature work. Complete removal of SRE involvement would erode the reliability foundations that produced the good metrics.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-045",
+      "question": "You are configuring Cloud Run autoscaling for a service that handles bursty workloads. The service takes 8 seconds to initialize per instance (it loads a large model). You set min-instances: 2 and max-instances: 50. During a sudden traffic spike to 200 concurrent requests, you observe that new instances are created but requests queue for 8-10 seconds. What additional configuration would REDUCE this queuing without over-provisioning?",
+      "options": [
+        "Increase max-instances to 500",
+        "Enable Cloud Run CPU always-on allocation and set concurrency to match the expected requests-per-instance ratio; set startup CPU boost to allocate additional CPU during container initialization to speed up the 8-second startup",
+        "Reduce the container image size so startup takes less than 1 second",
+        "Switch to Cloud Run jobs instead of Cloud Run services to handle bursty workloads"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud Run startup CPU boost temporarily allocates additional CPU during container startup, which can significantly reduce initialization time for CPU-intensive startup tasks like loading ML models. Combined with setting appropriate concurrency values (how many concurrent requests each instance handles), this reduces both startup latency and over-provisioning. Increasing max-instances does not reduce per-instance startup time. Reducing image size helps download time but not model loading time. Cloud Run jobs are for batch/scheduled work, not request-serving services with latency requirements.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
     }
   ]
 }

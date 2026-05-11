@@ -1263,6 +1263,426 @@
       "explanation": "The correct approach embeds the load test as a pipeline step that produces a deterministic pass/fail signal. Running a load test tool (k6, Locust, or similar) in Cloud Build, checking p99 latency programmatically, and exiting non-zero on threshold breach gives the pipeline a hard gate. When configured as a Cloud Deploy postdeploy action, a non-zero exit fails the rollout verification and blocks automatic promotion to production. Cloud Scheduler introduces asynchrony and manual review, which does not provide an automated gate. An SLO burn rate alert is reactive and requires manual intervention rather than automated blocking. Using waitFor: ['-'] would run the test in parallel with deployment, potentially checking latency before the deployment is stable and not blocking promotion.",
       "category": "Building and implementing CI/CD pipelines for a service",
       "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-031",
+      "question": "Your organization requires that every container image deployed to production must have been built by a Cloud Build trigger, not pushed manually by a developer. Which GCP mechanism enforces this at deploy time?",
+      "options": [
+        "IAM policy that denies the Artifact Registry writer role to all human user accounts",
+        "Binary Authorization policy requiring an attestation that is only created by the Cloud Build pipeline's service account after a successful build",
+        "VPC Service Controls perimeter that blocks Artifact Registry pushes from outside the corporate network",
+        "Artifact Registry tag immutability policy that prevents overwriting the production tag"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Binary Authorization enforces deployment policies by requiring cryptographic attestations on images before they can be deployed to GKE or Cloud Run. By configuring the pipeline's Cloud Build service account as the only attestor, and requiring that attestation on the production policy, images pushed manually without going through the pipeline will lack the attestation and be blocked at deploy time. IAM restrictions on push rights help but do not prevent an authorized CI service account from being misused. VPC Service Controls restrict API access perimeters, not pipeline provenance. Tag immutability prevents overwriting but does not enforce build provenance.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-032",
+      "question": "A Cloud Build trigger is configured to fire on pushes to any branch matching the pattern ^feature/.*$. A developer pushes to feature/new-login. The build fails at the unit test step. What happens to subsequent steps in the cloudbuild.yaml?",
+      "options": [
+        "All remaining steps are skipped because a non-zero exit from any step halts the build by default",
+        "Remaining steps run because Cloud Build continues after failures unless the failFast option is set",
+        "The build retries the failed step three times before proceeding to the next step",
+        "Only steps that explicitly declare waitFor on the failed step are skipped; independent steps still run"
+      ],
+      "correctAnswers": [0],
+      "explanation": "In Cloud Build, if a step exits with a non-zero status code, the entire build is immediately marked as failed and no subsequent steps execute. This is the default behavior and does not require any special configuration. There is no automatic retry mechanism for failed steps. Steps that do not declare a waitFor dependency on the failed step are still skipped because the build-level failure terminates all queued work.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-033",
+      "question": "Your team wants to use Cloud Build to build and push a multi-architecture container image (linux/amd64 and linux/arm64) to Artifact Registry in a single pipeline run. Which approach is correct for Cloud Build?",
+      "options": [
+        "Run two separate Cloud Build triggers in parallel, one per architecture, and merge the manifests with a third trigger",
+        "Use a Cloud Build step that invokes docker buildx with the --platform linux/amd64,linux/arm64 flag and pushes a multi-arch manifest to Artifact Registry",
+        "Cloud Build does not support multi-architecture builds; use Cloud Run jobs with separate ARM and AMD workers",
+        "Use the built-in Cloud Build machine type arm-e2-medium to produce ARM images automatically alongside the default AMD build"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Docker Buildx with the --platform flag can produce multi-architecture images and push a single manifest list to any OCI-compatible registry including Artifact Registry. This can be done in a single Cloud Build step using the docker:latest or a custom buildx-enabled image. Splitting into two triggers adds orchestration complexity. Cloud Build does support multi-arch builds via Buildx. The arm-e2-medium machine type builds on ARM hardware but does not automatically produce a multi-arch manifest.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-034",
+      "question": "You need to pass a database password from Secret Manager to a Cloud Build step without the value appearing in the build logs or the cloudbuild.yaml file. Which Cloud Build feature handles this securely?",
+      "options": [
+        "Store the password as a Cloud Build substitution variable prefixed with _; Cloud Build automatically redacts substitution values from logs",
+        "Use the availableSecrets block in cloudbuild.yaml to reference the Secret Manager secret; the value is injected as an environment variable and automatically redacted in build logs",
+        "Base64-encode the password and store it in a Cloud Storage bucket; have the step decode it at runtime",
+        "Store the password as a Cloud Build trigger environment variable; trigger variables are never written to logs"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Build's availableSecrets block integrates directly with Secret Manager. You specify the secret resource name and map it to an environment variable name; Cloud Build fetches the secret version at build time, injects it into the step, and automatically redacts occurrences of the value in build logs. Substitution variables are not redacted in logs by default. Base64 encoding is not encryption and the decoded value would appear in logs if echoed. Trigger environment variables are not natively redacted from step logs.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-035",
+      "question": "Your Cloud Build pipeline builds a Java Maven project. The Maven dependency download phase accounts for 6 of 10 total build minutes, but the pom.xml changes infrequently. You want to cache the Maven local repository between builds. Which two configuration elements in cloudbuild.yaml enable this? (Choose TWO)",
+      "options": [
+        "Declare a named volume (e.g., m2-cache) in the volumes section of the step that mounts at /root/.m2; volumes persist within a build but not across builds",
+        "Use the artifacts.objects section to upload the /root/.m2 directory to a Cloud Storage bucket at the end of each build, and add an initial step that restores it with gsutil rsync at the start of each build",
+        "Set options.volumes at the top level to declare a persistent volume backed by a Cloud Storage bucket that Cloud Build mounts automatically",
+        "Add a cacheFrom directive in the Maven step pointing to the Artifact Registry Maven repository so dependencies are fetched from there"
+      ],
+      "correctAnswers": [1, 3],
+      "explanation": "Cross-build caching for Maven requires explicitly saving and restoring the local repository. The correct pattern is: (1) at build start, use gsutil rsync to restore ~/.m2 from a Cloud Storage bucket; (2) at build end, use artifacts.objects or gsutil rsync to persist the updated cache back. Additionally, configuring Maven to use Artifact Registry as a remote repository (via settings.xml and a cacheFrom-equivalent mirror) means dependencies are fetched from the internal registry rather than Maven Central, reducing latency on cache misses. Named volumes in Cloud Build persist only within a single build run, not across builds. Cloud Build does not support persistent volumes backed by Cloud Storage at the options level.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-036",
+      "question": "A delivery pipeline in Cloud Deploy has three stages: dev, staging, production. A release was promoted to staging successfully. Now you want to promote it to production but override one of the Kubernetes manifest values -- specifically the replica count -- without modifying the source manifests. Which Cloud Deploy feature allows this?",
+      "options": [
+        "Edit the release's Kubernetes manifests directly in the Cloud Deploy release artifact store before promoting",
+        "Use deployParameters in the production target definition to specify runtime parameter overrides that Skaffold applies when rendering manifests for that target",
+        "Create a new release with a modified clouddeploy.yaml that has the updated replica count hardcoded",
+        "Use a Cloud Build substitution to override the replica count; pass it as a trigger parameter at promotion time"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Deploy supports deployParameters at the target level, which are key-value pairs passed to Skaffold at render time and used to override values in Helm charts, Kustomize overlays, or Skaffold profiles. This allows production-specific values (like increased replica counts) to be defined in the target configuration rather than in the release manifests, enabling the same release to be deployed with environment-appropriate settings. Editing release artifacts directly is not supported and would break provenance. Creating a new release for a config-only change is wasteful and loses the promotion chain. Cloud Build substitutions apply at build time, not at Cloud Deploy promotion time.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-037",
+      "question": "Your organization has multiple teams each with their own Cloud Build triggers and pipelines. The security team wants to enforce that all builds in the organization use only a pre-approved list of base images for the first step. Which approach enforces this at scale without requiring each team to self-enforce?",
+      "options": [
+        "Send all teams an email with the approved image list and rely on code review to catch violations",
+        "Create an Organization Policy constraint that restricts Cloud Build steps to approved container images",
+        "Use Binary Authorization to attest each approved base image and configure a Cloud Build build-level policy that rejects builds starting with unapproved images",
+        "Configure a Cloud Build trigger filter on each team's project that inspects the cloudbuild.yaml and fails the build if unapproved images are detected"
+      ],
+      "correctAnswers": [3],
+      "explanation": "While Organization Policy constraints cover many GCP resources, Cloud Build does not expose a native org policy constraint for restricting step images. The practical enforcement pattern is a pipeline-level gate: a validation step at the start of each build that inspects the build configuration and fails if unapproved images are referenced. This can be centrally deployed via a shared Cloud Build trigger template or enforced via a pre-build hook. Binary Authorization operates at deploy time and checks deployed container images, not Cloud Build step images. Email-based self-enforcement is not a technical control.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-038",
+      "question": "You are configuring a Cloud Deploy delivery pipeline for a Cloud Run service. After each successful deployment to the staging target, you want Cloud Deploy to automatically promote the release to production without human intervention. Which Cloud Deploy feature automates this?",
+      "options": [
+        "Set autoPromote: true in the staging stage of the delivery pipeline configuration",
+        "Create a Cloud Deploy Automation resource with the promote action triggered on a successful rollout to the staging target",
+        "Configure a Cloud Build trigger that runs gcloud deploy releases promote after each successful staging deploy",
+        "Enable continuous delivery mode on the delivery pipeline; Cloud Deploy promotes automatically when all post-deploy verifications pass"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Deploy Automation resources define automated actions that trigger based on pipeline events. An Automation with the promote action and a trigger condition of successful rollout completion on the staging target will automatically create a promotion to the next target in the pipeline sequence. This is the native Cloud Deploy mechanism for continuous delivery workflows. There is no autoPromote field in the pipeline stage configuration. A Cloud Build trigger that calls gcloud is an external workaround that loses the unified pipeline model. There is no 'continuous delivery mode' setting on a delivery pipeline.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-039",
+      "question": "A team pushes a Cloud Run service update. The new revision is deployed but the team wants to validate it serves traffic correctly before it receives any user traffic. Which Cloud Run deployment pattern supports deploying a new revision with zero traffic, testing it directly, and then migrating traffic?",
+      "options": [
+        "Deploy the new revision using --no-traffic flag so it receives 0% of traffic; invoke it directly via its revision URL for validation; then update traffic splits to route users to it",
+        "Deploy the new revision normally; Cloud Run always holds traffic at 0% until a health check passes",
+        "Use Cloud Deploy with a canary strategy starting at 0% and requiring manual approval before any traffic is assigned",
+        "Deploy to a separate Cloud Run service, run validation, then update Cloud Load Balancing to point to the new service"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Cloud Run supports the --no-traffic flag on gcloud run deploy, which deploys the new revision without shifting any user traffic to it. Each revision in Cloud Run has a unique URL that can be used to send direct test traffic regardless of the service's traffic split. After validation, you update the traffic split with gcloud run services update-traffic to route user traffic to the validated revision. Cloud Run does not hold traffic at 0% pending health checks; it assigns traffic based on the configured split. Cloud Deploy canary at 0% does not expose a revision URL for direct testing without traffic configuration.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-040",
+      "question": "Your team's Cloud Build pipeline produces a Docker image and pushes it to Artifact Registry. You want to enforce that the image tag used in production Kubernetes manifests always matches a specific immutable digest, not a mutable tag like 'latest'. Which practice enforces this?",
+      "options": [
+        "Configure Artifact Registry tag immutability so the 'latest' tag cannot be overwritten",
+        "In the Cloud Build step, after pushing the image, use docker inspect or gcloud artifacts docker images describe to retrieve the SHA256 digest; write the digest reference (image@sha256:...) into the Kubernetes manifest before deploying",
+        "Use the $SHORT_SHA Cloud Build substitution as the image tag; short SHAs are immutable by definition",
+        "Enable Binary Authorization in dry-run mode; it logs digest mismatches without blocking deployments"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Image digests (SHA256) are content-addressed and immutable: a given digest always refers to the exact same image layers. By resolving the pushed image's digest and writing it into the manifest as image@sha256:..., you guarantee the deployed artifact is exactly what was built and tested, immune to tag mutation. Tag immutability on Artifact Registry prevents overwriting a tag but the tag itself still refers to a mutable pointer concept across different pushes. $SHORT_SHA is a useful tag for traceability but is still a tag, not a digest reference. Binary Authorization dry-run mode does not block deployments.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-041",
+      "question": "A Cloud Build pipeline deploys infrastructure using Terraform. The pipeline must: (1) initialize Terraform, (2) run terraform plan and save the output, (3) require a human to review the plan before apply. Which design correctly introduces a human gate between plan and apply?",
+      "options": [
+        "Add a sleep 3600 step between plan and apply to give engineers time to review",
+        "Split into two Cloud Build triggers: a plan trigger that saves the plan file to Cloud Storage and posts the plan output to a review channel; an apply trigger that is manually invoked after review, downloads the saved plan, and runs terraform apply",
+        "Use a single trigger with a long timeout; the apply step polls a Cloud Storage flag file set by an engineer",
+        "Use Cloud Deploy with requireApproval on the production target to pause between plan and apply"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The correct pattern separates plan and apply into two distinct Cloud Build triggers. The plan trigger runs terraform plan -out=tfplan, saves the binary plan file to Cloud Storage with a build ID in the path, and optionally posts the human-readable plan to Slack or an issue tracker. The apply trigger is manually invoked, downloads the saved plan file, and runs terraform apply tfplan -- ensuring apply executes exactly the reviewed plan. A sleep step is unreliable and blocks the worker. Polling a flag file is a fragile anti-pattern. Cloud Deploy manages container deployments and does not integrate with Terraform plan/apply workflows.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-042",
+      "question": "Your team uses Artifact Registry to store both Docker images and npm packages. A developer reports that npm install is failing in CI with a 403 error when trying to fetch packages from the Artifact Registry npm repository. The Cloud Build service account has roles/artifactregistry.reader on the repository. What is the most likely additional configuration step that is missing?",
+      "options": [
+        "Grant the Cloud Build service account roles/artifactregistry.writer instead of reader; writer includes read permissions",
+        "Configure an .npmrc file in the build step that sets the registry URL and uses the gcloud credential helper or an access token for authentication, since npm does not natively use GCP service account credentials",
+        "Enable Private Google Access on the VPC subnet used by the Cloud Build private pool",
+        "Add the npm registry URL to the Artifact Registry repository's allowed origins list"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Artifact Registry npm repositories require that the npm client be configured to use the correct registry URL and an authentication token. npm does not automatically use GCP Application Default Credentials. The standard approach is to generate a token using gcloud auth print-access-token or use the Artifact Registry credential helper (npx google-artifactregistry-auth) to populate the .npmrc file with the correct auth token before running npm install. The IAM role grants the GCP-level permission but does not configure npm's authentication mechanism. Writer includes reader permissions but does not resolve the npm authentication gap. Private Google Access is a network-level configuration unrelated to npm auth.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-043",
+      "question": "You are setting up a Cloud Build trigger that must only fire when both of these conditions are true: the push is to the main branch AND the changed files include at least one file under the src/ directory. Which trigger configuration achieves this?",
+      "options": [
+        "Set branchName: main and add src/** to the includedFiles filter in the trigger configuration",
+        "Create two separate triggers and configure them to share build results via Pub/Sub",
+        "Use a cloudbuild.yaml that checks the branch name and file list in a conditional step and exits non-zero if the conditions are not met",
+        "Set a Pub/Sub trigger that subscribes to repository push events and filters by branch and path in the subscription filter"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Cloud Build trigger configuration supports both a branch name pattern (branchName) and an includedFiles glob list. When both are configured, the trigger only fires when a push matches the branch pattern AND at least one changed file matches the includedFiles glob. This is the native, declarative way to implement compound conditions. Using two separate triggers cannot enforce a logical AND on a single build. A cloudbuild.yaml conditional step fires after the trigger has already created a build, wasting resources. A Pub/Sub trigger with subscription filters is more complex and does not natively understand changed file paths.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-044",
+      "question": "Your Cloud Deploy pipeline deploys a GKE service. After a rollout, you want to automatically roll back if Cloud Monitoring detects that the error rate SLO burn rate exceeds a threshold within 10 minutes of deployment. Which Cloud Deploy feature supports this automated rollback based on metrics?",
+      "options": [
+        "Configure a Cloud Monitoring alerting policy and connect it to a Cloud Deploy Automation resource with the repair rollout (rollback) action triggered on the alert",
+        "Set a rollbackOnFailure: true flag in the delivery pipeline stage; Cloud Deploy polls Cloud Monitoring automatically",
+        "Create a Cloud Build step in a postdeploy action that queries Cloud Monitoring and calls gcloud deploy rollouts rollback if the threshold is exceeded",
+        "Use Cloud Deploy's built-in canary analysis that reads from Cloud Monitoring metrics and rolls back automatically if the canary fails"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Cloud Deploy Automation resources support a repair rollout action that can be triggered by external events including Cloud Monitoring alert policies firing. By connecting a burn-rate alert policy to a Cloud Deploy Automation, you get automated rollback when metric thresholds are breached after a deployment. There is no rollbackOnFailure flag in Cloud Deploy pipeline stage configuration. A Cloud Build postdeploy step that queries metrics and calls rollback is a valid workaround but is more complex than using the native Automation feature. Cloud Deploy's canary analysis (via Skaffold) provides metric-based gating but operates during the rollout progression, not as a post-completion monitor.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-045",
+      "question": "A team is migrating from Jenkins to Cloud Build. Their Jenkins pipeline uses a shared library of reusable Groovy functions imported across many jobs. What is the equivalent pattern in Cloud Build for sharing reusable build logic across multiple pipelines?",
+      "options": [
+        "Cloud Build does not support reusable logic; each cloudbuild.yaml must be self-contained",
+        "Store common steps as custom Docker images published to Artifact Registry; reference them by image name in the name field of steps across multiple cloudbuild.yaml files",
+        "Use Cloud Build triggers with the includedFiles filter to only run relevant steps per pipeline",
+        "Define a Cloud Build worker pool with pre-installed shared libraries that all builds inherit"
+      ],
+      "correctAnswers": [1],
+      "explanation": "In Cloud Build, reusable logic is encapsulated in custom container images (sometimes called Cloud Builders). You build an image that contains your shared scripts, tools, or logic, push it to Artifact Registry, and reference it as the name of a step in any cloudbuild.yaml. This is the idiomatic Cloud Build equivalent of shared Jenkins libraries. includedFiles controls trigger conditions, not step logic sharing. Private worker pools customize machine specs and network access, not the build step code available to pipelines.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-046",
+      "question": "You want to implement GitOps for your GKE workloads: the cluster state should automatically reconcile to match the manifests stored in a Git repository, without Cloud Build triggering explicit kubectl apply commands. Which GCP-native tool enables this continuous reconciliation model?",
+      "options": [
+        "Cloud Deploy with a delivery pipeline that polls the Git repository every minute for changes",
+        "Config Sync (part of Config Management on GKE), which continuously watches a Git repository and reconciles the cluster state to match the manifests",
+        "Cloud Build with a push trigger that runs kubectl apply on every commit to the manifests repository",
+        "Anthos Config Management Constraints Framework, which enforces policy but does not reconcile manifest state"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Config Sync is the GCP-native GitOps engine included in GKE's Config Management add-on. It runs as a controller in the cluster and continuously reconciles the live cluster state against the declared state in a configured Git repository, applying any drift corrections without external pipeline invocations. Cloud Deploy requires explicit release and promotion actions and does not poll Git autonomously. A Cloud Build push trigger applies on commits but does not detect or correct drift between deployments. The Constraints Framework is a policy enforcement tool, not a reconciliation engine.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-047",
+      "question": "Your Artifact Registry Docker repository stores images for many services. An image for a legacy service has not been pushed or pulled in 18 months and occupies significant storage. You want to automatically clean up images that have not been accessed in over 12 months without manual intervention. Which Artifact Registry feature handles this?",
+      "options": [
+        "Enable versioned object lifecycle management on the Cloud Storage bucket backing Artifact Registry",
+        "Configure a cleanup policy on the Artifact Registry repository that deletes untagged or stale images based on age or last-access criteria",
+        "Write a Cloud Scheduler job that runs gcloud artifacts docker images list and deletes old images via a Cloud Run function",
+        "Set a retention policy on the repository that locks images after 12 months, preventing further writes but not deleting existing images"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Artifact Registry supports repository-level cleanup policies that automatically delete images matching criteria such as tag status (untagged), creation age, or keep-most-recent count. Once configured, the cleanup runs periodically without manual intervention. Artifact Registry does not use Cloud Storage bucket lifecycle rules as its storage is managed internally. A Cloud Scheduler and Cloud Run solution works but adds operational overhead and is not the native approach. Retention policies in Artifact Registry prevent deletion to satisfy compliance requirements -- they are the opposite of cleanup.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-048",
+      "question": "Your Cloud Build pipeline runs in a private pool peered to a Shared VPC. The build steps need to push images to Artifact Registry and store build logs in Cloud Storage, but all traffic must stay on Google's private network. The private pool has NO_PUBLIC_EGRESS set. What additional VPC configuration is required for the build steps to reach these Google APIs?",
+      "options": [
+        "Add external IP addresses to the private pool workers to allow direct internet access to Google APIs",
+        "Configure a Cloud NAT gateway on the VPC to translate private pool worker requests to Google API endpoints",
+        "Enable Private Google Access on the subnet used for the private pool VPC peering so that workers can reach Google APIs over internal IP addresses",
+        "Deploy a Squid proxy VM in the VPC and configure the build steps to use it as an HTTP proxy for all Google API calls"
+      ],
+      "correctAnswers": [2],
+      "explanation": "When a Cloud Build private pool has NO_PUBLIC_EGRESS set, workers have no direct internet access. To reach Google APIs (Artifact Registry, Cloud Storage, etc.), Private Google Access must be enabled on the peered VPC subnet. Private Google Access allows instances without external IPs to reach Google API endpoints using their internal routing, keeping all traffic on Google's backbone without traversing the internet. Adding external IPs defeats the purpose of NO_PUBLIC_EGRESS. Cloud NAT provides internet access for internal instances but the traffic would still exit Google's private backbone. A proxy VM adds complexity and the proxy itself would need internet access to reach Google APIs.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-049",
+      "question": "A team wants to reduce the time their Cloud Build pipeline spends on Docker image builds. The Dockerfile has 12 layers; the first 8 layers (base OS, system dependencies) change rarely, while the last 4 layers (application code) change on every commit. Which Docker build optimization in Cloud Build is MOST effective?",
+      "options": [
+        "Use FROM scratch as the base image to minimize the number of layers",
+        "Use kaniko with --cache=true and --cache-repo pointing to Artifact Registry so unchanged early layers are pulled from cache instead of rebuilt",
+        "Increase Cloud Build machine type to n1-highcpu-8 to speed up layer hashing",
+        "Use docker build --no-cache to avoid stale cache issues and always build all layers fresh"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Kaniko's remote layer caching pushes each built layer to an OCI registry (Artifact Registry) and on subsequent builds pulls cached layers for instructions that have not changed. Since the first 8 layers are stable, they will be cache hits on every build, dramatically reducing build time. Only the 4 application layers that change every commit need to be rebuilt. FROM scratch eliminates the base image entirely and is only suitable for statically compiled binaries. Increasing machine type speeds up CPU-bound operations but image layer rebuilding is often I/O or network bound. --no-cache disables all caching and would make every build slower.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-050",
+      "question": "Choose TWO correct statements about Cloud Deploy delivery pipelines and releases. (Choose TWO)",
+      "options": [
+        "A release is a snapshot of the application manifests and container images at a point in time; it is created once and then promoted through targets without modification",
+        "Each promotion to a new target creates a new release with a fresh manifest snapshot",
+        "A delivery pipeline defines the ordered sequence of targets through which releases are promoted",
+        "Targets in a Cloud Deploy pipeline must all be of the same type (e.g., all GKE or all Cloud Run)"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "In Cloud Deploy, a release is an immutable snapshot: once created it captures the manifest source and rendered configuration, and that same release is promoted through each target in the pipeline. This ensures consistency across environments. The delivery pipeline defines the ordered list of stages and their associated targets, governing the promotion path. Promoting to a new target does not create a new release; it creates a new rollout of the same release. Cloud Deploy pipelines support mixed target types (GKE, Cloud Run, Anthos) in the same pipeline.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-051",
+      "question": "Your team's Cloud Build pipeline builds a Go binary and then packages it into a minimal Docker image. Build times are slow because the Go compilation step re-downloads all modules on every run. The go.sum file rarely changes. What is the MOST effective caching strategy for this workload in Cloud Build?",
+      "options": [
+        "Use a multi-stage Dockerfile where the first stage caches the Go module download layer; Cloud Build reuses Docker layer cache automatically across builds",
+        "At the start of the build, restore the GOPATH module cache from a Cloud Storage bucket; at the end, persist it back to Cloud Storage; skip the restore if go.sum has not changed since the last cached run",
+        "Set the GOFLAGS=-mod=vendor environment variable and commit the vendor directory to the repository so modules are never downloaded during builds",
+        "Use a Cloud Build private pool with a larger disk size so the module cache persists on the worker disk between builds"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The recommended pattern for cross-build Go module caching in Cloud Build is to store the module cache ($GOPATH/pkg/mod) in a Cloud Storage bucket and restore it at build start. By checking whether go.sum has changed since the last cache write (e.g., by comparing a stored hash), you can skip restoration and let Go re-download only when dependencies actually change. Docker layer caching for Go modules only works reliably within kaniko builds using --cache-repo and is not automatic in standard Cloud Build. Vendoring works but commits potentially large binaries to source control. Private pool disk is ephemeral; each build job may run on a different worker, so the module cache is not preserved between builds.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-052",
+      "question": "A Cloud Deploy pipeline deploys a service to a GKE cluster. The Skaffold configuration uses Helm for rendering. During a rollout, you need to override the image tag for the Helm chart without modifying the chart values file. Which Cloud Deploy configuration allows per-release image tag overrides?",
+      "options": [
+        "Set the image tag as a Cloud Build substitution and pass it through to the release via a trigger parameter",
+        "Specify the container image in the images block of the Cloud Deploy release creation command (gcloud deploy releases create --images); Cloud Deploy and Skaffold use this to substitute the image reference in the Helm chart",
+        "Modify the Helm values.yaml in the Git repository and create a new commit before each release",
+        "Use a Cloud Deploy Automation to update the Helm chart before each rollout"
+      ],
+      "correctAnswers": [1],
+      "explanation": "When creating a Cloud Deploy release with gcloud deploy releases create, you can pass --images=IMAGE_NAME=IMAGE_REFERENCE to specify the exact container image (including digest or tag) to use. Skaffold processes this image map and substitutes the matching image references in the Helm chart templates or values. This is the standard way to parameterize image versions in Cloud Deploy without modifying source manifests per release. Cloud Build substitutions operate at build time, before the release exists. Modifying values.yaml for each release creates commit noise and couples the release process to source control changes. Automations handle pipeline flow, not manifest rendering.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-053",
+      "question": "Your organization requires that all Cloud Build pipelines run with least-privilege service accounts. A pipeline only needs to push images to one specific Artifact Registry repository and write logs to Cloud Logging. Which TWO IAM roles should be granted to the Cloud Build service account?",
+      "options": [
+        "roles/artifactregistry.writer on the specific Artifact Registry repository",
+        "roles/artifactregistry.admin on the project to ensure the service account can manage the repository",
+        "roles/logging.logWriter on the project to allow writing build logs to Cloud Logging",
+        "roles/editor on the project to ensure broad access for any build operation"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Least-privilege means granting only the permissions needed. roles/artifactregistry.writer scoped to the specific repository grants push access without admin privileges over the registry. roles/logging.logWriter allows the service account to write log entries to Cloud Logging without broader project permissions. roles/artifactregistry.admin grants permissions to create, delete, and manage repositories -- excessive for a pipeline that only pushes images. roles/editor grants broad write access across the entire project, violating least-privilege.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-054",
+      "question": "A webhook trigger is configured in Cloud Build to receive events from an external system. The external system sends a JSON payload. You want to extract the value of the field data.version from the payload and use it as the image tag in the build. Which Cloud Build feature allows this?",
+      "options": [
+        "Webhook triggers automatically parse JSON payloads and expose all fields as substitution variables",
+        "Use a CEL (Common Expression Language) filter expression in the trigger to bind data.version to a user-defined substitution such as $_VERSION, then reference $_VERSION in the cloudbuild.yaml",
+        "Write a Cloud Functions function that receives the webhook, parses the JSON, and invokes the Cloud Build API with the version as a substitution",
+        "Base64-decode the webhook payload in the first Cloud Build step and extract the version using jq"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Build webhook triggers support CEL expressions for both filtering and payload binding. You can write a substitution binding such as _VERSION: body.data.version to extract a field from the incoming JSON payload and map it to a user-defined substitution. This substitution is then available as $_VERSION in the cloudbuild.yaml steps. Webhook triggers do not automatically expose all payload fields as substitutions. A Cloud Functions intermediary works but adds operational overhead for something natively supported. Decoding and parsing in a build step happens after the build starts and cannot affect the initial substitution values.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-055",
+      "question": "Your team runs GKE workloads across three clusters: one each for dev, staging, and production. You want a single Cloud Deploy delivery pipeline to manage releases across all three clusters. How should the targets be configured?",
+      "options": [
+        "Create one target that references all three GKE clusters using a comma-separated cluster list in the gke.cluster field",
+        "Create three separate targets, each referencing one GKE cluster by its project, location, and cluster name; reference them as sequential stages in the delivery pipeline",
+        "Create three delivery pipelines, one per environment, and link them using Cloud Deploy pipeline chaining",
+        "Create a single multi-target that groups all three clusters; all three will be deployed simultaneously on each release"
+      ],
+      "correctAnswers": [1],
+      "explanation": "In Cloud Deploy, each target represents one deployment destination. For three clusters, you define three targets each with a gke block specifying the project, location, and cluster. These targets are then referenced as sequential stages in the delivery pipeline's stages list, enforcing dev -> staging -> production promotion order. A single target cannot reference multiple clusters; the gke.cluster field accepts one cluster. Three separate pipelines lose the unified promotion model and approval gates. A multi-target deploys all clusters simultaneously, which is appropriate for multi-region parallel deploys but not for ordered environment promotion.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-cicd-056",
+      "question": "Your Cloud Build pipeline is responsible for deploying Terraform changes. The pipeline must ensure that even if two builds are triggered simultaneously (e.g., two engineers push at the same time), only one Terraform apply runs at a time to prevent state corruption. Which Cloud Build feature addresses this?",
+      "options": [
+        "Set the build timeout to a very long value so the second build waits for the first to complete",
+        "Configure a Cloud Build approval gate on the apply trigger so a human must approve each apply, naturally serializing them",
+        "Use a Cloud Build trigger with concurrentBuilds: false (or set the queue depth to 1 and use build queuing) so that concurrent builds for the same trigger are serialized",
+        "Store a lock file in Cloud Storage and have the build step check for and acquire the lock before running terraform apply"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Cloud Build supports controlling build concurrency at the trigger level. Setting the trigger to serialize builds (via concurrency controls or a build queue with depth 1) ensures that even if two pushes arrive simultaneously, only one build runs the apply step at a time while the other waits in queue. This is cleaner than application-level lock files, which require careful cleanup logic on build failure. A long timeout does not prevent concurrent execution. Human approval serializes naturally but adds friction and is not fully automated.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-057",
+      "question": "You are designing a CI/CD pipeline for a microservices application with 15 services in a monorepo. You want each service to be built and deployed independently, only when its source files change. Which Cloud Build trigger configuration achieves this efficiently?",
+      "options": [
+        "Create one trigger with a single cloudbuild.yaml that builds all 15 services in parallel on every push",
+        "Create 15 separate triggers, one per service, each with an includedFiles filter scoped to that service's directory and its own cloudbuild.yaml at the service root",
+        "Create one trigger that runs a shell script to detect changed services and dynamically generates a cloudbuild.yaml for only the changed services",
+        "Create a nightly trigger that builds and deploys all 15 services on a schedule regardless of changes"
+      ],
+      "correctAnswers": [1],
+      "explanation": "The idiomatic Cloud Build approach for monorepo CI is a trigger per service, each with an includedFiles filter pointing to that service's directory subtree. When a push changes only service A's files, only service A's trigger fires. Services B through O are unaffected and their pipelines do not run. This provides precise, low-latency CI without cross-service coupling. Building all 15 services on every push wastes build minutes and slows feedback for changes to individual services. Dynamically generating cloudbuild.yaml is fragile and complex. A nightly schedule provides no per-commit validation.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-058",
+      "question": "Your Cloud Build pipeline builds a container image and pushes it to Artifact Registry. Immediately after the push, a downstream system needs to be notified with the image's full URI including digest. Which Cloud Build mechanism provides this information post-build?",
+      "options": [
+        "Cloud Build writes a build manifest JSON to the build's Cloud Storage logs bucket containing the pushed image URIs and their digests; downstream systems can read this file",
+        "The image URI and digest are automatically published to a Pub/Sub topic named cloudbuild-results after every build",
+        "Query the Artifact Registry API after the build to find the most recently pushed image in the repository",
+        "Parse the Cloud Build build log for the digest line printed by docker push"
+      ],
+      "correctAnswers": [0],
+      "explanation": "When images are declared in the images field of cloudbuild.yaml, Cloud Build pushes them and writes a build result manifest (artifacts.json) to the build's Cloud Storage logs bucket. This JSON file contains the fully qualified image URIs including SHA256 digests for each pushed image. Downstream systems can reliably read this file to get exact image references for deployment. There is no automatic cloudbuild-results Pub/Sub topic for image digests (there is a cloud-builds topic for build state events, but not image digests). Querying the registry for the most recent push is racy in concurrent environments. Parsing log output is brittle.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-cicd-059",
+      "question": "A team wants to implement a deployment pipeline for an App Engine Flex service that: (1) deploys a new version, (2) serves 0% of traffic initially, (3) runs automated smoke tests against the new version URL, (4) migrates all traffic to the new version only if smoke tests pass. Which sequence of gcloud commands correctly implements steps 2 through 4?",
+      "options": [
+        "gcloud app deploy --no-promote; run smoke tests against the version URL; if tests pass, gcloud app services set-traffic default --splits NEW_VERSION=1",
+        "gcloud app deploy --promote=false; run smoke tests against the default URL; if tests pass, gcloud app deploy again with --promote",
+        "gcloud app deploy; run smoke tests against the new version URL; gcloud app versions migrate NEW_VERSION",
+        "gcloud app deploy --no-promote; run smoke tests against the default service URL; if tests pass, gcloud app versions start NEW_VERSION"
+      ],
+      "correctAnswers": [0],
+      "explanation": "gcloud app deploy --no-promote deploys the new version to App Engine Flex without sending it any traffic, keeping 100% on the current serving version. Each deployed version has its own URL (https://VERSION_ID-dot-SERVICE-dot-PROJECT.appspot.com) which can be used for smoke testing without affecting user traffic. If tests pass, gcloud app services set-traffic assigns the new version 100% of traffic. Option B's --promote=false is not a valid flag. Option C deploys with promotion (traffic shifts immediately) before tests run. Option D's gcloud app versions start starts a stopped version but does not control traffic splitting.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-cicd-060",
+      "question": "Your organization uses Cloud Deploy across 10 GCP projects. You want to ensure that all delivery pipelines across all projects follow the same naming convention and require approval for production targets. Which approach enforces this at the organization level with the least ongoing maintenance?",
+      "options": [
+        "Send a policy document to all project owners and ask them to comply voluntarily",
+        "Use an Organization Policy custom constraint that validates Cloud Deploy pipeline and target configurations, enforcing naming patterns and requireApproval on production targets",
+        "Create a centralized Cloud Deploy pipeline in a shared services project and require all teams to use it for production deployments",
+        "Audit all Cloud Deploy pipelines weekly using a Cloud Asset Inventory query and file tickets for non-compliant configurations"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Organization Policy Service supports custom constraints that can evaluate the properties of Cloud Deploy resources (delivery pipelines and targets) at create or update time, enforcing naming conventions and mandatory field values like requireApproval: true on production targets. Once applied at the organization or folder level, the constraint blocks non-compliant resource creation automatically with no per-project configuration needed. Voluntary compliance and weekly audits are detective controls, not preventive. A centralized shared pipeline creates a bottleneck and does not prevent teams from creating their own non-compliant pipelines in their projects.",
+      "category": "Building and implementing CI/CD pipelines for a service",
+      "difficulty": "hard"
     }
   ]
 }

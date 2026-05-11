@@ -4111,6 +4111,247 @@
       "explanation": "Cloud Run startup CPU boost temporarily allocates additional CPU during container startup, which can significantly reduce initialization time for CPU-intensive startup tasks like loading ML models. Combined with setting appropriate concurrency values (how many concurrent requests each instance handles), this reduces both startup latency and over-provisioning. Increasing max-instances does not reduce per-instance startup time. Reducing image size helps download time but not model loading time. Cloud Run jobs are for batch/scheduled work, not request-serving services with latency requirements.",
       "category": "Applying SRE practices to a service",
       "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-046",
+      "question": "Your GKE application uses a circuit breaker implemented in Istio. The circuit breaker is configured with outlierDetection: consecutive5xxErrors: 3. After a downstream service starts returning 500 errors, you notice that some requests still reach the failing host before the circuit opens. Why does this happen?",
+      "options": [
+        "Istio circuit breakers do not work with HTTP services, only gRPC",
+        "Outlier detection is probabilistic and evaluated periodically; the circuit breaker requires at least 3 consecutive 5xx errors from a host within an evaluation interval before ejecting it from the load balancing pool, so some failing requests reach the host before the threshold is met",
+        "The circuit breaker opens immediately on the first 5xx error regardless of configuration",
+        "Istio circuit breakers only apply to ingress traffic, not east-west service-to-service calls"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Istio outlier detection ejects hosts from the load balancing pool after observing a configurable number of consecutive 5xx errors (or other conditions) within an evaluation interval. Until the threshold is reached, all hosts (including the failing one) remain in the pool and continue to receive traffic. This means some requests will hit the failing host before it is ejected. This is by design: it prevents ejecting hosts for transient single errors. To reduce exposure, lower the consecutiveErrors threshold or shorten the evaluation interval, accepting higher false-positive ejection rates.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-047",
+      "question": "Your team tracks the four golden signals and has established alert thresholds for each. The on-call engineer receives three simultaneous alerts during an incident: (1) error rate above 5%, (2) p99 latency above 2000ms, and (3) CPU saturation above 85%. In what ORDER should the on-call engineer investigate these signals to most efficiently identify the root cause?",
+      "options": [
+        "Investigate saturation first; high CPU is always the root cause of elevated errors and latency",
+        "Investigate errors first to understand which requests are failing and why; correlate with latency to determine if failures cause retries; then check saturation to determine if resource pressure is contributing",
+        "Investigate latency first; if latency is high then errors will naturally follow",
+        "All three signals are equally important; investigate them simultaneously by involving three separate engineers"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Errors are the most direct signal of user impact and should be investigated first: examining error types, error messages, and which endpoints are affected provides the most targeted information. Elevated latency and saturation are often symptoms or contributing factors rather than root causes. High CPU saturation can cause latency, which can cause downstream timeouts (errors), but the errors signal will point you to the specific failure. Starting with error investigation (examining logs, error codes, affected services) is the most efficient path to root cause in most incidents.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-048",
+      "question": "You are setting up automated rollback for a Cloud Deploy release. After a canary deployment promotes to 100% traffic, you want to automatically roll back if the error rate exceeds 2% within 10 minutes. Which mechanism enables this in Google Cloud?",
+      "options": [
+        "Cloud Deploy does not support automatic rollback; rollback must be triggered manually",
+        "Configure a Cloud Deploy postdeploy verification job that queries Cloud Monitoring for the error rate metric. If the error rate exceeds 2%, the job exits with a non-zero code, which causes Cloud Deploy to fail the rollout and triggers an automatic rollback to the previous release",
+        "Configure a Cloud Build trigger that monitors error rate and calls the Cloud Deploy API to roll back",
+        "Set the Cloud Run revision traffic split to 0% for the new revision if error rate exceeds 2%"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud Deploy supports postdeploy jobs (verify phase) that run after deployment and before the release is marked successful. A verification job can query Cloud Monitoring metrics, run smoke tests, or evaluate SLOs. If the job exits with a non-zero exit code, Cloud Deploy marks the rollout as failed and can trigger an automatic rollback to the previous stable release. This creates a closed-loop automated rollback system within the delivery pipeline. Cloud Build triggers are possible but add complexity outside the native Cloud Deploy lifecycle.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-049",
+      "question": "Your team wants to estimate the risk of a planned maintenance window for a Cloud SQL database that requires 3 minutes of downtime. The service SLO is 99.95% availability over a 30-day window. Current error budget consumption is 60%. Should you proceed, and how should you calculate the impact?",
+      "options": [
+        "Always proceed with maintenance windows; planned downtime does not count against SLO",
+        "Calculate the budget that the 3-minute window will consume: 3 minutes out of 43,200 minutes (30 days) = 0.0069% availability loss. Compare this against remaining budget (40% of 0.05% = 0.02%). Since 0.0069% is less than 0.02% remaining budget, you have enough budget; proceed with appropriate communication and rollback plan",
+        "Immediately proceed since 3 minutes is negligible and SLOs only matter for unplanned outages",
+        "Cancel the maintenance; any planned downtime when error budget is over 50% consumed is forbidden by SRE policy"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Error budget calculations apply to all unavailability, planned or unplanned. The correct approach is to calculate how much budget the maintenance will consume (3/43,200 = 0.0069%), compare it against the remaining budget (40% of 0.05% = 0.02%), and make a data-driven decision. In this case there is enough budget remaining, so the maintenance can proceed. If the calculated consumption would exceed remaining budget, the team should defer maintenance or negotiate an SLO adjustment with stakeholders. Planned downtime absolutely counts against SLO; the distinction from unplanned is for reporting and customer communication.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-050",
+      "question": "Your team is observing increased ticket volume for a manual process: engineers must approve and apply Kubernetes RBAC changes by hand for every new service deployment. This task takes 20 minutes per deployment and there are 15 deployments per week. Which description BEST categorizes this work and what is the recommended solution?",
+      "options": [
+        "This is project work; it should remain manual to ensure security reviews are thorough",
+        "This is toil: it is manual, repetitive, grows with deployment frequency, and has no enduring value beyond each individual change. The recommended solution is to automate RBAC provisioning using a GitOps workflow (e.g., Config Connector or Terraform in Cloud Build) triggered by merge to the service repository, with security controls enforced via OPA/Gatekeeper policies",
+        "This is on-call work and should be tracked as incidents, not deployments",
+        "Hire a dedicated RBAC administrator to handle all manual approvals more efficiently"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Toil is characterized by: being manual, repetitive, automatable, grows proportionally with scale (15 deploys/week * 20 min = 5 hours/week, growing with more services), and provides no enduring engineering value. The solution is automation via GitOps: store RBAC manifests in Git, use Config Connector or Terraform to apply changes via CI/CD pipeline triggered on merge, and use OPA/Gatekeeper policies to enforce security constraints without human approval overhead. Hiring more manual approvers scales linearly with the problem rather than eliminating it.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-051",
+      "question": "Your team has a quarterly DR test requirement. Last quarter, the failover test from us-central1 to us-west1 took 22 minutes against a 15-minute RTO target. The investigation found that the Cloud Load Balancer health checks took 8 minutes to detect the failure. What change would MOST reduce the detection time?",
+      "options": [
+        "Increase the number of load balancer backend instances so there are more health check targets",
+        "Reduce the Cloud Load Balancer health check interval from the default (every 10 seconds) and reduce the unhealthyThreshold (number of consecutive failures before marking a backend unhealthy), so the load balancer detects the failure and drains traffic faster",
+        "Switch from a global load balancer to a regional load balancer in us-west1 for faster failover",
+        "Use Cloud DNS failover instead of load balancer health checks for faster regional detection"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Load balancer health check detection time is determined by: (check interval) * (unhealthyThreshold). At the default settings (10-second interval, 3 consecutive failures = 30 seconds minimum), delays can accumulate if backend health probes have higher thresholds. To reduce the 8-minute detection window, lower the check interval (e.g., to 5 seconds) and reduce the unhealthyThreshold (e.g., to 2 consecutive failures). This directly reduces the time before backends are marked unhealthy and traffic is rerouted. Adding more instances does not help detection time. Regional load balancers do not support cross-region failover.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-052",
+      "question": "You want to configure a Cloud Monitoring SLO for a GKE service and create an alert that fires when the 1-hour error budget burn rate indicates the 30-day budget will be exhausted in under 2 hours if the current rate continues. This is known as a fast-burn alert. What burn rate multiplier should you use for this alert?",
+      "options": [
+        "1x: fire whenever any error budget is consumed",
+        "Approximately 36x (30 days / 20 hours headroom): a burn rate of 36x means the 30-day budget is consumed in about 20 hours; for a 2-hour projection window, use approximately 360x",
+        "The correct fast-burn multiplier is 14.4x for a 1-hour window: this means the service is burning through 30-day budget in about 2 days; adjust thresholds based on your SLO target and alerting window",
+        "Burn rate multipliers are not supported in Cloud Monitoring; use a raw error rate threshold instead"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Burn rate alerts fire when budget is consumed faster than sustainable. A burn rate of 1x means the budget is consumed at exactly the sustainable rate (fully consumed at the end of the window). For a 1-hour window to detect exhaustion within 2 hours, you need a burn rate high enough that 1 hour of burn at that rate indicates budget exhaustion is imminent. Cloud Monitoring supports burn-rate-based alerting conditions for SLOs, which calculate the effective burn rate based on recent error budget consumption. The 14.4x figure comes from the SRE workbook multi-window alert recommendations. Cloud Monitoring absolutely supports burn rate alerting natively for defined SLOs.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-053",
+      "question": "Your team is conducting a game day (planned incident simulation). The scenario is: Cloud Pub/Sub message delivery is delayed by 10 minutes across all subscriptions. Which outcomes should the game day PRIMARILY validate?",
+      "options": [
+        "Whether the development team can write a hotfix within 10 minutes",
+        "Whether monitoring detects the delay within the alert SLA, whether on-call engineers can diagnose the cause using available tooling, whether the service degrades gracefully or fails hard, and whether the runbook steps are accurate and sufficient for recovery",
+        "Whether Cloud Pub/Sub can be replaced with a different messaging service within one business day",
+        "Whether the Pub/Sub SLA from Google covers 10-minute delivery delays"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A game day exercises the full incident response stack: detection (does monitoring fire in time?), diagnosis (can engineers use runbooks and tooling to identify the cause?), service behavior (does the application handle the dependency degradation gracefully or does it fail catastrophically?), and recovery (are runbook steps correct and complete?). The game day produces action items for gaps found in any of these areas. Writing hotfixes, replacing the service, or reviewing SLAs are not the primary goals of an incident simulation.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-054",
+      "question": "Your SRE team uses SLO-based error budget policies. Currently, feature freeze is triggered when the error budget drops below 10% remaining. Your product team wants to add an intermediate policy at 50% consumption. What should the 50% policy enforce?",
+      "options": [
+        "Immediately freeze all feature work and focus 100% on reliability",
+        "At 50% budget consumed, trigger an engineering review to examine the rate of consumption, identify the primary drivers, and implement targeted reliability improvements; this is a proactive intervention before the budget drops to critical levels",
+        "Automatically roll back all recent deployments when the budget reaches 50% consumed",
+        "Reduce the SLO target by 0.1% to give back additional error budget"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A tiered error budget policy is best practice: 50% consumed should trigger a proactive review to identify consumption trends and address systemic issues before reaching critical levels. This avoids the reactivity of only acting at 90% consumed, when the team has little time or budget left to fix issues before a freeze. Immediate feature freeze at 50% is premature and would severely limit velocity. Automatic rollbacks at 50% could revert valid and needed changes without evidence they caused consumption. SLO adjustments to manufacture budget are a governance anti-pattern.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-055",
+      "question": "Your team wants to implement multi-region active-active redundancy for a stateless GKE API service with Cloud Spanner as the backend. Which set of components enables this architecture with automatic traffic distribution and failover? (Choose TWO)",
+      "options": [
+        "A global external Application Load Balancer with backend services in multiple regions, using health checks to route traffic only to healthy regional clusters",
+        "Cloud Spanner with a multi-region instance configuration to replicate data across regions and serve reads from the nearest replica",
+        "A regional internal load balancer in each region that routes traffic only within that region",
+        "Cloud SQL with synchronous replication to a secondary region for automatic failover"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Active-active multi-region for a GKE API service requires: (1) a global load balancer that distributes traffic across backend clusters in multiple regions and routes around unhealthy backends automatically, and (2) a database that serves reads and writes from any region without manual failover. A global Application Load Balancer satisfies requirement 1. Cloud Spanner multi-region configurations satisfy requirement 2 by replicating data across regions and automatically routing requests to available replicas. Regional internal load balancers do not provide cross-region routing. Cloud SQL does not support true active-active multi-region writes.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-056",
+      "question": "After implementing a new deployment pipeline, your team notices that deployment frequency has doubled but the change failure rate has also increased from 2% to 8%. What is the MOST appropriate SRE response?",
+      "options": [
+        "Reduce deployment frequency back to the original rate to lower the failure rate",
+        "Investigate the pipeline changes that enabled faster deployments to find what reliability safeguards were removed or bypassed; implement pre-deployment validation gates (static analysis, integration tests, canary evaluation) to restore a low change failure rate without sacrificing frequency",
+        "Accept the higher failure rate as the cost of faster delivery",
+        "Move all production deployments to maintenance windows on weekends to reduce blast radius"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A doubled change failure rate indicates that deployment velocity increased at the cost of reliability safeguards. The SRE approach is to investigate what quality gates were removed or weakened in the new pipeline and restore them without giving up deployment frequency. Canary deployments, automated smoke tests, and static analysis allow high-frequency, low-risk deployments. Reducing frequency sacrifices the velocity gain. Accepting a 4x higher failure rate will erode the error budget. Weekend maintenance windows reduce blast radius but do not fix the underlying quality gap.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-057",
+      "question": "Your organization wants to implement automated quota management for GKE node pool scaling. The application team requests quota increases manually, which takes 5 business days. You want to reduce this to under 1 hour. Which approach achieves this?",
+      "options": [
+        "Pre-provision the maximum possible quota for all regions to avoid future requests",
+        "Use GCP resource quota monitoring in Cloud Monitoring to track quota utilization; configure alerts at 80% quota consumption; enable quota auto-approval (if available for the resource type) or create a Cloud Workflow that automatically submits a quota increase request via the GCP Quota API when the utilization threshold is crossed",
+        "Create a dedicated project with unlimited quota for the application team to use when they need to scale",
+        "Switch from GKE Autopilot to GKE Standard so quota management is handled differently"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Automating quota management requires: monitoring current utilization against quota limits, triggering requests before saturation, and automating the request submission process. Cloud Monitoring can track quota metrics; a Cloud Workflow or Cloud Functions can call the GCP Quota API (serviceusage.googleapis.com) to submit increase requests automatically when utilization thresholds are crossed. Some quota types support automatic increases without approval delays. Pre-provisioning maximum quota wastes resources and may not be approved. Unlimited quota projects are a security and cost governance risk.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-058",
+      "question": "Your service receives traffic that peaks at 10x baseline every weekday at 8 AM for exactly 30 minutes. Your HPA is correctly configured but node provisioning takes 4 minutes. How should you address the scale-up latency to prevent SLO violations at peak time?",
+      "options": [
+        "Set HPA maxReplicas to 10x baseline permanently so capacity is always available",
+        "Use GKE cluster autoscaler with overprovisioning (a low-priority placeholder Deployment that holds excess capacity); the placeholder pods are evicted when real workload pods need the nodes, providing pre-provisioned node capacity that eliminates provisioning wait time during the known peak",
+        "Schedule a cron job that manually runs kubectl scale at 7:55 AM to pre-scale the deployment",
+        "Add a second cluster in a different region and route all peak traffic there"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "GKE cluster autoscaler overprovisioning uses low-priority placeholder pods (with PriorityClass of a negative value) to hold pre-provisioned node capacity. When HPA needs to scale real workload pods, the higher-priority workload pods preempt the placeholder pods, which frees up the already-provisioned nodes immediately without the 4-minute node provisioning delay. This is the recommended pattern for workloads with known, regular traffic peaks. Permanently running 10x capacity is expensive. Manual cron scaling is fragile and cannot handle variability. Cross-region routing for predictable peaks is an overengineered solution.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-059",
+      "question": "During a blameless postmortem, the team identifies that the on-call engineer did not follow the runbook during an incident because the runbook was outdated. The corrective action is to update the runbook. What ADDITIONAL systemic fix would BEST prevent outdated runbooks from causing future incidents?",
+      "options": [
+        "Require engineers to memorize all runbooks quarterly",
+        "Integrate runbook validation into the incident review process and schedule periodic runbook dry-runs (tabletop exercises or game days) where the team walks through runbook steps against a simulated incident to verify accuracy",
+        "Print and post physical copies of all runbooks in the office",
+        "Store runbooks in a shared Google Doc and trust engineers to keep them updated"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The systemic fix for runbook drift is to build validation into the incident process: (1) incident reviews should explicitly check whether the runbook was followed and flag gaps, and (2) periodic dry-runs (tabletop exercises or game days) exercise runbook steps against simulated scenarios, surfacing outdated content before it matters in a real incident. Memorization, physical copies, and shared docs without process enforcement all rely on human discipline and will accumulate drift over time. Only active validation catches drift systematically.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-060",
+      "question": "Your team wants to set up automated traffic shifting for a Cloud Run service using a progressive delivery pattern: shift 5% traffic to the new revision, wait 10 minutes, check error rate, then shift 100% if healthy. Which approach implements this with Cloud Run?",
+      "options": [
+        "Cloud Run does not support traffic splitting between revisions",
+        "Use the Cloud Run traffic splitting feature via gcloud run services update-traffic to assign revision traffic weights; orchestrate the wait and metric check steps using a Cloud Workflow that calls the Cloud Monitoring API to evaluate error rate between traffic shifts, then calls the Cloud Run API to advance or roll back",
+        "Deploy the new revision with gcloud run deploy --traffic 100; if errors appear, manually split traffic back",
+        "Use Cloud Deploy canary deployment targeting Cloud Run; define percentage stages and postdeploy verification jobs to check the error rate metric before advancing"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Cloud Deploy natively integrates with Cloud Run and supports canary deployment strategies. You define a canaryDeployment configuration with percentage phases (5%, 100%) and postdeploy verification jobs that query Cloud Monitoring to evaluate the error rate metric. If verification passes, Cloud Deploy advances to the next phase; if it fails, it triggers rollback. This is the cleanest integrated approach for progressive delivery. While Cloud Workflows with manual API calls also work, Cloud Deploy provides built-in rollback, approval gates, and pipeline visualization that a custom workflow lacks.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
     }
   ]
 }

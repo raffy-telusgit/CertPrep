@@ -1683,6 +1683,426 @@
       "explanation": "Organization Policy Service supports custom constraints that can evaluate the properties of Cloud Deploy resources (delivery pipelines and targets) at create or update time, enforcing naming conventions and mandatory field values like requireApproval: true on production targets. Once applied at the organization or folder level, the constraint blocks non-compliant resource creation automatically with no per-project configuration needed. Voluntary compliance and weekly audits are detective controls, not preventive. A centralized shared pipeline creates a bottleneck and does not prevent teams from creating their own non-compliant pipelines in their projects.",
       "category": "Building and implementing CI/CD pipelines for a service",
       "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-observability-001",
+      "question": "Your team wants to create an alerting policy in Cloud Monitoring that fires when the 99th-percentile latency of a Cloud Run service exceeds 800ms for more than 5 consecutive minutes. Which alerting condition type should you use?",
+      "options": [
+        "Uptime check alerting condition that pings the Cloud Run URL every minute",
+        "Metric threshold condition on the run.googleapis.com/request_latencies metric using the 99th percentile aligner, with a threshold of 800ms and a duration of 5 minutes",
+        "Log-based alert triggered when Cloud Logging receives a log entry with latency_ms > 800",
+        "Budget alert threshold set on the Cloud Run service cost"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Monitoring metric threshold conditions evaluate an aggregated time series against a threshold. By selecting the run.googleapis.com/request_latencies metric, applying the ALIGN_PERCENTILE_99 aligner, and setting the threshold to 800ms with a 5-minute duration, the alert fires only when the condition is sustained. Uptime checks measure external reachability, not latency percentiles. Log-based alerts can be used but require parsing unstructured log fields and fire per-entry rather than on an aggregated trend. Budget alerts relate to billing, not performance.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-002",
+      "question": "A GKE cluster runs 40 microservices. Each service emits custom metrics via the Cloud Monitoring API. Engineers are struggling to find relevant metrics during incidents because all metrics are in one flat namespace. Which Cloud Monitoring feature helps organize and discover metrics from multiple services?",
+      "options": [
+        "Create a separate GCP project per microservice so metrics are automatically namespaced by project",
+        "Use Cloud Monitoring metric descriptors with a consistent naming prefix (e.g., custom.googleapis.com/myapp/SERVICE_NAME/metric_name) and filter dashboards by metric label or prefix",
+        "Enable Cloud Trace on every service; traces automatically index all custom metrics by service name",
+        "Store all metrics in BigQuery and use SQL to filter by service name during incidents"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Monitoring custom metrics are organized by their metric type string. Establishing a consistent naming prefix such as custom.googleapis.com/myapp/checkout/request_count makes metrics discoverable by filtering on the prefix in the metrics explorer and dashboards. Resource labels (like service_name) can further filter time series. Separating projects adds IAM and billing overhead. Cloud Trace collects distributed traces, not custom metrics, and does not index metric names. BigQuery is a data warehouse and is not designed for real-time metric query during incidents.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-003",
+      "question": "You want to monitor the availability of your public HTTPS endpoint from multiple geographic regions using Cloud Monitoring. Which feature should you configure?",
+      "options": [
+        "A Cloud Monitoring alerting policy on the loadbalancing.googleapis.com/https/request_count metric filtered to 5xx responses",
+        "Cloud Monitoring uptime checks configured with HTTPS protocol and the endpoint URL; select multiple checker regions to measure availability from different locations",
+        "A Cloud Logging log-based metric that counts HTTP 200 responses from the load balancer access log",
+        "A Synthetic Monitor using Cloud Run functions to simulate user journeys from different regions"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Monitoring uptime checks probe a specified URL or IP address from up to 6 global checker regions at a configurable interval. They report latency and availability from each region and can trigger alerting policies when the endpoint is unreachable from a threshold number of regions. The load balancer request_count metric measures actual traffic volumes, not external reachability. Log-based metrics on HTTP 200s would miss intervals with no traffic. Synthetic Monitors (Cloud Run-based) are more flexible but are heavier to set up for simple availability checks.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-observability-004",
+      "question": "Your application writes structured JSON logs to stdout on GKE. You want to create a Cloud Monitoring metric that counts the number of log entries where the JSON field severity equals ERROR and the field service equals checkout, without modifying the application code. Which approach is correct?",
+      "options": [
+        "Enable Cloud Trace on the GKE cluster; trace spans automatically create metrics for ERROR-level log entries",
+        "Create a log-based metric in Cloud Monitoring using a logs query filter: severity=ERROR AND jsonPayload.service=\"checkout\"; Cloud Logging counts matching entries as a counter metric",
+        "Write a Cloud Functions function triggered on new log entries that increments a custom metric counter via the Cloud Monitoring API",
+        "Deploy a sidecar container in the GKE pod that reads stdout, parses JSON, and pushes counters to the Cloud Monitoring API"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Logging log-based metrics allow you to define a filter expression (using the same syntax as the logs explorer) and automatically produce a Cloud Monitoring counter metric that increments on each matching log entry. No application code change is required. The filter severity=ERROR AND jsonPayload.service=\"checkout\" will match structured JSON logs where Cloud Logging has parsed the JSON payload. Cloud Trace tracks request traces, not log-derived metrics. A Cloud Functions trigger and a sidecar both work but require additional infrastructure and are not the native, lowest-overhead solution.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-observability-005",
+      "question": "An alerting policy fires at 2 AM because a metric briefly spiked for 90 seconds. Your team investigates and finds no real user impact. The alert used a condition duration of 0 (fires immediately on threshold breach). What change to the alerting policy would BEST reduce false positives for this type of transient spike?",
+      "options": [
+        "Increase the notification channel delay to 10 minutes so alerts are only sent if the condition persists",
+        "Set the condition duration to 5 minutes so the alert only fires if the threshold is exceeded continuously for 5 minutes",
+        "Increase the metric sampling interval from 1 minute to 10 minutes so brief spikes are averaged away",
+        "Disable the alerting policy during overnight hours using a maintenance window"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Setting the condition duration to 5 minutes means Cloud Monitoring only opens an incident if the threshold is breached for the entire 5-minute window, filtering out transient spikes that recover quickly. This is the standard approach for reducing alert noise from short-lived anomalies. Increasing notification channel delay still creates an incident internally and may still wake someone up depending on the channel. Increasing the sampling interval reduces metric resolution and can hide real sustained problems. Maintenance windows suppress all alerts during a time range, which would miss real incidents.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-observability-006",
+      "question": "Your organization has 20 GCP projects. The security team requires that all audit logs from all projects be centrally exported to a single Cloud Storage bucket in a dedicated logging project for 7-year retention. Which Cloud Logging feature satisfies this with the least per-project configuration?",
+      "options": [
+        "Create a log sink in each of the 20 projects individually, each exporting to the central Cloud Storage bucket",
+        "Create an aggregated log sink at the organization or folder level in Cloud Logging that exports matching log entries from all child projects to the central Cloud Storage bucket",
+        "Enable Cloud Logging export in each project's IAM audit policy configuration to send logs to the central project",
+        "Use Cloud Pub/Sub to relay log entries from each project to a Cloud Run service that writes them to the central bucket"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Logging aggregated sinks, configured at the organization or folder level, capture log entries from all child projects matching the filter and export them to a single destination. This requires one sink configuration at the organization level rather than 20 individual project sinks, minimizing ongoing maintenance as new projects are added to the organization. Per-project sinks require manual setup for every new project. There is no 'IAM audit policy export' feature that automatically routes logs. A Pub/Sub relay adds operational complexity for something natively handled by aggregated sinks.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-007",
+      "question": "A developer reports that their GKE application is returning errors, but they cannot identify which microservice in the request chain is failing. Cloud Trace is enabled on the cluster. How does Cloud Trace help diagnose this issue?",
+      "options": [
+        "Cloud Trace displays CPU and memory utilization per pod, making it easy to identify the pod under resource pressure",
+        "Cloud Trace records end-to-end latency and shows the distributed trace of each request as a waterfall of spans, identifying which service or span returned an error and contributed the most latency",
+        "Cloud Trace automatically creates an alerting policy when a trace span exceeds 1 second",
+        "Cloud Trace aggregates all error logs across microservices into a single view sorted by error count"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Trace captures distributed traces: each request is represented as a root span that branches into child spans for each downstream microservice call. The trace waterfall view shows the duration, status, and any errors for each span, making it straightforward to identify which service in the chain is failing or slow. Cloud Trace does not display pod-level resource metrics (that is Cloud Monitoring). It does not automatically create alerting policies. Aggregating error logs by count is an Error Reporting feature, not Cloud Trace.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-observability-008",
+      "question": "Your production Cloud Run service is experiencing intermittent high latency. You suspect a specific function in the service is taking too long under load. Which GCP observability tool provides code-level profiling data showing CPU time and heap allocation broken down by function call?",
+      "options": [
+        "Cloud Trace, which records span durations for each function call",
+        "Cloud Profiler, which continuously samples CPU time and heap allocation in production and presents flame graphs broken down by function",
+        "Cloud Monitoring, which provides VM-level CPU metrics that can be correlated with function-level performance",
+        "Error Reporting, which captures stack traces of slow functions exceeding a configurable threshold"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Profiler is designed specifically for continuous production profiling. It samples CPU time and memory allocation with low overhead and produces flame graphs that show the proportion of time spent in each function call. This is the right tool for identifying hot paths in code. Cloud Trace measures inter-service call latency at the span level, not intra-service function call time. Cloud Monitoring provides infrastructure-level metrics, not code-level profiling. Error Reporting captures exceptions and crashes, not profiling data.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-observability-009",
+      "question": "Your application logs are being written to Cloud Logging. The security team requires that logs containing personally identifiable information (PII) in the jsonPayload.user_email field be masked before they are stored. Which approach handles this at ingestion time?",
+      "options": [
+        "Create a Cloud Logging exclusion filter that drops all log entries containing jsonPayload.user_email",
+        "Use a Cloud Logging log sink to BigQuery and apply a column-level security policy to mask the user_email column",
+        "Deploy a Cloud Dataflow pipeline that reads from a Pub/Sub log sink, redacts the user_email field, and writes the sanitized logs back to Cloud Logging",
+        "Configure a Cloud Logging log sink to Pub/Sub, then use a Dataflow streaming job or Cloud Functions to redact the PII and write sanitized entries to the final destination; exclude the raw entries from Cloud Logging _Default bucket using an exclusion"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Cloud Logging does not provide native field-level redaction at ingestion time. The recommended pattern is to sink raw logs to Pub/Sub, process them through Dataflow or Cloud Functions to redact PII, write the sanitized records to the intended destination (another log bucket, BigQuery, or Cloud Storage), and exclude the raw logs from the _Default log bucket so they are not stored unredacted. Dropping all logs with an exclusion filter removes the data entirely instead of masking it. BigQuery column-level security masks query results but the raw data is still stored. Cloud Logging does not support 'writing back' to itself from an external pipeline as a native flow.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-observability-010",
+      "question": "You are creating a Cloud Monitoring SLO for a service in the Cloud Monitoring UI. The SLO is request-based with a goal of 99.5% good requests over a 30-day rolling window. Which TWO elements must you define when creating this SLO? (Choose TWO)",
+      "options": [
+        "A good request definition: criteria for classifying each request as good (e.g., HTTP status code < 500 and latency < 1s)",
+        "The total number of requests expected per month, used to normalize the error budget",
+        "The time window and goal: 30-day rolling window with 99.5% target",
+        "An alerting notification channel so the SLO automatically pages the on-call when breached"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "A Cloud Monitoring request-based SLO requires two core definitions: (1) the good request criteria -- what makes a request count as 'good' vs. 'bad' (e.g., HTTP status < 500 and latency within a threshold); and (2) the compliance window and goal percentage (30-day rolling window, 99.5% target). The total expected request count is not an input; Cloud Monitoring derives the ratio from actual observed traffic. An alerting channel is optional and is configured separately as an SLO burn rate alerting policy, not as part of the SLO definition itself.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-011",
+      "question": "Your team has defined an SLO in Cloud Monitoring. You want to be alerted early enough to take action before the monthly error budget is fully consumed. Which alerting strategy provides early warning while avoiding excessive noise?",
+      "options": [
+        "Set an alert when the SLO compliance drops below 99.5% (the target) for even one minute",
+        "Configure a multi-window, multi-burn-rate alert: a fast-burn alert (e.g., 14x burn rate over 1 hour) for urgent response, and a slow-burn alert (e.g., 5x over 6 hours) for trend awareness",
+        "Create a Cloud Scheduler job that queries the SLO API daily and sends an email if remaining budget is below 50%",
+        "Set an alert when any single request fails, ensuring zero tolerance for errors"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Multi-window, multi-burn-rate alerts are the Google SRE-recommended approach for SLO-based alerting. A fast-burn alert catches severe outages quickly (14x burn rate means the budget would be consumed in ~2 hours) while a slow-burn alert catches gradual degradation that would exhaust the budget over days. Alerting on any single failure would fire constantly. Alerting on the raw SLO target every minute fires as soon as any single-minute interval misses, which is too noisy. A daily email is too slow to enable timely response to budget-consuming incidents.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-observability-012",
+      "question": "You want to create a custom Cloud Monitoring dashboard that shows, on a single chart, the request rate and the error rate for a Cloud Run service side by side, using different Y-axes because the scales differ. Which chart configuration supports this?",
+      "options": [
+        "Create two separate charts on the dashboard, one per metric; Cloud Monitoring does not support dual Y-axis charts",
+        "Use a Cloud Monitoring XY chart with two data series, assigning one series to the left Y-axis and the other to the right Y-axis using the targetAxis property",
+        "Use a Cloud Monitoring scorecard widget that displays both metrics as headline numbers",
+        "Export both metrics to BigQuery and use Looker Studio to build a dual-axis chart"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Monitoring's chart widget (line, bar, or area charts) supports dual Y-axes. When adding data series to a chart, you can set the targetAxis for each series to Y1 (left) or Y2 (right), which allows metrics with very different scales to be displayed on the same chart without one obscuring the other. Scorecard widgets show scalar values, not time-series charts. Exporting to BigQuery and using Looker Studio is a valid approach but is heavyweight for a simple dashboard requirement. Cloud Monitoring does support multi-series, dual-axis charts natively.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-013",
+      "question": "Your application running on GKE produces logs with a structured JSON field http.status_code. You want to create a distribution metric in Cloud Logging that tracks the distribution of HTTP status codes so you can see the breakdown in a histogram chart in Cloud Monitoring. Which log-based metric type should you create?",
+      "options": [
+        "A counter metric filtered to log entries where http.status_code is present; this automatically buckets by status code",
+        "A distribution metric with the field extractor set to jsonPayload.http.status_code; this records the distribution of numeric values of that field across all matching log entries",
+        "A gauge metric that reads the current value of http.status_code from the most recent log entry",
+        "A Boolean metric that is true when http.status_code equals 200 and false otherwise"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Logging log-based distribution metrics extract a numeric value from a specified log field using a field extractor and record the statistical distribution (min, max, mean, percentiles, histogram) of that value across matching log entries. Setting the extractor to jsonPayload.http.status_code produces a distribution that can be visualized as a histogram in Cloud Monitoring. A counter metric counts occurrences but does not record value distributions. Gauge and Boolean metric types do not exist as log-based metric types in Cloud Logging.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-014",
+      "question": "Your team is onboarding a new GKE cluster. You want Cloud Monitoring to automatically collect system metrics (CPU, memory, network) from all pods and nodes without instrumenting each application. Which configuration enables this?",
+      "options": [
+        "Install a custom Prometheus exporter on each node using a DaemonSet and configure a Cloud Monitoring scrape job",
+        "Enable the Cloud Monitoring Kubernetes Engine Monitoring integration (GKE system metrics) when creating or updating the cluster; this automatically collects Kubernetes system metrics via the built-in collector agent",
+        "Deploy the Cloud Ops Agent on each node as a DaemonSet; configure it to scrape kubelet metrics",
+        "Enable Cloud Profiler on the cluster; it collects CPU metrics from all running containers"
+      ],
+      "correctAnswers": [1],
+      "explanation": "GKE clusters with Cloud Monitoring integration enabled automatically collect Kubernetes system metrics (CPU, memory, disk, network at the node, pod, and container levels) using Google's managed metrics collection infrastructure. No additional agent deployment is required. The Cloud Ops Agent is designed for GCE VMs, not GKE. A custom Prometheus DaemonSet and Prometheus-to-Cloud Monitoring integration (via the managed service for Prometheus) is a valid but more complex alternative. Cloud Profiler collects CPU profiling data for instrumented applications, not infrastructure-level system metrics.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-observability-015",
+      "question": "An application team wants to use Error Reporting to automatically group and track exceptions from their Python Cloud Run service. Which is the SIMPLEST way to send errors to Error Reporting without adding a client library?",
+      "options": [
+        "Write exception stack traces as structured JSON logs to stderr with a severity of ERROR; Cloud Logging automatically forwards these to Error Reporting",
+        "Install the google-cloud-error-reporting Python library and call report_exception() in each except block",
+        "Enable Error Reporting in the Cloud Console and configure a Pub/Sub trigger to receive exceptions from the application",
+        "Write exceptions to a Cloud Storage file named errors.json; Error Reporting polls this file periodically"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Error Reporting automatically processes structured log entries written to Cloud Logging that contain exception stack traces and have severity ERROR or higher. For Cloud Run services that write to stderr or stdout, no additional library is needed: Python tracebacks in log output are parsed and grouped by Error Reporting. This is the simplest path because it requires no code changes beyond standard exception logging. The client library approach works but requires dependency management. There is no Pub/Sub trigger or Cloud Storage polling mechanism in Error Reporting.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-observability-016",
+      "question": "Your Cloud Logging _Default log bucket retains logs for 30 days. You need certain audit logs to be retained for 400 days to satisfy a compliance requirement. What is the MOST cost-effective approach using Cloud Logging natively?",
+      "options": [
+        "Create a log sink to Cloud Storage with a lifecycle rule to delete objects after 400 days",
+        "Increase the _Default log bucket retention to 400 days; all logs will be retained for 400 days",
+        "Create a dedicated user-defined log bucket with a 400-day retention policy; create a log sink that routes the specific audit log entries to this bucket while keeping the _Default bucket at 30 days",
+        "Export logs to BigQuery with a partition expiration of 400 days"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Cloud Logging supports user-defined log buckets with configurable retention periods. Creating a dedicated bucket with 400-day retention and routing only the specific audit logs to it (via a log sink with a filter) minimizes cost: most logs remain in the 30-day _Default bucket, and only the compliance-required logs are stored for 400 days. Increasing the _Default retention to 400 days would apply that extended retention to all logs, significantly increasing storage costs. A Cloud Storage sink works but adds export costs and requires managing a separate storage system. BigQuery export is more expensive than Cloud Logging storage for long-term log retention.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-017",
+      "question": "You want to measure the end-to-end latency of a request that spans three microservices (frontend, api-gateway, backend). Each service is instrumented with the OpenTelemetry SDK. For Cloud Trace to display a single unified trace, what must each service propagate in outgoing requests?",
+      "options": [
+        "The Cloud Trace API key as an HTTP header",
+        "The trace context (trace ID and parent span ID) using a propagation format such as W3C TraceContext or B3, so that each downstream service creates a child span under the same root trace",
+        "The JWT bearer token so Cloud Trace can correlate requests by authenticated user identity",
+        "The GCP project ID as an HTTP header so Cloud Trace knows where to store the child spans"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Distributed tracing requires trace context propagation. Each service must extract the trace context from incoming requests and inject it into outgoing requests using a standard propagation format (W3C TraceContext is the modern standard; B3 is also common). This ensures all spans across services share the same trace ID and the parent-child relationships are preserved, allowing Cloud Trace to assemble the full end-to-end waterfall. API keys are for authentication, not trace correlation. JWT tokens identify users, not traces. The project ID is known by each service's SDK configuration and does not need to be propagated per-request.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-018",
+      "question": "Your application team wants to query their application logs in Cloud Logging using a custom field called request_id that is nested inside a JSON payload. The logs are written as structured JSON to stdout. Which log filter syntax correctly queries for a specific request ID?",
+      "options": [
+        "log_name=\"request_id\" AND severity=DEBUG",
+        "jsonPayload.request_id=\"abc-123-xyz\"",
+        "textPayload CONTAINS \"request_id:abc-123-xyz\"",
+        "labels.request_id=\"abc-123-xyz\""
+      ],
+      "correctAnswers": [1],
+      "explanation": "When a GKE or Cloud Run application writes structured JSON to stdout, Cloud Logging parses the JSON and stores nested fields under jsonPayload. To filter on a nested field, you use dot-notation: jsonPayload.request_id=\"abc-123-xyz\". This is the correct Cloud Logging filter syntax for structured log fields. log_name is a log resource metadata field, not a payload field. textPayload refers to unstructured string logs. labels refer to resource or log entry labels set at the metadata level, not payload fields.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-observability-019",
+      "question": "Your organization wants to monitor GCP resource changes for security auditing. You need to alert when any IAM policy is modified in any project within the organization. Which combination of Cloud Logging and Cloud Monitoring features accomplishes this?",
+      "options": [
+        "Enable VPC Flow Logs organization-wide and create a metric for IAM-related network traffic",
+        "Create a log-based metric at the organization level using an aggregated log sink, filtered to audit logs of type activity with method containing SetIamPolicy; create a Cloud Monitoring alert on this metric",
+        "Use Cloud Asset Inventory to monitor IAM policy changes and trigger a Pub/Sub notification",
+        "Enable Access Transparency logs and alert when a Google employee accesses IAM configurations"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Admin Activity audit logs record all IAM policy changes (SetIamPolicy calls). By creating an organization-level aggregated sink and a log-based counter metric filtered to protoPayload.methodName:\"SetIamPolicy\" in activity audit logs, every IAM change across all projects increments the metric. A Cloud Monitoring alerting policy on this metric fires whenever the count is non-zero. VPC Flow Logs capture network traffic, not control-plane API calls. Cloud Asset Inventory monitors resource state changes and can send Pub/Sub notifications but is not the standard pattern for real-time alerting. Access Transparency logs record Google employee access to customer data, not customer-initiated IAM changes.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-observability-020",
+      "question": "Your team is adopting the USE method (Utilization, Saturation, Errors) for monitoring a GCE-based service. For the network interface on each VM, identify the correct metric mapping for each USE component. Choose TWO correct mappings.",
+      "options": [
+        "Utilization: network egress bytes rate as a percentage of the maximum NIC bandwidth",
+        "Saturation: number of dropped packets due to queue overflow on the network interface",
+        "Errors: CPU steal time percentage on the VM, which indicates resource contention",
+        "Utilization: disk IOPS as a percentage of provisioned IOPS for the attached persistent disk"
+      ],
+      "correctAnswers": [0, 1],
+      "explanation": "For network interface USE metrics: Utilization is measured as the egress (or ingress) bytes rate relative to the NIC's bandwidth cap -- high utilization means the network link is heavily used. Saturation is measured by packet drops due to transmit queue overflow, indicating the interface cannot keep up with demand. CPU steal time relates to CPU utilization, not network. Disk IOPS percentage is a USE metric for storage, not for the network interface.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-observability-021",
+      "question": "Your team writes application logs from a Cloud Run service. Some log entries are very verbose debug logs that are only needed for troubleshooting and should not be stored or billed. You want to discard DEBUG-severity log entries before they are ingested into Cloud Logging storage. Which feature should you use?",
+      "options": [
+        "Set the minimum log level in the application code to INFO so DEBUG logs are never written",
+        "Create a Cloud Logging exclusion filter with severity=DEBUG for the Cloud Run log resource; matching entries are discarded before storage and are not billed",
+        "Create a log sink to Cloud Storage and filter out DEBUG entries in the sink filter; they will still be stored in the _Default bucket",
+        "Archive DEBUG logs to Cloud Storage using a log sink and apply a lifecycle rule to delete them after 1 day"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Logging exclusion filters discard matching log entries before they are stored, so they do not count toward storage costs or log volume quotas. Creating an exclusion with severity=DEBUG on the run.googleapis.com/stdout or run.googleapis.com/stderr resource for your Cloud Run service will silently drop all DEBUG entries at ingestion time. Setting the log level in application code is effective but requires a code change and redeployment, and may also discard logs that are needed for debugging in non-production environments. A log sink filter controls what is exported but does not prevent storage in the _Default bucket. Archiving to Cloud Storage and deleting after 1 day still incurs storage costs for that day.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-022",
+      "question": "An SRE team wants to understand the relationship between deployment events and changes in service error rates. Which Cloud Monitoring feature allows you to overlay deployment events as vertical markers on a metric chart?",
+      "options": [
+        "Cloud Monitoring Event Annotations, which can be created manually or via the Cloud Monitoring API, and appear as vertical lines on charts in dashboards",
+        "Cloud Logging log entries with severity=NOTICE automatically appear as chart markers when the dashboard is linked to a log sink",
+        "Cloud Deploy rollout completion events are automatically pushed to Cloud Monitoring as chart annotations",
+        "Cloud Monitoring does not support event overlays; use Looker Studio to join deployment logs with metric time series"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Cloud Monitoring supports chart annotations (also called event annotations), which are vertical markers that can be created via the Cloud Monitoring API or manually in the console. By having your CI/CD pipeline create an annotation when a deployment completes, engineers can visually correlate metric changes with deployment events on the same chart. Cloud Logging entries do not automatically appear as chart markers. Cloud Deploy does not automatically push annotations to Cloud Monitoring charts. Cloud Monitoring does support this natively without needing Looker Studio.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-023",
+      "question": "Your team uses the Google Cloud Managed Service for Prometheus (GMP) to collect metrics from GKE workloads. You want to write PromQL queries against these metrics in Cloud Monitoring. Which interface allows you to run PromQL queries against GMP-collected metrics?",
+      "options": [
+        "The Cloud Monitoring metrics explorer, which supports PromQL as a query language in addition to MQL",
+        "You must export GMP metrics to a self-managed Prometheus instance to run PromQL queries",
+        "Cloud Monitoring only supports MQL (Monitoring Query Language); PromQL is not available",
+        "Use BigQuery to import GMP metrics and write SQL queries that approximate PromQL semantics"
+      ],
+      "correctAnswers": [0],
+      "explanation": "The Google Cloud Managed Service for Prometheus stores metrics in Cloud Monitoring and exposes them via a Prometheus-compatible API endpoint. Cloud Monitoring's metrics explorer supports PromQL as a first-class query language for querying GMP-collected metrics, in addition to MQL. This means you can write standard PromQL expressions and view results in Cloud Monitoring dashboards and alerts without running a self-managed Prometheus server. There is no need to export to a self-managed instance for query purposes.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-024",
+      "question": "Your team is troubleshooting a latency issue in a Cloud Spanner-backed service. You want to view the query execution plans and latency statistics for recent SQL queries without adding instrumentation to the application. Which GCP tool provides this visibility?",
+      "options": [
+        "Cloud Trace, which automatically traces Spanner API calls and shows SQL query text in span attributes",
+        "Cloud Spanner's built-in Query Insights dashboard, which shows top queries by latency, CPU, and execution count along with their query plans",
+        "Cloud Logging, which stores Spanner data API calls in admin activity audit logs with full query text",
+        "Cloud Profiler, which profiles the application process calling Spanner and shows time spent in database calls"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Spanner includes a Query Insights feature (available in the Cloud Console under Spanner > Query Insights) that provides aggregated statistics on SQL query performance including p50/p99 latency, CPU usage, execution count, and query plans without any application instrumentation. This is the right tool for database-level query diagnosis. Cloud Trace captures API call latency but does not expose SQL execution plans. Cloud Logging admin audit logs record metadata about data API calls but do not include full query plans or aggregated statistics. Cloud Profiler profiles application-level code execution, not database query plans.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-025",
+      "question": "You are designing the observability strategy for a new microservices application. You want to implement the four golden signals (latency, traffic, errors, saturation) for each service. Which combination of GCP tools BEST provides all four signals with minimal custom instrumentation for services running on Cloud Run?",
+      "options": [
+        "Cloud Trace for latency, Cloud Monitoring request_count metrics for traffic, log-based metrics for errors, and Cloud Profiler for saturation",
+        "Cloud Monitoring built-in Cloud Run metrics: run.googleapis.com/request_latencies for latency, request_count for traffic, a filter on 5xx request_count for errors, and instance/cpu/utilizations for saturation -- all collected automatically without instrumentation",
+        "Custom Prometheus metrics pushed from each service for all four signals, collected by the Managed Service for Prometheus",
+        "Cloud Logging log-based metrics for all four signals, derived from structured request logs written by each service"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Run automatically emits a rich set of built-in metrics to Cloud Monitoring without any application instrumentation: request_latencies covers latency (with percentile aggregation), request_count covers traffic volume, request_count filtered by response_code_class=5xx covers errors, and instance/cpu/utilizations covers CPU saturation. This gives all four golden signals out of the box. Cloud Trace requires SDK instrumentation for custom spans. Custom Prometheus metrics require code changes in each service. Log-based metrics work but require structured logs and a filter per metric, which is more setup than using the automatic built-in metrics.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-026",
+      "question": "Your organization operates in a regulated industry and must demonstrate to auditors that no GCP admin has made any changes to production resources in the past 90 days. Which audit log type in Cloud Logging records all admin actions such as creating, deleting, or modifying GCP resources?",
+      "options": [
+        "Data Access audit logs, which record all read and write operations on resource data",
+        "Admin Activity audit logs, which record all API calls that create, modify, or delete GCP resources, and cannot be disabled",
+        "System Event audit logs, which record actions taken by GCP systems, such as automatic VM migrations",
+        "VPC Flow Logs, which record network-level traffic including admin SSH sessions to VMs"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Admin Activity audit logs record every API call that creates, modifies, or deletes a GCP resource (e.g., creating a GCE instance, modifying a firewall rule, granting an IAM binding). These logs are always enabled and cannot be disabled, making them reliable for compliance evidence. They are retained for 400 days in Cloud Logging by default. Data Access audit logs record data-plane reads and writes (e.g., reading a Cloud Storage object). System Event logs record automated GCP system actions. VPC Flow Logs record network traffic metadata, not admin API calls.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-observability-027",
+      "question": "You want to create a Cloud Monitoring alerting policy that sends notifications to both a Slack channel and a PagerDuty incident when triggered. The Slack notification should fire immediately; the PagerDuty notification should only fire if the alert is not acknowledged within 15 minutes. How do you configure this?",
+      "options": [
+        "Create two separate alerting policies, one with a Slack notification channel and one with a PagerDuty channel with a 15-minute delay",
+        "Add both the Slack and PagerDuty notification channels to the same alerting policy; set the notification rate limit to 15 minutes on the PagerDuty channel",
+        "Cloud Monitoring does not support per-channel notification delays; use PagerDuty's escalation policy to delay paging after acknowledging the initial alert from Slack",
+        "Create a Cloud Functions function triggered by the Cloud Monitoring alert Pub/Sub topic that notifies Slack immediately and PagerDuty after a 15-minute delay"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Cloud Monitoring alerting policies send notifications to all configured channels simultaneously when the alert fires; they do not support per-channel delays or escalation logic. The standard pattern for tiered notification (immediate Slack, delayed PagerDuty) is to configure both channels on the Cloud Monitoring alert, then use PagerDuty's own escalation policy to hold off paging the on-call engineer unless the alert is unacknowledged after 15 minutes. This keeps the escalation logic in PagerDuty where it belongs. Two separate policies would create two incidents. A Cloud Functions delay function is a workaround but adds operational complexity for something PagerDuty handles natively.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-observability-028",
+      "question": "Your application team wants to trace a specific slow transaction end-to-end through multiple services. They have the transaction's trace ID from a user complaint. How do you find and view this specific trace in Cloud Trace?",
+      "options": [
+        "Search Cloud Logging for the trace ID in the trace field of log entries; Cloud Trace data is only accessible via Cloud Logging",
+        "In Cloud Trace, use the trace search feature to look up the trace ID directly; Cloud Trace displays the full span waterfall for that specific trace",
+        "Query the Cloud Spanner traces table where the TRANSACTION_ID column matches the trace ID",
+        "Use gcloud compute ssh to connect to each service VM and grep the application logs for the trace ID"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Trace provides a trace search interface where you can enter a trace ID and retrieve the complete distributed trace for that request, showing all spans across all services with their timing and attributes. This is the direct tool for investigating a specific slow transaction reported by a user. Cloud Logging also stores trace IDs as a log entry field and you can filter on it, but the trace visualization (waterfall view with span hierarchy) is in Cloud Trace. There is no Cloud Spanner traces table for application traces. Grepping VM logs is slow and does not provide the visual trace waterfall.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-observability-029",
+      "question": "Your GKE application uses structured JSON logging. You notice that Cloud Logging is ingesting duplicate log entries: each entry appears twice. Investigation shows the application writes to stdout and also uses a logging library that writes to a file, which a Fluentd DaemonSet then ships to Cloud Logging. Which remediation resolves the duplication?",
+      "options": [
+        "Increase the Cloud Logging ingestion quota to accommodate the duplicate volume",
+        "Configure either the application to stop writing to stdout OR configure the Fluentd DaemonSet to exclude the application's log files; choose one log path to avoid shipping the same entries twice",
+        "Create a Cloud Logging exclusion filter that deduplicates entries with identical insertId values",
+        "Switch the application to write logs in plain text format so Cloud Logging does not parse them as JSON and can deduplicate them"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Duplicate log ingestion in this scenario is caused by two collectors shipping the same log entries: GKE's built-in log collector ships stdout/stderr, and the Fluentd DaemonSet ships the file that the logging library writes to. The fix is to remove one of the two collection paths: either configure the application to log only to stdout (not to the file), or configure Fluentd to exclude the application's log file. Cloud Logging does not automatically deduplicate entries; each ingest call creates a separate entry. Increasing quota addresses capacity, not duplication. Switching to plain text does not resolve the dual-collection architecture.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-observability-030",
+      "question": "Your team wants to create a custom Cloud Monitoring dashboard that is automatically shared with every new team member who joins the project, without manually granting access each time. Which approach is MOST maintainable?",
+      "options": [
+        "Share the dashboard URL with new team members and ask them to bookmark it; no IAM configuration is needed",
+        "Grant the roles/monitoring.viewer role to the team's Google Group at the project level; any user added to the group inherits access to all Cloud Monitoring dashboards in the project",
+        "Export the dashboard JSON and store it in a Git repository; each team member imports it into their own Cloud Monitoring account",
+        "Create a custom IAM role with dashboard-only permissions and assign it to each new team member individually"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Cloud Monitoring dashboards are project-scoped resources. By granting roles/monitoring.viewer to a Google Group at the project level, all current and future members of the group automatically have read access to all dashboards in the project. When a new team member joins, adding them to the group is the only required action. Sharing a URL does not grant access; the user will be blocked by IAM. Exporting and importing JSON creates separate dashboard copies that diverge over time. Per-user custom role assignment requires manual steps for each new member, which is not scalable.",
+      "category": "Implementing service monitoring strategies",
+      "difficulty": "easy"
     }
   ]
 }

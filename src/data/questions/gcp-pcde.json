@@ -3389,6 +3389,247 @@
       "explanation": "Global Application Load Balancers use Network Endpoint Groups (NEGs) to route traffic to GKE backends. If the European GKE cluster's pods are not registered in a NEG attached to the backend service, the load balancer has no healthy European endpoints and falls back to the US backend for all traffic. This is a common misconfiguration when adding a second region to an existing load balancer setup. A failing health check (option A) would also cause fallback but the question states the European backend has capacity, suggesting the pods are healthy but not registered. Cloud CDN caches static content but does not resolve backend routing misconfiguration. The load balancer routes to the nearest healthy backend, so if the European NEG is properly registered, it would use it.",
       "category": "Optimizing service performance",
       "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-001",
+      "question": "Your GKE service is experiencing sudden traffic spikes that cause CPU utilization to exceed 90%. The HPA is configured with a target CPU utilization of 70%. Why might the HPA fail to scale pods fast enough during an abrupt spike?",
+      "options": [
+        "HPA only scales based on memory, not CPU utilization",
+        "HPA has a default scale-up stabilization window of 3 minutes and a sync period of 15 seconds, so rapid spikes may cause latency before new pods are ready",
+        "HPA requires manual approval before adding pods to avoid cost overruns",
+        "HPA cannot scale GKE deployments that use more than one container per pod"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "HPA evaluates metrics every 15 seconds (sync period) and by default uses a 3-minute stabilization window before scaling up aggressively. Combined with pod startup and readiness probe delays, sudden traffic spikes can saturate existing pods before new ones are ready. Tuning scaleUp behavior (shorter stabilization window, higher scaling policies) and using VPA for right-sizing reduces this gap. HPA absolutely supports CPU metrics and multi-container pods.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-002",
+      "question": "You want to configure Cloud Run to prevent cold starts from affecting your SLO. Your service processes user-facing requests and must respond within 200ms at the 99th percentile. Which Cloud Run setting MOST directly reduces cold-start impact?",
+      "options": [
+        "Increase the maximum number of instances to 1000",
+        "Set min-instances to a value that keeps enough instances warm to handle expected baseline traffic without cold starts",
+        "Enable HTTP/2 end-to-end on the Cloud Run service",
+        "Reduce the container memory allocation so instances start faster"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud Run min-instances keeps a configured number of instances running and warm, meaning they have completed initialization and are ready to serve requests immediately. This directly eliminates cold starts for traffic up to the capacity of the warm instances. Setting max-instances high only helps at peak scale but does not prevent cold starts. HTTP/2 improves multiplexing but does not affect startup latency. Reducing memory allocation may speed up memory allocation but container init time is dominated by application startup code, not memory size.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-practices-003",
+      "question": "Your GKE Deployment currently has VPA configured in \"Off\" mode. Engineers want VPA to automatically update running pod resource requests without manual rollouts. What VPA update mode should they set, and what is the operational implication?",
+      "options": [
+        "Set VPA to \"Initial\" mode; VPA will update CPU and memory requests at runtime without restarting pods",
+        "Set VPA to \"Auto\" mode; VPA will evict and reschedule pods to apply updated resource requests, causing brief pod restarts",
+        "Set VPA to \"Recreate\" mode; VPA will drain the entire node before applying updates",
+        "Set VPA to \"Live\" mode; VPA will hot-patch resource limits in place without any disruption"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "VPA \"Auto\" mode applies its recommendations by evicting pods so they are recreated with the updated resource requests. This causes brief pod restarts, so proper PodDisruptionBudgets are essential to maintain availability. \"Initial\" mode only applies recommendations when new pods are created (not to running pods). \"Recreate\" is not a VPA mode name. There is no \"Live\" hot-patch mode for VPA.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-004",
+      "question": "Your team observes that the error rate for a GKE microservice spiked to 8% for 4 minutes, then recovered. The SLO is 99.5% availability over a 30-day window. The error budget is 65% consumed before this incident. Which statement BEST describes the impact of this event on the error budget?",
+      "options": [
+        "The 4-minute spike consumed no error budget because the service recovered automatically",
+        "The spike consumed error budget proportional to the 8% error rate across those 4 minutes, which must be subtracted from the 30-day error budget calculation",
+        "The spike reset the error budget window back to zero since an SLO violation occurred",
+        "Error budget is only consumed when the service is completely unavailable, not during partial error spikes"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Error budget is consumed continuously based on the ratio of bad requests to total requests. A 4-minute period at 8% error rate contributes bad events during those minutes to the 30-day rolling calculation. The exact budget consumed depends on traffic volume during the spike. Error budget is not binary; partial degradation counts. The window does not reset; it rolls. Any request failure that violates the SLI definition consumes budget, whether partial or complete outage.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-005",
+      "question": "A Cloud Run service is experiencing elevated latency. You observe that the p50 latency is 80ms, p95 is 350ms, and p99 is 2400ms. The service calls a downstream Cloud SQL instance. Which of the four golden signals does this pattern MOST suggest as the primary area to investigate?",
+      "options": [
+        "Traffic: the service is receiving more requests than expected",
+        "Saturation: the downstream Cloud SQL connection pool or CPU is becoming saturated under load, causing tail latency inflation",
+        "Errors: the high p99 indicates requests are failing silently",
+        "Availability: the service is completely unreachable for some users"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The wide gap between p50 (80ms) and p99 (2400ms) is a classic saturation signature: the majority of requests complete quickly but a tail of requests waits for a resource (connection pool slots, CPU time, lock contention) to free up. This points to saturation in the downstream Cloud SQL connection pool or instance CPU. Traffic volume alone would shift all percentiles up proportionally. High p99 with normal error rate is not an errors signal. Availability issues manifest as connection refusals or timeouts across all percentiles.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-006",
+      "question": "During an incident review, your team discovers that a deployment caused elevated 5xx errors for 12 minutes before anyone was paged. The alerting policy was set to fire when error rate exceeded 1% for 10 consecutive minutes. What change would BEST reduce detection time while avoiding false positives?",
+      "options": [
+        "Lower the error threshold to 0.1% with the same 10-minute duration window",
+        "Reduce the duration to 2 minutes and implement a burn-rate-based alert that fires when the error budget is being consumed at 14x the normal rate",
+        "Add a second alert that pages immediately on any single 5xx response",
+        "Switch to a log-based alert that counts 5xx entries and pages when count exceeds 50 per minute"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Burn-rate alerting (as defined in the SRE workbook) fires when the error budget is being consumed at a multiple of the sustainable rate. A 14x burn rate alert with a short window (2 minutes) detects fast-moving outages quickly while the high multiplier prevents false positives from normal traffic variance. Lowering the threshold to 0.1% with a 10-minute window misses fast incidents. Paging on any single 5xx creates alert fatigue. Log-based count thresholds require manual tuning for traffic volume changes.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-007",
+      "question": "Your SRE team wants to reduce toil in the on-call rotation. Engineers are spending 3 hours per week manually restarting pods that enter a CrashLoopBackOff state due to a known transient dependency timeout. Which approach BEST reduces this toil?",
+      "options": [
+        "Schedule a weekly maintenance window to restart all pods proactively",
+        "Implement a Kubernetes liveness probe tuned to detect the failure pattern, so the kubelet automatically restarts the affected containers without human intervention",
+        "Create a runbook entry documenting the restart steps so on-call engineers can execute it faster",
+        "Migrate all pods to Cloud Run so GCP manages restarts automatically"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Toil is repetitive, automatable, manual work that grows with scale. Configuring a Kubernetes liveness probe that detects the stuck state allows the kubelet to automatically restart the container, eliminating the manual intervention entirely. Proactive restarts treat the symptom but are still manual toil. Runbooks reduce execution time but do not eliminate toil. Migrating to Cloud Run may help but is a much larger change than fixing the probe, and Cloud Run does not directly solve upstream dependency timeouts.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-practices-008",
+      "question": "Your team wants to implement self-healing for a situation where a Cloud Spanner region becomes unavailable and requests to your GKE service start failing. What is the MOST automated and resilient approach?",
+      "options": [
+        "Configure a Cloud Monitoring alert that pages the on-call engineer to manually switch connection strings",
+        "Use Cloud Spanner multi-region configurations with automatic failover; configure your application to use the multi-region endpoint so the client library automatically routes to available replicas",
+        "Write a Cloud Functions function triggered by a log-based alert that updates a Secret Manager secret with the fallback connection string",
+        "Deploy a second application stack in a different region and use manual DNS failover when the primary region fails"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud Spanner multi-region instance configurations replicate data across multiple regions and the client library's multi-region endpoint automatically routes read-write requests to the closest available leader and retries on regional failures. No application-level failover code or human intervention is needed. Manual on-call intervention, secret patching via Cloud Functions, and manual DNS failover all introduce MTTR delays and operational toil.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-009",
+      "question": "Your organization wants to conduct a chaos engineering experiment on a GKE service. The service has a dependency on a Cloud Pub/Sub subscription. You want to simulate message processing delays without affecting production traffic. Which approach is MOST appropriate for a safe chaos experiment?",
+      "options": [
+        "Inject random sleep() calls directly into the production consumer code and deploy to production",
+        "Create a separate staging environment that mirrors production topology; use a chaos testing tool or custom test harness to artificially delay Pub/Sub message acknowledgements in staging, then measure the impact on downstream service health",
+        "Stop the Pub/Sub subscription in production during low-traffic hours and observe behavior",
+        "Delete and recreate the Pub/Sub topic to simulate message loss in production"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Chaos engineering experiments must be conducted with a hypothesis, in a controlled environment (preferably staging that mirrors production), and with a defined blast radius. Running experiments in a staging environment allows you to observe failure modes without user impact. Injecting delays in production code, stopping production subscriptions, or deleting production topics all risk real user harm and violate the safe chaos principle of minimal blast radius and reversibility.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-010",
+      "question": "Your company requires a Recovery Time Objective (RTO) of 15 minutes and a Recovery Point Objective (RPO) of 5 minutes for a critical Cloud SQL database. Which backup and failover configuration BEST meets these requirements?",
+      "options": [
+        "Enable daily automated backups with a retention of 7 days; manually restore from the latest backup during a failure event",
+        "Enable Cloud SQL high availability (HA) with a standby instance in the same zone, and enable automated backups every 4 hours",
+        "Enable Cloud SQL HA with a standby instance in a different zone, enable automated backups, and enable point-in-time recovery (PITR) with transaction log retention of at least 5 minutes",
+        "Use Cloud SQL read replicas in two regions and promote the replica manually when the primary fails"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Cloud SQL HA (zonal failover to a standby in a different zone) provides automatic failover in under 60 seconds, meeting the 15-minute RTO. PITR with transaction logs retained every 5 minutes allows recovery to within 5 minutes of a failure, meeting the RPO. Daily backups and manual restore cannot meet 15-minute RTO. Same-zone HA does not protect against zonal failures. Cross-region read replica promotion is manual and slower than HA failover.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-011",
+      "question": "Your service calls three downstream microservices. One of them (Service C) experiences periodic slowdowns. Without a circuit breaker, how does Service C slowness affect your service, and what does a circuit breaker prevent?",
+      "options": [
+        "Service C slowness only affects Service C itself; your service is unaffected because HTTP calls are stateless",
+        "Service C slowness causes your service threads or goroutines to block waiting for responses, exhausting connection pools and causing cascading latency; a circuit breaker opens after a threshold of failures, failing fast and allowing graceful degradation",
+        "A circuit breaker automatically fixes Service C by restarting its pods when it detects slowness",
+        "Circuit breakers only apply to database connections, not HTTP service-to-service calls"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "When Service C is slow, your service blocks on outbound HTTP calls, consuming threads or goroutines. If enough concurrent requests wait on Service C, your service exhausts its connection pool or request handling capacity, making it slow or unavailable to all callers regardless of whether they need Service C. A circuit breaker tracks failure or timeout rates; when they exceed a threshold, it opens and immediately returns an error (fail fast) without attempting the call. This prevents thread exhaustion and allows graceful degradation such as returning cached data or a fallback response.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-012",
+      "question": "After a significant incident, your team holds a postmortem. The primary contributing factor was a deployment that bypassed the staging environment. Which action item MOST effectively prevents recurrence at the systemic level?",
+      "options": [
+        "Write a postmortem document and share it with the team for awareness",
+        "Send an email reminder to all engineers to always deploy to staging first",
+        "Enforce staging deployment as a required pipeline stage in Cloud Deploy, blocking production promotion until staging deployment succeeds and smoke tests pass",
+        "Add a checklist item to the deployment runbook to remind engineers to deploy to staging"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Effective postmortem action items are systemic fixes, not behavioral reminders. Enforcing staging as a required pipeline stage in Cloud Deploy means the system makes it impossible to promote to production without first deploying and validating in staging. This eliminates the human error vector. Awareness emails, postmortem documents, and runbook checklists are all process controls that rely on human compliance and will eventually be bypassed again.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-013",
+      "question": "Your team uses a 28-day rolling error budget. Six days ago, an incident consumed 60% of the remaining budget. Your SLO review is monthly. What are TWO appropriate responses to this budget consumption? (Choose TWO)",
+      "options": [
+        "Freeze all new feature releases and focus exclusively on reliability improvements until the budget recovers",
+        "Conduct a postmortem on the incident and implement action items to prevent recurrence before the next SLO review",
+        "Adjust the SLO target downward to retroactively give back the consumed budget",
+        "Increase error budget monitoring alert thresholds so the team is notified earlier when budget burn accelerates"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "When significant error budget is consumed, the SRE model calls for two complementary responses: (1) freezing new feature work to protect remaining budget and stabilize the service, and (2) conducting a postmortem with concrete action items to prevent recurrence. Retroactively lowering the SLO to recover budget is gaming the system and invalidates the SLO contract with users. Raising alert thresholds makes monitoring less sensitive, which is the opposite of what is needed after an incident.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-014",
+      "question": "Your team wants to forecast when the current Cloud Spanner instance capacity will be saturated to proactively plan quota increases. Which approach provides the MOST actionable forecast?",
+      "options": [
+        "Wait until CPU utilization exceeds 80% on a single day, then immediately request quota",
+        "Export Cloud Monitoring metrics for Spanner CPU and query utilization to BigQuery; use regression analysis or trend forecasting on the historical data to project when utilization will reach the target threshold",
+        "Use Cloud Billing reports to predict when Spanner costs will exceed budget as a proxy for capacity",
+        "Set a Cloud Monitoring alert at 75% CPU and treat each alert as a capacity planning trigger"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Proactive capacity planning requires trend analysis over historical utilization data. Exporting Cloud Monitoring metrics to BigQuery allows the team to apply regression or time-series forecasting to predict when a metric will reach a critical threshold, enabling advance quota requests. Reactive single-day thresholds are too late for quota approvals. Billing reports reflect cost, not resource saturation patterns. Alert-based triggers are reactive, not predictive.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-015",
+      "question": "Your load testing reveals that your GKE service handles 5,000 RPS before latency at the p99 exceeds your SLO threshold. Current peak production traffic is 3,200 RPS. Which action BEST ensures the service stays within SLO as traffic grows while minimizing over-provisioning?",
+      "options": [
+        "Immediately scale the deployment to handle 10,000 RPS to provide ample headroom",
+        "Set HPA to scale out when CPU utilization exceeds 60%, configure a capacity alert when RPS reaches 4,000 (80% of tested capacity), and schedule a re-load-test when headroom shrinks below 20%",
+        "Disable autoscaling and manually add pods monthly based on traffic growth reports",
+        "Set the HPA maximum replicas to exactly match the current traffic of 3,200 RPS worth of pods"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Effective capacity management combines proactive alerting (notify before hitting tested limits), autoscaling (handle organic growth automatically), and scheduled re-validation (re-load-test to ensure new code does not regress capacity). Setting an alert at 80% of tested capacity gives the team time to investigate before the SLO is at risk. Immediately scaling to 10,000 RPS wastes resources. Manual monthly scaling is too slow for traffic spikes. Capping HPA replicas at current traffic prevents scaling to handle growth.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
     }
   ]
 }

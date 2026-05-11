@@ -4593,6 +4593,247 @@
       "explanation": "Cloud SQL read replicas use asynchronous replication. This means there is a replication lag between the primary and replica; applications reading from the replica may receive stale data for recently written records. Applications must be designed to tolerate this for read use cases where eventual consistency is acceptable. Additionally, Cloud SQL does not provide automatic read/write splitting: the application code or connection proxy must explicitly route read queries to the replica endpoint and write queries to the primary. Promotion of read replicas to primary is possible but requires manual action or custom automation, not automatic failover.",
       "category": "Optimizing service performance",
       "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-046",
+      "question": "Your team uses Cloud Profiler and notices that a Kotlin-based GKE service spends 25% of CPU time in reflection-based serialization in a library called Jackson. This code path is invoked on every API response. What is the MOST effective optimization?",
+      "options": [
+        "Increase the number of vCPUs allocated to the pod so each serialization call completes faster",
+        "Replace the reflection-based Jackson serialization with a code-generated serializer (such as Jackson Afterburner or a compile-time generated serializer via kotlinx.serialization) that avoids runtime reflection; this typically reduces serialization CPU cost by 3-5x",
+        "Cache the Jackson ObjectMapper instance to avoid re-creating it on each request",
+        "Move serialization to a dedicated serialization microservice to offload CPU from the API service"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Reflection-based serialization is a known CPU hotspot: Jackson at runtime uses Java reflection to inspect object fields, which involves expensive metadata lookup. Replacing it with code-generated serializers (Jackson Afterburner generates bytecode at startup, or kotlinx.serialization generates code at compile time) eliminates runtime reflection entirely, typically achieving 3-5x throughput improvement for serialization-heavy paths. Caching the ObjectMapper is a prerequisite (not doing so is a separate bug) but does not eliminate reflection overhead. Adding CPU shifts cost without fixing the root cause. A dedicated serialization service adds network latency and complexity.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-047",
+      "question": "Cloud Trace shows that a critical checkout endpoint has p99 latency of 1800ms. Examining individual traces, you see that the checkout handler makes 6 sequential external calls: inventory check, pricing, discount, tax, fraud check, and payment. Each call takes 200-350ms. What is the MOST impactful latency reduction strategy?",
+      "options": [
+        "Increase the timeout for each external call from 500ms to 2000ms to allow more time for completion",
+        "Identify which of the 6 calls have no data dependency on each other and execute them concurrently using goroutines, async/await, or parallel HTTP calls; reduce sequential calls to only those with actual dependencies, cutting total latency to the length of the critical path rather than the sum of all calls",
+        "Replace all 6 external calls with a single batch API call that returns all data in one response",
+        "Cache the results of all 6 calls in Cloud Memorystore to eliminate the latency on repeat requests"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "When multiple external calls are made sequentially but have no data dependencies between them, they can be executed in parallel. If all 6 calls can run concurrently (ideal case), total latency drops from 6 * 250ms = 1500ms to approximately max(250ms) = 350ms, a 4-5x improvement. Even if some calls have dependencies (e.g., fraud check needs pricing output), grouping independent calls into parallel batches dramatically reduces total latency. Increasing timeouts makes things worse (higher latency cap). A batch API is only possible if the provider offers one. Caching helps for repeated identical requests but not for user-specific data like fraud or payment.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-048",
+      "question": "Your Cloud Spanner application reads the same product catalog data on every request. The catalog has 50,000 rows and changes once per day at midnight. You want to eliminate Spanner read latency for catalog queries. Which approach provides the BEST performance while keeping data fresh after each nightly update?",
+      "options": [
+        "Use Cloud Spanner stale reads with a staleness of 24 hours to avoid consistency overhead",
+        "Load the entire catalog into Cloud Memorystore for Redis at application startup; set a TTL on the cached data to expire 24 hours after the last update; trigger a cache refresh after the nightly update completes so the new catalog is available within minutes of the update",
+        "Increase Cloud Spanner processing units to reduce read latency for catalog queries",
+        "Use Cloud Spanner read-only transactions with strong consistency on every request to ensure the catalog is always current"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "For data that changes once per day (highly cacheable), loading it into Redis at startup and refreshing after updates is the optimal strategy: cache hits have sub-millisecond latency versus 10-50ms Spanner reads, eliminating catalog query latency entirely. The nightly update trigger ensures fresh data is available shortly after midnight. Stale reads with 24-hour staleness might serve outdated data long after an update. Adding Spanner PUs reduces read latency but cannot approach in-process memory cache performance. Strong-consistency Spanner reads on every request are the baseline problem, not a solution.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-049",
+      "question": "Your organization wants to reduce GCP spending by identifying idle and underutilized resources. Which GCP service provides automated recommendations for rightsizing GCE instances and identifying idle resources?",
+      "options": [
+        "Cloud Billing reports filtered by project and service",
+        "GCP Recommender (specifically the Compute Engine rightsizing recommender and idle VM recommender), which analyzes 8 days of CPU and memory metrics to recommend downsizing over-provisioned instances and deleting idle VMs that have had no traffic",
+        "Cloud Monitoring dashboards that display CPU utilization per instance",
+        "Cloud Asset Inventory, which lists all resources and their creation dates so you can identify old unused resources"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "GCP Recommender is the native service for automated cost and performance recommendations. The Compute Engine rightsizing recommender analyzes 8 days of CPU and memory utilization and recommends specific machine type downgrades for over-provisioned instances with quantified cost savings. The idle VM recommender identifies instances with zero network traffic and disk I/O. Cloud Billing reports show cost allocation but do not analyze utilization patterns or make specific recommendations. Cloud Monitoring requires manual analysis. Cloud Asset Inventory lists resources but does not analyze utilization.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-050",
+      "question": "Your GKE application has a Cloud Spanner read-heavy workload where 95% of reads access data written more than 10 seconds ago. You want to maximize read throughput and reduce latency. Which Spanner read feature should you enable?",
+      "options": [
+        "Use exclusive locks on all read transactions to prevent read-write conflicts",
+        "Use stale reads (bounded staleness of 10 seconds or exact staleness) for the 95% of queries that do not need the latest data; stale reads can be served from any replica without a round-trip to the leader, increasing read throughput and reducing latency",
+        "Use partitioned reads to split all queries across multiple Spanner nodes in parallel",
+        "Enable Cloud Spanner point-in-time recovery to serve historical reads without impacting live transactions"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cloud Spanner stale reads (bounded or exact staleness) can be served directly from any read-only replica without acquiring locks or communicating with the leader. This means read requests are distributed across all replicas rather than requiring leader involvement, increasing read throughput proportionally to the number of replicas and reducing latency (no leader round-trip). Strong reads must go to the leader, limiting read throughput. For data written more than 10 seconds ago and a staleness window of 10 seconds, stale reads will return current data. Partitioned reads are for large full-table scan operations. PITR is for disaster recovery, not serving regular reads.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-051",
+      "question": "Your Cloud Trace analysis reveals that 30% of all traces for a GKE service have a span marked as \"cloud-sql-query\" with duration over 500ms. Normal query time for these queries is under 10ms. The issue is intermittent and correlates with traffic spikes. What is the MOST likely cause and appropriate fix?",
+      "options": [
+        "Cloud SQL is in a different region than GKE, adding 200ms round-trip latency per query",
+        "During traffic spikes, the application exhausts its Cloud SQL connection pool, causing queries to wait for a connection to become available. Fix by increasing the connection pool size or using a connection proxy (Cloud SQL Auth Proxy with pgBouncer) to manage connections efficiently",
+        "The Cloud SQL instance needs more RAM; the query execution plan is swapping to disk during peaks",
+        "Upgrade Cloud SQL to Enterprise Plus tier which has faster query processing"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Intermittent 500ms+ query times that correlate with traffic spikes, when normal query time is under 10ms, strongly indicates connection pool exhaustion. During spikes, new requests cannot get a database connection and must wait in a queue until one becomes free. The wait time (queue latency) is recorded as part of the query span in Cloud Trace. The fix is to increase the connection pool size or implement connection pooling middleware (pgBouncer via Cloud SQL Auth Proxy) which multiplexes many application connections over fewer actual database connections. Cross-region latency would be consistent, not intermittent. RAM and tier upgrades address query execution speed, not connection wait time.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-052",
+      "question": "Your organization runs a GKE-based service that uses 3-year committed use discounts (CUDs) for its baseline of 50 N2 nodes. Traffic has grown and you need 70 nodes during business hours and 40 nodes overnight. How should you manage the node fleet to optimize cost?",
+      "options": [
+        "Purchase 3-year CUDs for all 70 nodes to cover peak capacity",
+        "Keep the 50-node CUD commitment for baseline. Configure the cluster autoscaler to scale up to 70 nodes using on-demand pricing during business hours and scale down to 40 nodes overnight. Consider Spot VMs for the 20 burst nodes during business hours to minimize burst costs",
+        "Cancel the CUDs and move entirely to on-demand pricing for maximum flexibility",
+        "Purchase 1-year CUDs for all 70 nodes and request a refund for the CUD savings on the 30 nodes that are unused overnight"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The optimal cost strategy layers pricing models: CUDs for predictable baseline capacity provide the best discount (up to 57% for 3-year), on-demand or Spot for variable burst capacity. Since you are committed to 50 nodes, use CUDs for those. For the 20 burst nodes during business hours, use Spot VMs (60-91% discount over on-demand) if the workload tolerates occasional preemption. The autoscaler handles scaling down to 40 nodes overnight (below the CUD commitment: you still pay for 50 CUD nodes but the commitment is already paid for). Over-provisioning CUDs for peak creates waste. Canceling CUDs incurs early termination fees.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-053",
+      "question": "You are setting up Cloud Trace for a microservices application on GKE with 8 services. Traces are currently broken: spans from Service A to Service B are not connected in Cloud Trace. What is the MOST likely cause?",
+      "options": [
+        "Cloud Trace does not support tracing across multiple GKE services",
+        "The trace context (W3C TraceContext or X-Cloud-Trace-Context header) is not being propagated in HTTP calls between Service A and Service B; the receiving service must extract the trace context from incoming request headers and attach it to outgoing calls to maintain the trace chain",
+        "Services A and B are using different GCP projects, so traces cannot be correlated",
+        "Cloud Trace sampling dropped the span from Service B because it uses probability sampling"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Distributed tracing requires propagating trace context (a trace ID and span ID) through all service calls. When Service A calls Service B, it must inject the trace context into the outgoing HTTP headers (using W3C TraceContext or X-Cloud-Trace-Context format). Service B must extract this context and use the same trace ID when reporting its spans to Cloud Trace. If either propagation step is missing (not injecting or not extracting), the trace chain breaks and Service B's spans appear as separate traces disconnected from Service A's. This is the most common cause of broken distributed traces.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-054",
+      "question": "Your organization wants to reduce Cloud Storage costs for a large archive of 10 million objects averaging 500KB each. The objects were written 2-5 years ago and have never been accessed since. The data must be retained for compliance for 10 more years but is extremely unlikely to be accessed. What is the MOST cost-effective storage strategy?",
+      "options": [
+        "Keep all objects in Standard storage for fast access just in case",
+        "Transition objects to Archive storage class, which has the lowest per-GB storage cost and is designed for data accessed less than once per year; accept the higher retrieval cost and 90-day minimum storage duration",
+        "Delete the objects and create a metadata record in BigQuery so you can reproduce them if needed",
+        "Move the objects to Nearline storage which has lower storage costs than Standard"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Archive storage class has the lowest per-GB monthly cost ($0.0012/GB/month) and is designed exactly for compliance archives and disaster recovery data that is rarely if ever accessed. With objects that have not been accessed in 2-5 years and a 10-year retention requirement with extremely unlikely access, Archive is the optimal choice. The higher retrieval cost is negligible if access is truly rare. Standard storage costs 16x more per GB. Nearline costs 5x more per GB than Archive and has a shorter minimum storage duration (30 days vs 365 days for Archive). Deleting the data would violate compliance requirements.",
+      "category": "Optimizing service performance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-performance-055",
+      "question": "Your Cloud Firestore data model stores user activity events as individual documents in a top-level collection. A reporting query needs to count all events for a specific user and date range. The collection has 500 million documents. The query runs in 45 seconds. What is the MOST effective data model change to improve query performance?",
+      "options": [
+        "Add a composite index on (userId, timestamp) to enable efficient range queries on the collection",
+        "Restructure to a subcollection model: store events in a subcollection per user (users/{userId}/events); create a composite index on the subcollection for timestamp; queries against the user-specific subcollection scan only that user's events rather than the entire 500M document collection",
+        "Switch from Cloud Firestore to BigQuery for all reporting queries",
+        "Shard the events collection into 10 separate collections to reduce the per-collection document count"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Cloud Firestore composite indexes allow efficient queries that filter on multiple fields. A composite index on (userId, timestamp) enables Firestore to directly look up documents matching both the userId filter and the date range condition without scanning the full collection. Firestore indexes B-tree structures mean this query would complete in milliseconds regardless of total collection size. Subcollections can improve organization but do not offer better performance than a properly indexed flat collection for this use case. BigQuery migration is a major architectural change. Sharding creates operational complexity without the query performance benefit that proper indexing provides.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-056",
+      "question": "Your GKE service uses N2-standard-8 instances (8 vCPU, 32GB RAM). Cloud Profiler shows average CPU utilization of 12% and memory utilization of 15% per pod. What is the MOST appropriate rightsizing recommendation?",
+      "options": [
+        "Keep the current instance type as headroom; 12% CPU utilization is healthy",
+        "Right-size to N2-standard-2 (2 vCPU, 8GB RAM) or similar; current utilization indicates significant over-provisioning. Validate with load testing that the smaller instance handles peak traffic within SLO before applying to production. Use VPA recommendations to validate the CPU and memory request sizing.",
+        "Switch to N2-highmem-8 instances to give more memory headroom",
+        "Right-size to e2-micro instances for maximum cost savings"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "At 12% CPU and 15% memory utilization on N2-standard-8, the pods have approximately 6.4x CPU over-provisioning and 5.5x memory over-provisioning. A 4x reduction (N2-standard-2) would bring utilization to approximately 48% CPU and 60% memory, within a healthy operating range. The key validation step is load testing the smaller instance type under expected peak traffic before production rollout. VPA can provide data-driven request sizing recommendations. N2-highmem moves in the wrong direction for a CPU-constrained workload. e2-micro (0.25-2 vCPU) is too aggressive for an 8-vCPU workload without thorough load testing.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-057",
+      "question": "Your team needs to choose between a global external Application Load Balancer and a regional external Application Load Balancer for a new GKE service that only serves users in a single geographic region (North America). What is the PRIMARY consideration in this choice?",
+      "options": [
+        "Global load balancers are always faster because they use Google's backbone network",
+        "For a single-region service, a regional Application Load Balancer is sufficient and has lower cost (no premium tier network pricing) while still providing HTTP/2, TLS termination, and URL-based routing; a global load balancer adds cost via Premium Tier network pricing with no latency benefit when all backends are in one region",
+        "Regional load balancers do not support health checks; only global load balancers do",
+        "Global load balancers must be used for all HTTPS services regardless of geographic scope"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "When all users and backends are in a single region, a global Application Load Balancer provides no latency benefit over a regional one (it still routes to the same regional backends). Global ALBs incur Premium Tier network egress pricing which is more expensive than Standard Tier used by regional ALBs. Regional Application Load Balancers support the same features for single-region use cases: HTTPS/TLS, HTTP/2, URL-based routing, Cloud Armor, and health checks. The key reason to use a global ALB is for multi-region backends, anycast routing, or cross-region failover.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-058",
+      "question": "You are designing a high-performance TCP service on GKE that processes financial transactions. The service requires maximum throughput and minimum latency for TCP connections; HTTP-level features like URL routing are not needed. Which load balancer is MOST appropriate?",
+      "options": [
+        "Global external Application Load Balancer with TCP backend protocol",
+        "External passthrough Network Load Balancer (L4), which operates at the TCP/UDP level with no HTTP header inspection overhead, provides direct server return, and offers extremely low latency and high throughput for raw TCP workloads",
+        "Internal Application Load Balancer configured without URL maps",
+        "Cloud CDN with TCP pass-through mode for low-latency delivery"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "For raw TCP services where application-layer (L7) features are not needed, an External Passthrough Network Load Balancer (previously called TCP/UDP Network Load Balancer) is the optimal choice. It operates at L4, passes TCP connections directly to backend VMs without HTTP header processing overhead, supports direct server return for large response payloads, and provides the lowest possible latency. Application Load Balancers (L7) add HTTP parsing overhead and connection termination, which is unnecessary and adds latency for pure TCP workloads. Cloud CDN is for content delivery, not TCP pass-through.",
+      "category": "Optimizing service performance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-performance-059",
+      "question": "Your Cloud Spanner instance shows high CPU utilization (85%) during a daily export job that runs a full table scan for analytics. The OLTP workload on the same instance is experiencing latency spikes during the export. What are TWO approaches to isolate the analytics workload from OLTP performance? (Choose TWO)",
+      "options": [
+        "Run the analytics export using Spanner Data Boost, which processes the scan on isolated serverless compute without consuming OLTP instance processing units",
+        "Schedule the analytics export to run during off-peak hours when OLTP traffic is lowest",
+        "Create a separate Cloud Spanner instance and manually replicate data from the OLTP instance to the analytics instance every hour",
+        "Use Spanner change streams with a Dataflow pipeline to maintain a BigQuery replica; run analytics queries against BigQuery instead of Spanner"
+      ],
+      "correctAnswers": [
+        0,
+        3
+      ],
+      "explanation": "Two effective approaches to isolate analytics from OLTP: (1) Spanner Data Boost runs analytics queries on isolated serverless compute with no impact on the OLTP instance's processing units, immediately eliminating the CPU contention without architectural changes; (2) Using Spanner change streams with Dataflow to populate a BigQuery replica moves analytics queries entirely off Spanner, eliminating the conflict permanently and providing a more powerful analytics platform. Off-peak scheduling reduces but does not eliminate contention. A separate manual replica is complex and introduces synchronization lag. Both options 1 and 4 are clean solutions to the stated problem.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-performance-060",
+      "question": "Your team is evaluating committed use discounts (CUDs) for a GKE workload. The service currently uses N2-standard-4 instances and averages 80% of its current capacity consistently throughout the day. You are confident the service will grow by at most 20% over the next year. What is the BEST CUD strategy?",
+      "options": [
+        "Purchase 3-year resource-based CUDs for 100% of current capacity to maximize discount",
+        "Purchase 1-year resource-based CUDs for 80% of current baseline capacity (matching the consistent utilization); this covers the portion that is certain to be used, avoids over-committing to capacity that might need to change, and provides approximately 37% discount over on-demand pricing",
+        "Use spend-based CUDs covering 100% of current GCE spend for the maximum flexibility",
+        "Do not purchase CUDs; use Spot VMs for all instances to maximize cost savings"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The CUD best practice is to commit to the baseline capacity you are confident will be used consistently. At 80% average utilization, committing to 80% of current capacity ensures the CUD is fully utilized. A 1-year commitment limits exposure if the service architecture changes. Resource-based CUDs (committing to specific machine types) offer higher discounts (37% for 1-year, 57% for 3-year) than spend-based CUDs (25% for 1-year). Committing to 100% capacity risks waste if the service right-sizes down. Using Spot VMs for user-facing services risks availability disruptions from preemption. Spend-based CUDs provide flexibility for machine type changes but lower discount rates.",
+      "category": "Optimizing service performance",
+      "difficulty": "hard"
     }
   ]
 }

@@ -1,8 +1,8 @@
 {
   "examId": "gcp-pcde",
-  "version": 0,
-  "placeholder": true,
-  "generatedAt": "2026-05-10",
+  "version": 1,
+  "placeholder": false,
+  "generatedAt": "2026-05-11",
   "questions": [
     {
       "id": "gcppcde-sre-principles-001",

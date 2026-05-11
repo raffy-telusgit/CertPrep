@@ -3630,6 +3630,247 @@
       "explanation": "Effective capacity management combines proactive alerting (notify before hitting tested limits), autoscaling (handle organic growth automatically), and scheduled re-validation (re-load-test to ensure new code does not regress capacity). Setting an alert at 80% of tested capacity gives the team time to investigate before the SLO is at risk. Immediately scaling to 10,000 RPS wastes resources. Manual monthly scaling is too slow for traffic spikes. Capping HPA replicas at current traffic prevents scaling to handle growth.",
       "category": "Applying SRE practices to a service",
       "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-016",
+      "question": "Your team wants to measure and improve its incident response capability. After a production outage last month, the MTTR was 47 minutes. Which set of metrics would BEST help the team identify where to reduce MTTR?",
+      "options": [
+        "Total lines of code changed in the deployment that caused the incident",
+        "Time-to-detect (TTD), time-to-mitigate (TTM), and time-to-resolve (TTR) broken down by incident phase, alongside alert-to-page latency",
+        "Number of engineers on-call during the incident window",
+        "Total cost of the outage calculated by multiplying traffic lost by revenue per request"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "MTTR is a composite metric. To reduce it, teams must understand which phases (detection, triage, mitigation, resolution) consume the most time. Tracking TTD (how long from failure start to alert), TTM (how long from alert to service restored), and TTR (full resolution including root cause fix) surfaces where improvements have the most impact. Alert-to-page latency reveals routing inefficiencies. Code churn, engineer count, and cost calculations do not directly identify operational bottlenecks in the response process.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-017",
+      "question": "Your GKE service uses Cloud Pub/Sub as a work queue. During peak load, message backlog grows and processing latency increases. You want to autoscale GKE pods based on Pub/Sub subscription backlog depth. Which autoscaling mechanism should you use?",
+      "options": [
+        "Configure HPA with a CPU metric target; as backlog grows, pod CPU will naturally rise and trigger scaling",
+        "Use KEDA (Kubernetes Event-Driven Autoscaling) with the Cloud Pub/Sub scaler, which scales pod replicas based on the number of undelivered messages in the subscription",
+        "Use VPA to increase CPU and memory requests on existing pods so they process messages faster",
+        "Configure Cloud Run instead of GKE; Cloud Run natively scales on Pub/Sub push volume"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "KEDA provides event-driven autoscaling for Kubernetes by connecting to external event sources. The KEDA Cloud Pub/Sub scaler reads the num_undelivered_messages metric from the subscription and adjusts the replica count proportionally, so more workers are added as the backlog grows and removed when it clears. CPU-based HPA is indirect and lags behind backlog growth. VPA changes resource requests but not replica count, so total throughput does not increase proportionally. Cloud Run push subscribers scale well but changing from GKE to Cloud Run is a significant architectural change just to solve autoscaling.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-018",
+      "question": "A multi-region GKE application fails over from us-central1 to us-east1 during a regional disaster drill. After failover, users report degraded performance for 20 minutes before the service normalizes. What is the MOST likely cause of the post-failover degradation?",
+      "options": [
+        "Cloud DNS TTL settings caused users to continue hitting the failed region for 20 minutes",
+        "The us-east1 cluster had insufficient pre-warmed capacity; HPA needed time to scale pods and the cluster autoscaler needed time to provision new nodes before full capacity was available",
+        "Cloud Load Balancing continued sending traffic to us-central1 for 20 minutes after failover was initiated",
+        "The application code is not compatible with the us-east1 region and required a different build"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "During disaster recovery drills, post-failover degradation is commonly caused by cold capacity: the standby region has insufficient pre-warmed pods and nodes to immediately handle the full traffic load shifted from the failed region. HPA scaling and cluster autoscaler node provisioning both introduce latency (minutes, not seconds) before full capacity is available. Global Load Balancing routes away from unhealthy backends automatically and quickly. DNS TTL does affect failover timing in some architectures, but GCP global load balancers do not use DNS TTL for backend failover.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-019",
+      "question": "Your engineering team spends 35% of its time on toil each week. The SRE model recommends keeping toil below what threshold, and what should be done with the excess toil reduction time?",
+      "options": [
+        "Below 10%; excess time should be spent on additional incident response training",
+        "Below 50%; excess time should be spent on writing more runbooks and documentation",
+        "Below 50%; excess time should be spent on engineering work such as automation, reliability improvements, or feature work that reduces future toil",
+        "Below 25%; the team should outsource remaining toil to an operations team"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "The SRE model sets a 50% cap on toil: SREs should spend no more than 50% of their time on operational toil. At 35%, the team is under the limit but should still track the trend. The remaining time should be invested in engineering work (automation, tooling, reliability improvements) that reduces toil and scales better than adding headcount. Runbooks are valuable but do not eliminate toil. Outsourcing simply moves toil rather than eliminating it.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-practices-020",
+      "question": "Your service has a dependency SLO agreement with an upstream team: their API must have 99.9% availability. Your own service SLO is 99.95% availability. What risk does this dependency create, and how should you handle it?",
+      "options": [
+        "No risk; your SLO is higher than the dependency SLO so your service will always meet its target",
+        "The dependency SLO (99.9%) is lower than your own SLO (99.95%); dependency unavailability can directly cause your SLO to be violated. Implement graceful degradation, caching, or retries to handle dependency failures without surfacing them to your users.",
+        "Reduce your own SLO to 99.9% to match the dependency so that both services have the same error budget",
+        "File a ticket with the upstream team to increase their SLO to 99.99% to provide a buffer"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "When your service SLO is tighter than a dependency SLO, the dependency can violate your SLO even when operating within its own budget. The correct approach is to implement resilience patterns: caching last-known-good responses, retrying transient failures with backoff, graceful degradation (serve partial functionality when the upstream is down), or circuit breaking. Simply lowering your SLO harms your users. Demanding the upstream raise their SLO may not be achievable and still does not make your service resilient.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-021",
+      "question": "After a successful chaos engineering experiment, your team found that killing one zone of a three-zone GKE cluster caused 30 seconds of elevated error rate despite having a PodDisruptionBudget configured. What is the MOST likely reason PDB did not prevent the errors?",
+      "options": [
+        "PodDisruptionBudgets prevent all pod evictions and should have prevented any disruption",
+        "PDB protects voluntary disruptions (evictions, node drains) but does not protect against involuntary disruptions like node failures or zone outages; the errors came from the zone going down, not from a voluntary eviction",
+        "PDB was misconfigured because it only applies to Deployments, not StatefulSets",
+        "PDB requires a minimum of 5 replicas to be effective; with 3 replicas across 3 zones, PDB does not activate"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "PodDisruptionBudgets (PDBs) are designed to limit voluntary disruptions such as node drains, cluster upgrades, or manual evictions. They explicitly do NOT protect against involuntary disruptions such as node hardware failures or zone outages. When a zone goes down, pods on that zone are forcibly terminated, which bypasses PDB constraints. To handle zone failures, you need redundant replicas spread across zones with a topology spread constraint and sufficient headroom on remaining zones to absorb the lost capacity.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-022",
+      "question": "Your team wants to implement graceful degradation for a product recommendation feature in an e-commerce GKE application. The recommendation service is a non-critical downstream dependency. Which pattern achieves graceful degradation?",
+      "options": [
+        "Return an HTTP 503 to the user whenever the recommendation service is unavailable",
+        "Implement a fallback in the application that serves a cached or static list of popular products when the recommendation service returns an error or times out, so the main shopping flow continues uninterrupted",
+        "Disable the recommendation feature entirely in production until the downstream service achieves 99.99% SLO",
+        "Route all recommendation requests through a queue so they are processed eventually when the service recovers"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Graceful degradation means the application continues to function (at reduced quality) when a non-critical dependency is unavailable. Serving a cached or static fallback list allows the shopping flow to proceed without the recommendation service, directly implementing graceful degradation. Returning 503 propagates the failure to users. Disabling the feature entirely is a coarse degradation but removes value permanently rather than conditionally. Queuing requests is an eventual-consistency pattern, not a real-time graceful degradation solution.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-practices-023",
+      "question": "Your team conducts a quarterly DR drill for a multi-region Cloud Spanner application. The drill requires simulating a full regional outage and verifying that traffic fails over within the RTO of 10 minutes. What should the drill procedure include to be meaningful?",
+      "options": [
+        "Review the architecture diagram and confirm that multi-region Spanner is configured, then mark the drill complete",
+        "Actually block or divert all traffic from the primary region, measure the time to detect the failure and reroute traffic to the secondary region, compare measured RTO against the 10-minute target, and document any gaps as follow-up action items",
+        "Run the drill only in a dev environment with synthetic traffic to avoid any risk to production",
+        "Ask the Spanner team to guarantee failover in writing as a substitute for running the drill"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "DR drills are only meaningful when they validate the actual system behavior under failure conditions. A real drill requires simulating the failure (blocking traffic from the primary region), measuring detection and rerouting times against the RTO, and documenting gaps. Architecture reviews and documentation exercises do not reveal operational issues like alert gaps, runbook errors, or HPA warm-up times. Dev-only drills with synthetic traffic miss production-specific dependencies. Written guarantees from service teams do not substitute for observed behavior.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-024",
+      "question": "Your service SLO review shows that latency SLO compliance has been 99.97% over the past quarter, well above the 99.9% target. Your error budget is barely touched. The product team wants to ship more aggressively. How should the SRE lead respond to this situation?",
+      "options": [
+        "Reject the request; the high compliance proves the service needs more reliability work, not more features",
+        "Use the surplus error budget as evidence that the service has reliability headroom; negotiate a controlled increase in release velocity with appropriate safeguards such as canary deployments and automated rollback",
+        "Lower the SLO target to 99.5% to create even more error budget for the product team",
+        "Approve unlimited releases since the error budget is not yet consumed"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The error budget model explicitly supports this scenario: unused error budget represents reliability headroom that can be spent on velocity. The SRE lead should acknowledge the surplus budget and work with the product team to increase release velocity in a controlled way, using safeguards like canary deployments, automated rollback triggers, and burn-rate alerting to detect problems early. Rejecting the request ignores the purpose of error budgets. Lowering the SLO harms users. Approving unlimited releases without safeguards abandons reliability discipline.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-025",
+      "question": "You want to automatically restart a GKE pod if its main process becomes deadlocked (the process is running but not responding to requests). The liveness probe must not trigger false positives during normal startup. Which configuration is MOST appropriate?",
+      "options": [
+        "Set liveness probe to check /healthz every 10 seconds with initialDelaySeconds: 0 and failureThreshold: 1",
+        "Set liveness probe to check /healthz every 10 seconds with initialDelaySeconds: 30 (to allow startup), failureThreshold: 3 (to avoid false positives from transient slowness), and successThreshold: 1",
+        "Set liveness probe to exec a sleep 1 command; if sleep succeeds the container is healthy",
+        "Use a readinessProbe instead of liveness probe; readiness probes restart pods when they fail"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A liveness probe with initialDelaySeconds: 30 avoids firing during application startup. failureThreshold: 3 with a 10-second period means the pod must fail 3 consecutive checks (30 seconds total) before the kubelet restarts it, preventing restarts from transient slowness. initialDelaySeconds: 0 and failureThreshold: 1 would cause false-positive restarts during startup and transient network issues. A sleep command does not check application health. Readiness probes remove pods from Service load balancing but do NOT restart them; only liveness probes trigger restarts.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-026",
+      "question": "Your team is writing a postmortem for a 45-minute Cloud SQL outage caused by a schema migration that locked tables. Which elements are REQUIRED in a blameless postmortem? (Choose TWO)",
+      "options": [
+        "A clear timeline of events from first symptom to resolution",
+        "The names of the engineers who ran the migration so they can be held accountable",
+        "Action items with owners and due dates to prevent recurrence",
+        "A calculation of revenue lost during the outage for billing purposes"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "A blameless postmortem requires: (1) a clear timeline that establishes what happened and in what order, providing a shared understanding of the incident; and (2) concrete action items with owners and due dates, which make the postmortem actionable rather than just a historical document. Blameless culture explicitly avoids naming individuals as responsible parties; the goal is to identify systemic causes, not to assign blame. Revenue calculations may be useful for business impact analysis but are not a required postmortem element.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
+    },
+    {
+      "id": "gcppcde-sre-practices-027",
+      "question": "Your organization tracks SLO compliance monthly. You notice that a service consistently achieves 99.92% availability but the target is 99.9%. The service team wants to raise the SLO to 99.95% to reflect actual performance. What is the PRIMARY risk of raising the SLO target?",
+      "options": [
+        "Raising the SLO will make the service cheaper to run",
+        "A higher SLO reduces the error budget (from 0.1% to 0.05%), leaving less room for planned maintenance, deployments, and incidents before the SLO is violated, which may slow release velocity",
+        "Raising the SLO invalidates all historical compliance data",
+        "A higher SLO automatically triggers more Cloud Monitoring alerts"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Raising an SLO tightens the error budget. At 99.9% the team has a 0.1% error budget per window; at 99.95% the budget shrinks to 0.05%, cutting it in half. This leaves less budget for deployments, planned maintenance, and incidents. If the service historically achieved 99.92%, it has 0.08% actual errors, which would violate the new 99.95% SLO. SLOs should not be set higher than the service can reliably deliver without over-engineering. Historical compliance data remains valid regardless of SLO changes.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-028",
+      "question": "You are designing a multi-region failover for a GKE application that uses Cloud Firestore. Your RTO is 5 minutes. Which Firestore configuration supports automatic multi-region failover without application code changes?",
+      "options": [
+        "Configure Firestore in Native mode in a single region; set up a cron job to export data to a second region every 5 minutes",
+        "Use a Firestore multi-region location (nam5 or eur3); Firestore automatically replicates data and serves reads and writes from the nearest available region, providing transparent failover",
+        "Create two separate Firestore databases in different regions and use application-level write fanout to keep them synchronized",
+        "Firestore does not support multi-region; use Cloud Bigtable instead"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Firestore multi-region locations (such as nam5 for North America or eur3 for Europe) replicate data across multiple regions within the location automatically. Reads and writes are served from the nearest healthy replica with no application code changes required. In the event of a regional failure, Firestore automatically routes traffic to the remaining replicas. Single-region Firestore with export jobs cannot meet 5-minute RTO for a regional outage. Application-level write fanout is complex and introduces synchronization bugs. Firestore absolutely supports multi-region deployments.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "medium"
+    },
+    {
+      "id": "gcppcde-sre-practices-029",
+      "question": "You are implementing SLOs for a batch data processing pipeline that runs nightly. The pipeline ingests data from Cloud Storage and writes results to BigQuery. What is the MOST appropriate SLI for this service?",
+      "options": [
+        "Request latency at the 99th percentile measured over 30 days",
+        "The proportion of nightly pipeline runs that complete successfully within the defined SLO window (e.g., within 4 hours of scheduled start), measured over a 30-day period",
+        "CPU utilization of the Dataflow workers averaged across all pipeline runs",
+        "The number of BigQuery slots consumed per pipeline run"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "For batch pipelines, the user-facing outcome is whether the pipeline completes successfully within a defined time window. An SLI based on the ratio of successful, on-time runs to total scheduled runs directly measures what users (data consumers) care about. Request latency is an online serving metric, not appropriate for batch jobs. CPU utilization and BigQuery slot counts are resource metrics, not user-facing signals, and do not indicate whether the pipeline delivered its output on time.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "easy"
+    },
+    {
+      "id": "gcppcde-sre-practices-030",
+      "question": "Your team wants to test how the GKE application behaves when a downstream service returns HTTP 500 errors for 30% of requests. You want to inject this fault without modifying application code or the downstream service. Which GCP or Kubernetes mechanism enables this?",
+      "options": [
+        "Modify the Cloud Load Balancer health check to return 500 errors for 30% of requests",
+        "Use Istio service mesh fault injection on the GKE cluster; configure a VirtualService with an HTTP fault rule that injects 500 errors for 30% of requests to the downstream service host",
+        "Configure a Cloud Armor security policy that randomly returns 500 errors on 30% of requests",
+        "Write a Cloud Functions proxy that intercepts requests and randomly returns 500 errors before forwarding to the downstream service"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Istio (which can be enabled on GKE as Anthos Service Mesh or installed directly) provides fault injection as a traffic management feature via VirtualService resources. You can configure httpFault rules to inject specific HTTP status codes (abort fault) or delays for a configurable percentage of requests, entirely at the service mesh level without any application code changes. Cloud Armor handles security policies and rate limiting, not fault injection. Cloud Load Balancer health checks affect backend health, not individual request responses. Cloud Functions proxies require architectural changes.",
+      "category": "Applying SRE practices to a service",
+      "difficulty": "hard"
     }
   ]
 }

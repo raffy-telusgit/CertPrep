@@ -12,7 +12,7 @@ function RobotButton({ vendorColor, isOpen, onClick }: RobotButtonProps) {
       type="button"
       onClick={onClick}
       aria-label={isOpen ? 'Close CertBot' : 'Open CertBot study assistant'}
-      className="fixed bottom-4 left-4 z-50 w-16 h-16 rounded-full text-white shadow-lg hover:shadow-xl transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 flex items-center justify-center relative"
+      className="fixed bottom-4 right-4 z-50 w-16 h-16 rounded-full text-white shadow-lg hover:shadow-xl transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 flex items-center justify-center relative"
       style={{ backgroundColor: vendorColor }}
     >
       <RobotIcon className="w-7 h-7" />

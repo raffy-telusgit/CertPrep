@@ -52,3 +52,8 @@ export interface QuestionBankFile {
   generatedAt: string;
   questions: Question[];
 }
+
+export interface ChatMessage {
+  role: 'user' | 'bot'
+  content: string
+}

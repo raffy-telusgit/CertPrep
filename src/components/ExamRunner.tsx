@@ -17,6 +17,8 @@ import {
 } from '@/components/ui/alert-dialog'
 import QuestionCard from '@/components/QuestionCard'
 import Timer from '@/components/Timer'
+import { getExamById } from '@/data/exams'
+import CertBot from '@/components/CertBot/CertBot'
 
 function ExamRunner() {
   const { id } = useParams<{ id: string }>()
@@ -27,6 +29,8 @@ function ExamRunner() {
   const toggleFlag = useExamStore((s) => s.toggleFlag)
   const goToQuestion = useExamStore((s) => s.goToQuestion)
   const submitSession = useExamStore((s) => s.submitSession)
+
+  const exam = currentSession ? getExamById(currentSession.examId) : undefined
 
   const [showAnswer, setShowAnswer] = useState(false)
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false)
@@ -292,6 +296,15 @@ function ExamRunner() {
           </span>
         </div>
       </div>
+
+      {currentSession.mode === 'practice' && exam && (
+        <CertBot
+          question={displayQuestion}
+          answerRevealed={showAnswer}
+          vendorColor={exam.vendorColor}
+          vendorName={exam.fullName}
+        />
+      )}
     </div>
   )
 }

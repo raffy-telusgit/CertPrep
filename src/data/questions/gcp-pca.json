@@ -956,7 +956,7 @@
       "id": "gcppca-060",
       "question": "A security team wants to ensure that all VM instances in a GCP project use only approved machine types and that no VM can have an external IP address. Which GCP feature enforces these requirements at scale?",
       "options": [
-        "Organization Policy constraints: constraints/compute.restrictCloudSQLInstances is incorrect; use constraints/compute.vmExternalIpAccess set to deny all, and constraints/compute.allowedMachineTypes",
+        "VPC firewall rules combined with a startup script that validates machine type on boot and shuts down non-compliant VMs",
         "IAM deny policies preventing compute.instances.create with disallowed machine types",
         "Terraform Sentinel policies enforcing machine type and IP constraints",
         "Organization Policy constraints: constraints/compute.vmExternalIpAccess set to deny all and constraints/compute.allowedMachineTypes listing approved types"
@@ -1101,7 +1101,7 @@
       "id": "gcppca-069",
       "question": "A team manages 200 GCP projects across multiple business units. They need to enforce that all projects tag resources with a cost-center label. Which approach enforces this consistently without manual per-project configuration?",
       "options": [
-        "Organization Policy with constraints/compute.requireOsLogin is incorrect; use a custom organization policy constraint enforcing label requirements at the organization or folder level",
+        "Cloud Asset Inventory with auto-remediation Cloud Functions that detect missing labels and add them after resource creation",
         "Cloud Asset Inventory scheduled exports with label compliance reporting and manual remediation",
         "Terraform modules enforcing labels in all resource definitions across all 200 projects",
         "A custom organization policy constraint requiring the cost-center label on supported resource types, applied at the organization level"
@@ -1278,7 +1278,7 @@
       "id": "gcppca-080",
       "question": "A company wants to control costs on their GCP organization. They want to ensure that developers cannot create expensive resources like high-memory VMs (n1-ultramem series) or TPU nodes across all projects. Which mechanism prevents this across the entire organization?",
       "options": [
-        "Organization Policy constraint constraints/compute.restrictCloudSQLInstances is wrong; use constraints/compute.allowedMachineTypes and constraints/compute.restrictTPUInstances applied at the organization node",
+        "Cloud Billing budgets with programmatic spending controls that automatically disable billing for the project when spending thresholds are exceeded",
         "IAM conditions on compute.instances.create that restrict machine types for the developer role",
         "Budget alerts configured to notify when expensive resources are created",
         "Organization Policy constraints for allowed machine types and TPU restrictions applied at the organization level"
@@ -2546,17 +2546,17 @@
     },
     {
       "id": "gcppca-159",
-      "question": "Your Cloud Run service currently has min-instances set to 0 and is experiencing cold start latency of 3-4 seconds on initial requests. Requests arrive sporadically throughout the day. What is the most cost-effective way to reduce cold start latency while minimizing cost?",
+      "question": "A data lake team stores files in Cloud Storage. Access patterns are unpredictable — some files are read daily, others are rarely accessed after initial ingestion. The team wants to minimize storage costs without manually writing lifecycle rules or tracking access patterns. Which feature automates this?",
       "options": [
-        "Set min-instances to 10 to always have capacity available",
-        "Set min-instances to 1 to keep one warm instance available at all times",
-        "Enable CPU always-on to allow background processing between requests",
-        "Switch from Cloud Run to GKE to have persistent pods"
+        "Configure Cloud Storage lifecycle rules to transition all objects to Nearline after 30 days and Coldline after 90 days",
+        "Enable Cloud Storage Autoclass, which automatically moves objects between storage classes based on actual access patterns",
+        "Write a Cloud Function triggered on a schedule that uses Cloud Asset Inventory to identify cold objects and move them to Archive",
+        "Set a default storage class of Coldline on the bucket so all new objects are stored at the lowest cost class"
       ],
       "correctAnswers": [
         1
       ],
-      "explanation": "Setting min-instances to 1 keeps exactly one warm instance available, eliminating cold starts for most traffic patterns at minimal cost. You are only charged for the idle time of one instance. Setting min-instances to 10 keeps 10 instances warm unnecessarily — expensive for sporadic traffic. CPU always-on charges for CPU during idle time even with min-instances=0, which helps CPU-intensive initialization but still has cold starts. Switching to GKE eliminates cold starts but adds significant operational overhead and cost for node pools.",
+      "explanation": "Cloud Storage Autoclass monitors each object's access patterns and automatically transitions objects to a lower-cost storage class (Standard → Nearline → Coldline → Archive) when they have not been accessed, and promotes them back to Standard when they are accessed again. This requires no manual lifecycle rule configuration and handles unpredictable access patterns that fixed time-based lifecycle rules cannot. Lifecycle rules with fixed time windows force all objects through the same transition schedule regardless of actual access — objects accessed frequently would be demoted unnecessarily. A custom Cloud Function adds operational complexity. Setting Coldline as the default class penalizes frequently accessed objects with retrieval fees.",
       "category": "Analyzing and optimizing technical and business processes",
       "difficulty": "easy"
     },
@@ -3214,9 +3214,9 @@
         "Create a BigQuery materialized view pre-aggregating by region and product_category"
       ],
       "correctAnswers": [
-        0
+        1
       ],
-      "explanation": "Partitioning by region (assuming a manageable number of distinct values) combined with clustering by product_category provides the best optimization: partition pruning eliminates entire partitions not matching the region filter, and clustering sorts rows within partitions by product_category so only relevant blocks are scanned. This reduces both bytes scanned and cost. Clustering alone (option B) helps but cannot prune partitions — all partitions are still scanned. Ingestion-time partitioning doesn't align with the query filter on region. Materialized views are useful but require maintenance and add storage cost.",
+      "explanation": "BigQuery only supports partitioning by DATE, DATETIME, TIMESTAMP, or INTEGER RANGE columns — not by arbitrary string columns like region. Since region is a string, partitioning by it is not supported. Clustering by region and product_category (option B) is valid: BigQuery supports clustering by up to 4 columns including strings, sorting rows within each partition so queries filtering on those columns scan only relevant data blocks. Clustering alone on a 2TB table reduces bytes scanned significantly for these filter patterns. Ingestion-time partitioning does not align with filters on region/product_category. Materialized views add storage cost and maintenance overhead.",
       "category": "Analyzing and optimizing technical and business processes",
       "difficulty": "medium"
     },
@@ -3273,14 +3273,14 @@
       "question": "A company has 50TB of on-premises data to migrate to Cloud Storage. Their internet connection is 100Mbps shared with production traffic. How long would a full upload take at 50% of available bandwidth, and what is the recommended alternative?",
       "options": [
         "Approximately 23 days; use Storage Transfer Service online transfer",
-        "Approximately 23 days; use Transfer Appliance to ship data physically to Google",
+        "Approximately 92 days; use Transfer Appliance to ship data physically to Google",
         "Approximately 46 days; use Cloud Interconnect to increase bandwidth for the transfer",
         "Approximately 92 days; use a parallel upload with gsutil -m"
       ],
       "correctAnswers": [
         1
       ],
-      "explanation": "At 50Mbps effective bandwidth: 50TB = 400Tb; 400Tb / 50Mbps = ~8,000,000 seconds ≈ 92 days. However, the question option framing reflects the scenario. For datasets larger than roughly 10-20TB where network transfer would take more than a week, Google recommends Transfer Appliance — a physical device shipped to your location, loaded with data, and shipped back to Google for ingest into Cloud Storage. Storage Transfer Service is for online transfers and would still be limited by the same bandwidth. Cloud Interconnect increases bandwidth but adding dedicated circuit takes time and is expensive for a one-time migration.",
+      "explanation": "At 50% of 100Mbps = 50Mbps effective bandwidth: 50TB = 400Tb of data; 400,000,000,000,000 bits / 50,000,000 bits per second = 8,000,000 seconds ≈ 92 days. For datasets where online transfer would take weeks or months, Google recommends Transfer Appliance — a physical rack-mounted device shipped to your location, loaded with data on-site, then shipped to a Google data center for direct ingest into Cloud Storage. Storage Transfer Service is for online transfers and is subject to the same bandwidth constraint. Cloud Interconnect increases bandwidth but requires procurement time and is expensive for a one-time migration.",
       "category": "Managing implementation of cloud architecture",
       "difficulty": "medium"
     },
@@ -4566,13 +4566,13 @@
         "Cloud Spanner backups are strongly consistent across all nodes at the time of backup creation",
         "Cloud Spanner backups can be restored to a different Spanner instance in any region globally",
         "Cloud Spanner supports cross-region backup replication automatically like Cloud SQL HA",
-        "Cloud Spanner backups are incremental and stored in the same region as the source instance by default"
+        "Cloud Spanner backups are full (not incremental) backups stored in the same region as the source instance and cannot be automatically replicated to other regions"
       ],
       "correctAnswers": [
         0,
         3
       ],
-      "explanation": "Cloud Spanner backups are strongly consistent, capturing a consistent state across all nodes at a specific version timestamp (option A) — this is a distinguishing feature given Spanner's distributed nature. Spanner backups are full backups stored in the same region as the source instance by default, not automatically replicated cross-region (option D). Spanner backup restores can be to a different instance but must be in the same project and the restored instance's region must be compatible with the backup configuration — they cannot be freely restored to any global region (option B is incorrect). Spanner does not have cross-region backup replication like Cloud SQL's HA read replica.",
+      "explanation": "Cloud Spanner backups are strongly consistent across all nodes, capturing a consistent database state at a specific version timestamp — this distinguishes them from backups of non-distributed databases (option A). Spanner backups are full backups (not incremental) and are stored in the same region as the source instance by default; they do not auto-replicate to other regions (option D). Spanner backup restores are limited to the same region and project as the backup — they cannot be freely restored to any global region (option B is incorrect). Cloud SQL HA provides cross-region read replicas but Spanner handles availability differently through its multi-region configurations.",
       "category": "Ensuring solution and operations excellence",
       "difficulty": "hard"
     },

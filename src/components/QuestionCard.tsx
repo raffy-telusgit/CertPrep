@@ -109,7 +109,7 @@ function QuestionCard({
                   </span>
                 )}
                 {revealAnswer && state === 'wrong' && (
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive dark:text-red-400" aria-label="Wrong answer">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive dark:text-red-300" aria-label="Wrong answer">
                     <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
                     Wrong
                   </span>
@@ -156,7 +156,7 @@ function QuestionCard({
                   </span>
                 )}
                 {revealAnswer && state === 'wrong' && (
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive dark:text-red-400" aria-label="Wrong answer">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive dark:text-red-300" aria-label="Wrong answer">
                     <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
                     Wrong
                   </span>

@@ -21,7 +21,7 @@ interface ExamStoreState {
 }
 
 interface ExamStoreActions {
-  startSession: (examId: string, mode: 'exam' | 'practice') => Promise<void>
+  startSession: (examId: string, mode: 'exam' | 'practice', questionCount?: number) => Promise<void>
   answerQuestion: (questionId: string, selectedIndices: number[]) => void
   toggleFlag: (questionId: string) => void
   goToQuestion: (index: number) => void
@@ -39,14 +39,17 @@ export const useExamStore = create<ExamStore>((set, get) => ({
   sessionsById: {},
   _timerPersistCounter: 0,
 
-  startSession: async (examId: string, mode: 'exam' | 'practice') => {
+  startSession: async (examId: string, mode: 'exam' | 'practice', questionCount?: number) => {
     const exam = getExamById(examId)
     if (!exam) throw new Error(`Unknown exam: ${examId}`)
 
     const bank = await loadQuestionBank(examId)
+    const count = mode === 'practice' && questionCount !== undefined
+      ? questionCount
+      : exam.sessionQuestionCount
     const { questions, optionMappings } = selectQuestions(
       bank,
-      exam.sessionQuestionCount,
+      count,
       examId,
     )
 

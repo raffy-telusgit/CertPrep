@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react'
 import type { Question, ChatMessage } from '@/types'
 
-interface GeminiContent {
-  role: string
-  parts: { text: string }[]
+interface FuelixMessage {
+  role: 'system' | 'user' | 'assistant'
+  content: string
 }
 
-interface GeminiResponse {
-  candidates: {
-    content: {
-      parts: { text: string }[]
-    }
+interface FuelixResponse {
+  choices: {
+    message: { role: string; content: string }
   }[]
 }
 
@@ -35,12 +33,12 @@ Rules:
 5. Keep answers concise and educational. You are a study aid, not a search engine.`
 }
 
-function buildGeminiContents(messages: ChatMessage[]): GeminiContent[] {
-  const capped = messages.slice(-20)
-  return capped.map((msg) => ({
-    role: msg.role === 'user' ? 'user' : 'model',
-    parts: [{ text: msg.content }],
+function buildChatMessages(systemPrompt: string, messages: ChatMessage[]): FuelixMessage[] {
+  const recent = messages.slice(-20).map<FuelixMessage>((msg) => ({
+    role: msg.role === 'user' ? 'user' : 'assistant',
+    content: msg.content,
   }))
+  return [{ role: 'system', content: systemPrompt }, ...recent]
 }
 
 interface UseCertBotResult {
@@ -53,7 +51,7 @@ interface UseCertBotResult {
 export function useCertBot(question: Question, answerRevealed: boolean): UseCertBotResult {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const apiKeyMissing = !import.meta.env.VITE_GEMINI_API_KEY
+  const apiKeyMissing = !import.meta.env.VITE_FUELIX_API_KEY
 
   useEffect(() => {
     setMessages([])
@@ -69,27 +67,26 @@ export function useCertBot(question: Question, answerRevealed: boolean): UseCert
     setIsLoading(true)
 
     try {
+      const baseUrl = (import.meta.env.VITE_FUELIX_BASE_URL ?? 'https://api.fuelix.ai').replace(/\/+$/, '')
+      const model = import.meta.env.VITE_FUELIX_MODEL ?? 'gpt-4o-mini'
       const systemPrompt = buildSystemPrompt(question, answerRevealed)
-      const contents = buildGeminiContents(nextMessages)
+      const chatMessages = buildChatMessages(systemPrompt, nextMessages)
 
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: systemPrompt }] },
-            contents,
-          }),
+      const response = await fetch(`${baseUrl}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_FUELIX_API_KEY}`,
         },
-      )
+        body: JSON.stringify({ model, messages: chatMessages }),
+      })
 
       if (!response.ok) {
-        throw new Error(`Gemini responded with status ${response.status}`)
+        throw new Error(`Fuel iX responded with status ${response.status}`)
       }
 
-      const data: GeminiResponse = await response.json() as GeminiResponse
-      const replyText = data.candidates[0].content.parts[0].text
+      const data = await response.json() as FuelixResponse
+      const replyText = data.choices[0].message.content
       const botMessage: ChatMessage = { role: 'bot', content: replyText }
       setMessages([...nextMessages, botMessage])
     } catch {

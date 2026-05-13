@@ -145,7 +145,7 @@ function ChatWindow({
         {apiKeyMissing ? (
           <Alert>
             <AlertDescription>
-              VITE_GEMINI_API_KEY is not set. Add it to your .env file to use CertBot.
+              VITE_FUELIX_API_KEY is not set. Add it to your .env file to use CertBot.
             </AlertDescription>
           </Alert>
         ) : (

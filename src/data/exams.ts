@@ -103,6 +103,18 @@ export const EXAMS: Exam[] = [
     iconSlug: 'amazonaws',
     vendorColor: '#FF9900',
   },
+  // ServiceNow
+  {
+    id: 'sno-cad',
+    name: 'CAD',
+    fullName: 'ServiceNow Certified Application Developer',
+    vendor: 'servicenow',
+    durationMinutes: 90,
+    sessionQuestionCount: 60,
+    passingScore: 70,
+    iconSlug: 'servicenow',
+    vendorColor: '#62D84E',
+  },
 ]
 
 export const POOL_SIZE_PER_EXAM = 300

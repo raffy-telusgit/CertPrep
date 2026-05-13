@@ -12,7 +12,7 @@ export interface Exam {
   id: string;
   name: string;
   fullName: string;
-  vendor: 'azure' | 'aws' | 'gcp';
+  vendor: 'azure' | 'aws' | 'gcp' | 'servicenow';
   durationMinutes: number;
   sessionQuestionCount: number;
   passingScore: number;

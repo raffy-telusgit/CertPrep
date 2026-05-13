@@ -1,0 +1,2931 @@
+{
+  "examId": "sno-cad",
+  "version": 1,
+  "placeholder": false,
+  "generatedAt": "2026-05-12",
+  "questions": [
+    {
+      "id": "snocad-design-001",
+      "question": "A developer is starting a new application that will be distributed to multiple customer instances via the ServiceNow Store. Which application scope should be used?",
+      "options": [
+        "Global scope, so any user can extend the app's tables",
+        "A private scope with a unique scope name (e.g., x_acme_pet)",
+        "The 'public' scope reserved for store-distributed apps",
+        "It does not matter — scope only affects performance, not distribution"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Store-distributed applications must use a private scope, which gives the app a unique namespace prefix (e.g., x_acme_pet) and isolates its artifacts from other applications. Global scope cannot be installed cleanly into customer instances and offers no protection of intellectual property. There is no special 'public' scope.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-design-002",
+      "question": "When deciding whether a business problem is a good fit for a ServiceNow custom application, which TWO factors are the STRONGEST positive indicators?",
+      "options": [
+        "The process involves structured data, workflows, and roles that map to the platform's task model",
+        "The solution needs millisecond-latency real-time streaming with sub-second SLAs",
+        "Users already work in ServiceNow and would benefit from a unified experience",
+        "The data set is hundreds of terabytes of unstructured media files"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "ServiceNow excels at structured, task-oriented processes and benefits from users already living in the platform. Real-time streaming and very large unstructured media stores are anti-patterns — the platform isn't optimized for those workloads and you'd be fighting the architecture.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-003",
+      "question": "You need a new table 'Pet' that should inherit fields and behaviors from Task (assignment, state, work notes). What is the correct way to model this?",
+      "options": [
+        "Create a standalone table and copy the Task fields manually",
+        "Extend the Task table when creating the Pet table",
+        "Add a Reference field on Pet that points to Task",
+        "Create a Database View joining Pet and Task"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Extending Task is the canonical pattern — the new table inherits all Task fields, business rules, and the standard work-management UI. Manual copying duplicates structure but not behavior; a Reference field models association, not inheritance; a Database View is read-only and for reporting.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-design-004",
+      "question": "In Studio, which artifact is created automatically when you add a new table to an application and is responsible for grouping the table's records in the left-nav navigator?",
+      "options": [
+        "An Application Menu and a Module",
+        "A UI Page and a UI Macro",
+        "A Form Section and a Related List",
+        "A Catalog Item and a Variable Set"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Studio prompts you to create an Application Menu (the category in the navigator) and one or more Modules (the clickable links that filter records). Form Sections, UI Pages, and Catalog Items are unrelated to the navigator structure.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-005",
+      "question": "An application table has a Reference field pointing to sys_user. Which configuration setting on that field BEST limits the reference picker to only active users in a specific department?",
+      "options": [
+        "Add a Business Rule on sys_user that hides inactive users",
+        "Set a Reference Qualifier (simple or advanced) on the field",
+        "Add an Access Control on the sys_user table",
+        "Use a Data Policy on the application table"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Reference Qualifiers are the dedicated mechanism for narrowing what records appear in a reference picker, supporting both simple (encoded query) and advanced (script) forms. Business Rules on sys_user would affect all consumers, ACLs control access not picker visibility, and Data Policies enforce values but don't filter reference choices.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-006",
+      "question": "Which statement about Application Files in Studio is TRUE?",
+      "options": [
+        "They are physical files on the server filesystem outside the database",
+        "They are records in sys_metadata that belong to the application and travel with it on install/upgrade",
+        "They are only visible to administrators in the global scope",
+        "They are equivalent to attachments on the Application record"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Every artifact in ServiceNow (Business Rules, Tables, UI Actions, Script Includes, etc.) is stored as a record extending sys_metadata. Application Files are the collection of those records associated with an app's scope and are what gets packaged for distribution. They are not OS files or attachments.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-007",
+      "question": "You are designing a 1-to-many relationship: one Pet Owner can have many Pets. Where should the Reference field be placed?",
+      "options": [
+        "On the Pet Owner table, referencing Pet",
+        "On the Pet table, referencing Pet Owner",
+        "On a separate junction table joining both",
+        "On both tables, in opposite directions"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "In a 1-to-many relationship, the Reference field always lives on the 'many' side pointing to the 'one' side — each Pet record stores a single owner. Putting it on Pet Owner would model 1-to-1; junction tables are for many-to-many; placing it on both creates a redundant cycle.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-design-008",
+      "question": "Which TWO of the following are valid uses of Update Sets in a development lifecycle?",
+      "options": [
+        "Capturing changes made in a dev instance to promote to test or prod",
+        "Packaging an application for distribution via the ServiceNow Store",
+        "Tracking customizations to global-scope artifacts",
+        "Backing up the user's personal preferences"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Update Sets capture in-flight customizations (especially in global scope) for promotion between instances. Scoped applications are distributed via the Application Repository or Store, not Update Sets. User preferences are not metadata and are not captured.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-009",
+      "question": "Which feature lets a scoped application explicitly allow OTHER applications to read its tables, scripts, or APIs?",
+      "options": [
+        "Cross-Scope Access Privileges (sys_scope_privilege)",
+        "Application Menu Roles",
+        "Reference Qualifiers",
+        "Data Policies"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Cross-scope access privileges are the explicit allow-list a scoped app uses to expose resources to other scopes. Application Menu Roles only control navigator visibility; Reference Qualifiers and Data Policies have no security role for cross-scope access.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-010",
+      "question": "A field uses 'Choice' type with hard-coded values defined on the dictionary entry. The developer wants the choices to differ by record (dependent choices). What is the correct approach?",
+      "options": [
+        "Add an onLoad Client Script that rewrites the choices each time",
+        "Mark the field as 'Dependent' and set a Dependent Field reference",
+        "Use a Reference field instead and filter with a Reference Qualifier",
+        "Either B or C is acceptable depending on whether the choices are static or data-driven"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Dependent Field is the platform mechanism for static choice subsets driven by another field's value; a Reference field with a qualifier is appropriate when the choice set is itself a table of records. Both are valid — the choice depends on whether the source of values is static or data-driven. A Client Script rewriting choices is fragile and not the standard pattern.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-011",
+      "question": "What does the 'Auto Number' configuration on a table provide?",
+      "options": [
+        "A unique sys_id for each record",
+        "A human-readable, sequential number on records (e.g., PET0001001) stored on a configurable field",
+        "Automatic copying of the parent table's number",
+        "A locked database sequence visible only to admins"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Auto Number provides a configurable, human-readable sequential identifier (prefix, counter, length) typically stored on a 'number' field. sys_id is a separate 32-character GUID created automatically for every record regardless of auto-number configuration.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-design-012",
+      "question": "When extending a table, which behavior is INHERITED by the child table?",
+      "options": [
+        "Only fields — business rules and ACLs must be redefined",
+        "Fields, business rules, client scripts, and ACLs defined on the parent",
+        "Only ACLs — the parent's logic is intentionally isolated",
+        "Nothing — 'extending' is purely a naming convention"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Child tables inherit fields, business rules, client scripts, ACLs, and other platform behaviors from their parent. This is why extending Task gives you the entire task lifecycle for free. The child can override or add to inherited behavior but cannot opt out of it wholesale.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-001",
+      "question": "Which client-script type runs only when the user attempts to save the form?",
+      "options": [
+        "onLoad",
+        "onChange",
+        "onSubmit",
+        "onCellEdit"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "onSubmit runs at form submission and can cancel the save by returning false. onLoad runs once when the form is rendered, onChange fires whenever a watched field's value changes, and onCellEdit fires during inline list editing.",
+      "category": "Application User Interface",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-ui-002",
+      "question": "A UI Policy and a Client Script both manipulate the visibility of the same field. The UI Policy is configured with 'On load' set to true and 'Reverse if false' set to true. Which behavior wins on form load?",
+      "options": [
+        "Whichever runs last — typically the Client Script",
+        "The UI Policy, because it has higher order precedence than scripts",
+        "Both run; the field's final state depends on script ordering and the policy's Order field",
+        "Neither runs on load — UI Policies only run on change"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "UI Policies and Client Scripts both execute, and the final state depends on execution ordering (Order field on each artifact) and any explicit code overrides. UI Policies do run on load when 'On load' is true. There is no global rule that policies win over scripts.",
+      "category": "Application User Interface",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-ui-003",
+      "question": "Which API on the client form object hides the field 'description' from the current form?",
+      "options": [
+        "g_form.setDisplay('description', false)",
+        "g_form.hideField('description')",
+        "g_user.hide('description')",
+        "current.description.setVisible(false)"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "g_form.setDisplay(fieldName, boolean) is the canonical API for showing/hiding fields on the client. setVisible was deprecated/removed; hideField is not a real method; g_user is for user information, not form manipulation; 'current' is server-side syntax.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-004",
+      "question": "Which UI artifact embeds inside a form (e.g., next to a field) to display rich custom HTML without affecting data, such as a calculated KPI summary?",
+      "options": [
+        "UI Action",
+        "UI Macro (rendered as a Formatter)",
+        "UI Page",
+        "Related List"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A UI Macro rendered via a Formatter embeds custom Jelly/HTML inside a form without storing data — the typical pattern for read-only display content like KPIs. UI Actions are buttons/links; UI Pages are standalone full pages; Related Lists show related records, not arbitrary HTML.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-005",
+      "question": "An onChange Client Script needs to call a Script Include to compute a value. Which API should it use to invoke the Script Include asynchronously?",
+      "options": [
+        "GlideRecord on the client",
+        "GlideAjax",
+        "g_form.callScriptInclude()",
+        "RESTMessageV2"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "GlideAjax is the canonical mechanism for the client to call a Script Include (which must extend AbstractAjaxProcessor). GlideRecord is server-side; g_form.callScriptInclude is not a real API; RESTMessageV2 is for outbound integrations from the server.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-006",
+      "question": "Which TWO statements about UI Actions are TRUE?",
+      "options": [
+        "They can be configured to appear as form buttons, links, list buttons, or context-menu items",
+        "They can execute either client-side or server-side script depending on the 'Client' checkbox",
+        "They run only after a Business Rule sequence completes",
+        "They cannot be restricted by role"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "UI Actions are versatile — they render as buttons, links, list actions, or context menu items, and they support a client-side script (Onclick, with 'Client' true), a server-side script, or both via the 'Action name' pattern. They can absolutely be restricted by role on the UI Action record itself; they do not require a Business Rule to run.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-007",
+      "question": "What is the correct way to mark a field as mandatory at the FORM level (for one specific form/view), without affecting other forms or the dictionary?",
+      "options": [
+        "Set 'Mandatory' to true on the dictionary entry",
+        "Use a UI Policy with the field condition and the 'Mandatory' action",
+        "Add a Business Rule that aborts saves when the field is empty",
+        "Set the field's default value to '*'"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "UI Policies allow per-view, per-form mandatory configuration without altering the dictionary. Dictionary 'Mandatory' applies globally to every form and API path. Business Rules abort saves but don't change the UI affordance. Default values are unrelated.",
+      "category": "Application User Interface",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-ui-008",
+      "question": "Which Jelly tag in a UI Macro outputs a value while ESCAPING HTML to prevent XSS?",
+      "options": [
+        "<j:set>",
+        "${...}",
+        "$[...]",
+        "<g:evaluate>"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Standard ${expression} interpolation in Jelly performs HTML-escaping by default. $[expression] outputs the value WITHOUT escaping (use only when you know the value is safe). j:set sets a variable, and g:evaluate runs script blocks.",
+      "category": "Application User Interface",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-ui-009",
+      "question": "When designing a Service Portal widget instead of a classic UI Page, which client-side API takes the place of g_form?",
+      "options": [
+        "$scope or this within the widget's client controller",
+        "g_user",
+        "current",
+        "GlideRecord on the client"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Service Portal widgets use AngularJS-style client controllers; you bind state to $scope (or 'this' / 'c' in modern syntax) and communicate with the server via the widget's server script. g_form is a classic-UI artifact and is not present in the portal.",
+      "category": "Application User Interface",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-ui-010",
+      "question": "What is the recommended way to add a sortable, filterable table of related records to a form?",
+      "options": [
+        "Insert a Related List on the form view",
+        "Write a UI Macro that renders an HTML table",
+        "Use a UI Page in an iframe",
+        "Add a Glide List field"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Related Lists are the platform's first-class affordance for displaying related records with sorting, filtering, paging, and inline editing. UI Macros and UI Pages would reimplement what Related Lists already do; Glide List is a many-to-many storage field, not a display widget.",
+      "category": "Application User Interface",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-ui-011",
+      "question": "Which g_form method returns the underlying value of a Reference field (the sys_id), not its display value?",
+      "options": [
+        "g_form.getValue('owner')",
+        "g_form.getDisplayValue('owner')",
+        "g_form.getReference('owner')",
+        "g_form.getLabel('owner')"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "g_form.getValue returns the raw stored value, which for Reference fields is the sys_id. getDisplayValue returns the human-readable string; getReference fetches the referenced GlideRecord asynchronously; getLabel returns the field's label text.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-012",
+      "question": "A developer wants the SAME visibility logic enforced both in the UI and on direct REST/API writes. Which mechanism enforces both?",
+      "options": [
+        "UI Policy",
+        "Client Script",
+        "Data Policy",
+        "Formatter"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Data Policies enforce mandatory/read-only at both the UI and API/import layers, making them the right tool when business rules must apply regardless of how data enters the system. UI Policies and Client Scripts run in the browser only. Formatters are display-only.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-001",
+      "question": "Which automation tool is RECOMMENDED for net-new processes on current ServiceNow releases?",
+      "options": [
+        "Classic Workflow (Workflow Editor)",
+        "Flow Designer",
+        "Graphical Workflow with embedded Glide scripts",
+        "Approval Engine"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Flow Designer is the strategic, no-/low-code automation builder for current releases. Classic Workflow is being phased out and exists primarily for backward compatibility. 'Approval Engine' is not a separate product — it's a component used inside flows/workflows.",
+      "category": "Application Automation",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-automation-002",
+      "question": "A scheduled job needs to run a server script every weeknight at 02:00. Which artifact configures this?",
+      "options": [
+        "A Business Rule with 'when' set to 'async'",
+        "A Scheduled Script Execution (sysauto_script)",
+        "An Event Registration",
+        "A Flow Designer Schedule trigger"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Scheduled Script Executions are the dedicated record type for time-based server-side jobs with cron-like scheduling. Business Rules are event-driven, not time-driven; Event Registrations declare event types; Flow Designer's Schedule trigger is also valid but the question specifies a server script, which is the Scheduled Script Execution pattern.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-003",
+      "question": "What does gs.eventQueue() do?",
+      "options": [
+        "Immediately processes the named event in the current transaction",
+        "Inserts a row in sysevent for asynchronous processing by Script Actions and Notifications",
+        "Cancels any pending event of the named type",
+        "Subscribes the current user to push notifications for that event"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "gs.eventQueue(name, record, parm1, parm2) enqueues an event in sysevent for asynchronous handling by Script Actions, Notifications, and Workflow event triggers. Events are not processed inline by eventQueue; cancellation and push subscriptions are not part of its contract.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-004",
+      "question": "An Email Notification should send when an Incident is closed AND its priority was Critical. Which TWO configurations achieve this?",
+      "options": [
+        "Set 'When to send' to 'Record inserted or updated' with condition: state CHANGES TO Closed AND priority IS 1",
+        "Trigger via an event (e.g., incident.closed.critical) raised from a Business Rule when the conditions are met",
+        "Add a UI Policy that emails on form close",
+        "Hard-code the email body in a Script Include"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Both are valid — a condition-based notification works directly off record state, and an event-driven pattern decouples detection (Business Rule) from delivery (notification listening for the event). UI Policies don't send email; Script Includes are libraries, not delivery mechanisms.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-005",
+      "question": "Inbound Email Actions process incoming email by matching a regex on the subject and either creating or updating a record. Where is the body of the inbound email accessible in the action's script?",
+      "options": [
+        "email.body_text and email.body_html",
+        "current.body",
+        "g_form.getMessage()",
+        "gs.email.read()"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "The 'email' object exposes body_text, body_html, subject, from, headers, and other fields inside Inbound Email Action scripts. current refers to the record being updated/created; g_form is client-only; gs.email.read is not a real API.",
+      "category": "Application Automation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-automation-006",
+      "question": "Which THREE trigger types are supported in Flow Designer?",
+      "options": [
+        "Record (created/updated) trigger",
+        "Schedule (daily, weekly, monthly, custom)",
+        "Mouse-click trigger that fires on any browser event",
+        "Inbound Email trigger"
+      ],
+      "correctAnswers": [
+        0,
+        1,
+        3
+      ],
+      "explanation": "Flow Designer supports Record triggers, Schedule triggers, Inbound Email triggers, REST triggers, and several others. There is no mouse-click trigger in Flow Designer — browser events are the domain of Client Scripts.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-007",
+      "question": "Which Flow Designer artifact is BEST suited when you want to encapsulate a reusable set of actions that returns outputs and can be called from multiple flows?",
+      "options": [
+        "Subflow",
+        "Custom Action",
+        "Decision Table",
+        "Script Action"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Subflows are reusable, parameterized chunks of automation that accept inputs and return outputs and are called by other flows or subflows. Custom Actions are also reusable but represent a single step (often wrapping a script or integration), not a sequence; Decision Tables route based on conditions; Script Actions are event-handlers.",
+      "category": "Application Automation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-automation-008",
+      "question": "What is the maximum recommended approach for running long-running jobs that could exceed the standard transaction limit?",
+      "options": [
+        "Wrap the work in a single Business Rule and increase the timeout",
+        "Move the work to a Scheduled Script Execution or an asynchronous Business Rule and process in batches",
+        "Run the work in an onSubmit Client Script so it runs in the user's browser",
+        "Use a UI Macro with embedded GlideAjax calls in a loop"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Long-running work belongs in async processing (Scheduled jobs or async Business Rules) ideally in batches to stay within transaction limits and avoid blocking UI threads. Increasing timeouts is fragile; client-side loops degrade UX; UI Macros are display artifacts.",
+      "category": "Application Automation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-automation-009",
+      "question": "Which Business Rule 'when' setting runs the script AFTER the record is written to the database, suitable for side effects like creating related records?",
+      "options": [
+        "before",
+        "after",
+        "async",
+        "display"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "'after' Business Rules run after the database write but within the same transaction — ideal for synchronous side effects that depend on the saved sys_id. 'before' runs before the write (use for validation or in-memory mutation); 'async' runs in a background queue; 'display' runs on form load to populate scratchpad variables.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-data-001",
+      "question": "A nightly job ingests a CSV from an SFTP server into a staging table, then promotes rows to the target table with field-level transforms. Which TWO ServiceNow artifacts model this?",
+      "options": [
+        "Data Source",
+        "Transform Map",
+        "Database View",
+        "GlideAjax"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Data Sources define connections and ingest data into Import Sets (staging tables); Transform Maps move and shape data from the import set into the target table with field mapping and scripted transforms. Database Views are read-only joins; GlideAjax is a client/server bridge.",
+      "category": "Working with External Data",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-data-002",
+      "question": "Which API constructs an outbound REST call to a third-party endpoint and returns the response synchronously?",
+      "options": [
+        "RESTMessageV2 with execute()",
+        "RESTMessageV2 with executeAsync()",
+        "GlideHTTPRequest",
+        "GlideAjax"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "RESTMessageV2.execute() returns a response synchronously; executeAsync() returns immediately with a tracking sys_id and runs in the background. GlideHTTPRequest is a deprecated lower-level API; GlideAjax is client-to-server, not outbound.",
+      "category": "Working with External Data",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-data-003",
+      "question": "A Transform Map needs to update existing target records when the import-set row matches on 'Email', otherwise insert a new one. Which configuration achieves this?",
+      "options": [
+        "Set the Email field mapping's 'Coalesce' checkbox",
+        "Add an onBefore script that calls update() or insert()",
+        "Mark the Transform Map as 'Run business rules' false",
+        "Set the target table's auto-number prefix"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "The Coalesce flag on one or more field mappings tells the transform to match on those fields — if a match exists, update; otherwise, insert. Scripted insert/update inside transforms works but isn't the declarative pattern. The other options are unrelated to upsert semantics.",
+      "category": "Working with External Data",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-data-004",
+      "question": "Which inbound integration mechanism lets external systems POST JSON to a custom URL and run developer-defined script to handle the request?",
+      "options": [
+        "Scripted REST API",
+        "SOAP Message",
+        "Data Source",
+        "Web Service Import"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Scripted REST APIs expose configurable resources at /api/<namespace>/<name>/<resource> with full script control over request handling. SOAP Messages are outbound legacy SOAP; Data Sources are inbound bulk ingestion; Web Service Imports are auto-generated table-based endpoints, not custom logic.",
+      "category": "Working with External Data",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-data-005",
+      "question": "When configuring an outbound REST Message with OAuth 2.0, which artifact stores the client id, client secret, token endpoint, and scopes?",
+      "options": [
+        "An OAuth Application Registry record",
+        "A system property under 'glide.outbound.oauth'",
+        "An attribute on the REST Message itself, encrypted at rest",
+        "A Script Include named OAuthHelper"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "OAuth Application Registry entries hold the client id, secret, token URL, refresh URL, scopes, and grant type. The REST Message references this profile to obtain tokens at runtime. Properties, in-line attributes, and ad-hoc script libraries are not the standard mechanism.",
+      "category": "Working with External Data",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-data-006",
+      "question": "An Import Set has 100k rows but the developer only wants to test the transform on the first 10. What is the BEST approach?",
+      "options": [
+        "Truncate the import set table manually",
+        "Set the Data Source to load 'Test load 20 records', then run the transform on that small set",
+        "Edit the Transform Map to LIMIT 10",
+        "Delete the production rows and re-import"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Data Sources expose a 'Test load' action that pulls a small sample for safe end-to-end validation. Manually truncating is destructive, Transform Maps don't have row limits, and deleting production data is obviously unsafe.",
+      "category": "Working with External Data",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-security-001",
+      "question": "An ACL evaluates THREE elements (when all are configured) before granting access. Which list is correct?",
+      "options": [
+        "Roles, Conditions, and Script (advanced)",
+        "Roles, UI Policy, and Client Script",
+        "Roles, Field Encryption, and Audit",
+        "Conditions, Domain Separation, and Transform"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "An ACL grants access only when the user has at least one of the required roles, the condition evaluates true, and the optional advanced script returns true. UI Policies, Client Scripts, encryption, audit, and domain separation are separate mechanisms.",
+      "category": "Security and Restricting Access",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-security-002",
+      "question": "Which ACL operation governs whether a user can SEE a record in a list or form?",
+      "options": [
+        "read",
+        "write",
+        "create",
+        "delete"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "The 'read' operation gates visibility — if a user fails the read ACL, the record is filtered out of lists and forms. 'write' controls modification, 'create' controls insertion, and 'delete' controls removal.",
+      "category": "Security and Restricting Access",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-security-003",
+      "question": "Both a table-level ACL and a field-level ACL exist. Both must pass for which combination?",
+      "options": [
+        "Listing the record — only table.read matters",
+        "Reading a specific field on the form — BOTH table.read AND table.field.read are evaluated",
+        "Editing the record — only the field-level write ACL matters",
+        "Deleting the record — BOTH table and field ACLs must pass"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "ServiceNow evaluates ACLs hierarchically: to access a specific field, the user must first pass the table-level operation (e.g., table.read) and then the field-level operation (table.field.read). For delete and list operations, only the table-level ACL applies.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-004",
+      "question": "A custom role 'x_acme_pet.shop_owner' inherits from 'itil'. Which TWO consequences follow?",
+      "options": [
+        "Users granted x_acme_pet.shop_owner automatically have all access granted by itil",
+        "The role contains its parent's role grants via the sys_user_role_contains table",
+        "Users granted itil automatically get x_acme_pet.shop_owner as well",
+        "Inheritance only applies to UI navigation, not ACL evaluation"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Role inheritance is unidirectional — child roles inherit parent roles, recorded in sys_user_role_contains. Granting the parent does NOT grant the child. ACL evaluation fully respects inheritance, including all child grants.",
+      "category": "Security and Restricting Access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-security-005",
+      "question": "An external scoped app needs to write to a table in your scoped app. Which configuration MUST be in place on your side?",
+      "options": [
+        "Mark the table 'Public' on the dictionary",
+        "Add a sys_scope_privilege record granting Write access from the consuming scope to your table",
+        "Disable ACLs on the table",
+        "Give the calling user the admin role"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Cross-scope writes require an explicit sys_scope_privilege entry that allows the consuming scope to write the target artifact. Marking tables 'Public' is not a real configuration. Disabling ACLs and granting admin are heavy-handed and don't replace scope privileges.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-006",
+      "question": "Which API checks whether the current user has a specific role from server-side script?",
+      "options": [
+        "gs.hasRole('itil')",
+        "g_user.hasRole('itil')",
+        "current.hasRole('itil')",
+        "GlideUser.role('itil')"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "gs.hasRole(name) is the server-side check (returns true also for admin). g_user.hasRole exists on the client. current is the current record, not a user. GlideUser.role is not a real API.",
+      "category": "Security and Restricting Access",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-security-007",
+      "question": "A Business Rule contains gs.getUser().getRecord(). The rule must enforce that the calling user has the 'x_acme_pet.manager' role. What is the SAFEST way to enforce this?",
+      "options": [
+        "Trust the role grants — if the user got this far, they have it",
+        "Wrap the work in if (gs.hasRole('x_acme_pet.manager')) { ... } and fall through to gs.addErrorMessage otherwise",
+        "Use a Client Script to hide the trigger UI from non-managers",
+        "Add an ACL on the table"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Server-side checks (gs.hasRole) are the only authoritative enforcement — client-side hides are advisory only and ACLs may not cover every path that triggers the rule. Trusting upstream grants is dangerous when business rules can run via async paths or scripted invocations.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-008",
+      "question": "Which TWO of the following help prevent a developer from inadvertently exposing sensitive data via a custom UI Page or Service Portal widget?",
+      "options": [
+        "Always render values with ${...} (escaped) rather than $[...] (raw)",
+        "Apply read ACLs on the source table and field",
+        "Disable HTTPS during development for clearer error messages",
+        "Store secrets in client-side cookies for easy retrieval"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Escaped interpolation prevents XSS injection of attacker-controlled content; ACLs ensure users only see what they're authorized to. Disabling HTTPS and storing secrets in cookies are both serious anti-patterns that EXPAND the attack surface.",
+      "category": "Security and Restricting Access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-security-009",
+      "question": "What does the 'Admin overrides' checkbox on an ACL control?",
+      "options": [
+        "Whether the admin role can bypass the ACL even if the other elements fail",
+        "Whether the ACL is editable only by admins",
+        "Whether the ACL runs before all other ACLs",
+        "Whether the script element overrides the condition"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "When 'Admin overrides' is true (default), the admin role bypasses the ACL automatically. Unchecking it forces even admins to satisfy the ACL's roles/conditions/script — used for hardened ACLs like security event tables.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-manage-001",
+      "question": "Which TWO mechanisms are used to distribute a scoped application from a development instance to a production instance owned by the same company?",
+      "options": [
+        "Publish to the company's Application Repository, then install on the target instance",
+        "Export the application as an Update Set XML and load it",
+        "Email the scope directory as a ZIP",
+        "Copy rows directly from sys_metadata via a JDBC query"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Application Repository (internal store) is the modern path; legacy Update Set export/import still works for one-off transfers. Emailing ZIPs and direct database copying are not supported and bypass version tracking.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-002",
+      "question": "What does the application 'Version' field control?",
+      "options": [
+        "The release version of ServiceNow the app requires",
+        "The semantic version of the application itself, used by the repository for upgrade detection",
+        "The number of users licensed for the app",
+        "The minimum browser version supported"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The Version field is the app's own semantic version (e.g., 1.2.3) used by the Application Repository to decide whether an installed app is up-to-date and to drive upgrades. ServiceNow release dependencies are tracked separately. The field has no licensing or browser role.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-003",
+      "question": "A developer is configuring the Automated Test Framework (ATF). Which TWO statements about ATF are TRUE?",
+      "options": [
+        "Tests can simulate user actions on forms and lists, including impersonation",
+        "Tests can run as part of an Update Set promotion to validate changes",
+        "ATF replaces unit tests written in Mocha or Jest in the codebase",
+        "ATF only works on the platform UI, not Service Portal"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "ATF exercises real platform interactions — form actions, list filters, REST calls, server-side asserts — and supports impersonation. It can be invoked during automated change validation. ATF complements (rather than replaces) developer-level unit tests, and it does support Service Portal page testing.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-004",
+      "question": "Which feature lets a developer connect a scoped application to a Git repository for branch-based development?",
+      "options": [
+        "Studio's Source Control integration",
+        "Update Set export",
+        "ATF",
+        "The Now CLI 'sn deploy' command"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Studio integrates with Git providers (GitHub, GitLab, Bitbucket) for source control — branch, commit, push, pull, stash, and apply remote changes. Update Sets capture changes but aren't versioned. ATF is for testing. There is no 'sn deploy' command in the now CLI today.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-005",
+      "question": "An app committed to Git from a dev instance is pulled into a clone instance. Which artifact tracks the link between an in-instance app and its remote Git repo?",
+      "options": [
+        "An entry in sys_scope showing the remote URL",
+        "A sys_repo_config (Repository Configuration) record",
+        "A property under 'glide.git.remote'",
+        "Nothing — the link is recreated by re-importing each time"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The Repository Configuration record (sys_repo_config and related) stores the remote URL, credentials, default branch, and current commit reference. sys_scope holds the app's identity and version, not its repo link.",
+      "category": "Managing Applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-manage-006",
+      "question": "Which artifact is generated when you create a new application via Studio's 'Create from Application Repository' option?",
+      "options": [
+        "A linked copy of the repository app, ready for customization within the boundaries the publisher allowed",
+        "A free-form unscoped duplicate of every artifact",
+        "A reference to the remote app — every change is sent upstream automatically",
+        "Nothing — you must export an Update Set first"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Repository-installed apps are linked clones with publisher-configured customization boundaries (e.g., protection policies). They are not freely duplicated, not auto-upstreamed, and do not require Update Sets.",
+      "category": "Managing Applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-manage-007",
+      "question": "Which THREE are valid 'protection' options a publisher can set on an application artifact to control customization in installed instances?",
+      "options": [
+        "None (fully editable)",
+        "Protected (admins can edit, others cannot)",
+        "Read-only (no one can edit, ever)",
+        "Permanently locked at the database level (sys_id immutable)"
+      ],
+      "correctAnswers": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Artifact protection supports None, Protected, and Read-only modes. There is no 'permanently locked at the database level' option — even Read-only is a platform-enforced policy that can be lifted only by republishing.",
+      "category": "Managing Applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-manage-008",
+      "question": "An update set has 'Preview' errors after import. What is the CORRECT remediation order?",
+      "options": [
+        "Commit the update set first to surface errors in production, then fix",
+        "Resolve each preview error (skip, accept remote, or accept local), then commit",
+        "Delete the update set and re-import",
+        "Ignore preview errors — they are advisory only"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Each preview error must be resolved — typically by accepting remote, accepting local (skipping), or merging — BEFORE committing. Committing first risks broken state; preview errors are not advisory; redoing imports rarely fixes the underlying conflict.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-009",
+      "question": "Which command in the Now CLI installs a scoped application's dependencies and prepares the workspace for local development?",
+      "options": [
+        "now-cli install",
+        "snc extension install",
+        "now-sdk apps install",
+        "There is no 'install dependencies' equivalent in the Now CLI / SDK toolchain"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "The current Now CLI / Application SDK uses 'now-sdk apps install' to fetch app metadata and dependencies for local workspaces. The other commands are fabricated.",
+      "category": "Managing Applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-manage-010",
+      "question": "What is the recommended way to roll back an application to a previous version after a problematic release?",
+      "options": [
+        "Manually edit every record to its prior state",
+        "Use 'Rollback' from the Application Repository / installed app actions",
+        "Drop the application and reinstall from scratch",
+        "There is no rollback — only forward-fix is supported"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Repository-installed apps support a Rollback action that restores the previous version's metadata atomically. Manual edits are error-prone; full reinstall destroys customer customizations; rollback is explicitly supported.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-011",
+      "question": "When debugging a Business Rule, which TWO platform tools are most useful?",
+      "options": [
+        "Background Scripts to invoke the rule's logic ad hoc",
+        "The Script Debugger with breakpoints in the rule's script",
+        "gs.print() messages followed by checking syslog (System Logs > All)",
+        "Disabling all other Business Rules to isolate behavior"
+      ],
+      "correctAnswers": [
+        1,
+        2
+      ],
+      "explanation": "The Script Debugger is the primary IDE-style tool; gs.print/gs.info logging is the classic backup. Background Scripts can help reproduce logic but run in their own context and don't capture rule events. Disabling unrelated rules is destructive and rarely necessary.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-012",
+      "question": "Which statement BEST describes the difference between Update Sets and Application versioning?",
+      "options": [
+        "Update Sets package incremental changes (often across global scope); Application versions are full app snapshots tied to a semantic version",
+        "They are identical — 'Update Set' is the old name for 'Application Version'",
+        "Update Sets are only for production deployment; versions are only for development",
+        "Application versions cannot be promoted across instances; Update Sets are the only delivery vehicle"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Update Sets capture deltas (especially in global scope) and are great for cross-instance promotion of customizations. Application versions are immutable snapshots of an entire scoped app, distributed via the repository. The two coexist and serve different lifecycles.",
+      "category": "Managing Applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-013",
+      "question": "Which platform record stores the metadata for a field on a table (type, max length, default value, attributes)?",
+      "options": [
+        "sys_dictionary",
+        "sys_db_object",
+        "sys_choice",
+        "sys_metadata"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "sys_dictionary holds one row per field per table. sys_db_object holds the table records themselves; sys_choice holds choice values; sys_metadata is the parent type all metadata extends.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-design-014",
+      "question": "A developer needs to display a many-to-many relationship between Pet and Tag. Which approach is the ServiceNow-native pattern?",
+      "options": [
+        "A Glide List field on Pet referencing Tag",
+        "Two Reference fields, one on each table",
+        "Duplicate the Tag table for each Pet",
+        "Use a Choice field with all possible tags"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Glide List is the platform's many-to-many field type — stored as a comma-separated list of sys_ids and rendered as a multi-pick list. Reference fields are 1-to-many on one side only.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-015",
+      "question": "What is the purpose of a Document ID field?",
+      "options": [
+        "Stores a polymorphic reference to ANY table (the table is chosen at runtime)",
+        "Stores a UUID for external systems",
+        "Stores the sys_id of the application",
+        "Stores a base64-encoded attachment"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Document ID is a polymorphic pointer that records both a table name and a sys_id, letting a single field reference rows on different tables (common in audit/activity logs).",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-016",
+      "question": "A 'Calculated' field is configured on a table. When is its value computed?",
+      "options": [
+        "On every record insert/update, server-side, before save",
+        "Only when the user opens the form",
+        "Once per day via a scheduled job",
+        "Never automatically — only via UI Action"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Calculated fields run their server-side script automatically on insert/update before persistence, ensuring the stored value stays in sync with its inputs.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-017",
+      "question": "Which dictionary attribute marks a field's value as encrypted at rest?",
+      "options": [
+        "edge_encryption",
+        "password2",
+        "no_audit",
+        "read_only"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The 'password2' field type stores the value as one-way encrypted at the column level. Edge encryption is a separate proxy-based product; no_audit suppresses history; read_only is access, not storage.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-018",
+      "question": "Studio's 'Schema Map' for a table primarily shows:",
+      "options": [
+        "Parent table, extended-by tables, and related Reference fields",
+        "The physical storage layout on disk",
+        "Performance counters for queries on the table",
+        "The set of users with access"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Schema Map visualizes inheritance (parents/children) plus inbound/outbound References for the selected table — useful when planning data model changes.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-019",
+      "question": "Which Studio panel lets you jump quickly between scripts (Business Rules, Script Includes, Client Scripts) inside the current app?",
+      "options": [
+        "Code Search / Application Files navigator",
+        "Schema Map",
+        "Form Designer",
+        "Process Automation Designer"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Studio's Application Files / Code Search lets you filter and open any file by type or name across the entire app.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-design-020",
+      "question": "A table is created with 'Extends' = NONE. Which field is automatically present on every record regardless?",
+      "options": [
+        "sys_id, sys_created_on, sys_created_by, sys_updated_on, sys_updated_by",
+        "number (auto-number)",
+        "state and assignment_group",
+        "active"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Every table (extending or not) gets the sys_* audit/identity columns automatically. number, state, assignment_group, and active come only via Task inheritance or explicit configuration.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-021",
+      "question": "Which TWO statements about choice fields are TRUE?",
+      "options": [
+        "Choice values are stored in sys_choice, keyed by table and field",
+        "Choices can be made dependent on another field's value via the 'Dependent Value' configuration",
+        "Choices must be defined inline in the dictionary record and cannot be edited later",
+        "Adding a choice requires a database schema migration"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Choices live in sys_choice and support dependent values. They are editable at any time and require no schema migration — only metadata changes.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-022",
+      "question": "What is the role of an 'Application Menu' record (sys_app_application)?",
+      "options": [
+        "A category in the left navigator that groups Modules",
+        "The application's metadata identity",
+        "A permission scope for cross-scope access",
+        "A wrapper for the application's update sets"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Application Menus are navigator categories holding Modules. Application identity is sys_scope; cross-scope access uses sys_scope_privilege; update sets are sys_update_set.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-design-023",
+      "question": "When extending a base table, in what order do Business Rules of type 'before' execute on insert?",
+      "options": [
+        "Child table's BRs first, then parent's",
+        "Parent table's BRs first, then child's",
+        "Both run interleaved by their Order field, regardless of table",
+        "Only the child's BRs run — parent rules are skipped"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "When evaluating BRs the platform considers all rules from the child and every ancestor and orders them by the 'Order' field — not by table position in the inheritance chain.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-024",
+      "question": "An 'Application User' (sys_user) created during app install but not granted any role can still:",
+      "options": [
+        "Read the home page and their own profile, nothing else by default",
+        "Modify any table — non-roled users have full CRUD by default",
+        "Approve sensitive financial records",
+        "Run server-side background scripts"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Without explicit roles or ACL grants, an authenticated user can see only their profile and base-system public content. Modification requires explicit role/ACL grants.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-025",
+      "question": "A field needs a default value that depends on the current user's department. What is the right configuration?",
+      "options": [
+        "Default Value: 'javascript:gs.getUser().getDepartmentID()'",
+        "Default Value: '${current_user.department}'",
+        "Add a UI Policy that sets the default",
+        "Add a display-time Business Rule that mutates the dictionary"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "The dictionary's Default Value field supports the 'javascript:' prefix to evaluate a server-side script at insert time. The other syntaxes are not supported in this context.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-026",
+      "question": "Which form personalization affects only the personalizing user, not the global form view?",
+      "options": [
+        "Personalize Form (hamburger > Configure > Form Layout vs Personalize Form)",
+        "Form Designer changes",
+        "Dictionary 'default view'",
+        "Adding a Form Section"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "'Personalize Form' applies a per-user form preference. Configure > Form Layout / Form Designer / Form Section all change the global view for everyone.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-027",
+      "question": "What is the recommended approach to localize a choice field's labels for multiple languages?",
+      "options": [
+        "Store translations in sys_translated_text linked to sys_choice",
+        "Hard-code each translation in a Business Rule",
+        "Create a separate choice field per language",
+        "Localization is not supported for choice fields"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Choices are translated via sys_translated_text linked to the choice record. The platform looks up the current user's language and substitutes the translated label automatically.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-028",
+      "question": "An 'application picker' shows in the top-left of Studio. What does it control?",
+      "options": [
+        "Which application's scope subsequent edits will be saved into",
+        "Which user is impersonated",
+        "Which update set is current",
+        "Which language the platform uses"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "The application picker selects the current scope context — every record created or modified is associated with the selected app/scope.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-design-029",
+      "question": "Which TWO are valid uses of a 'Default fields list' on a table?",
+      "options": [
+        "Specify which columns appear by default when the table is opened as a list",
+        "Reorder fields on the form view",
+        "Provide a fallback set of fields if a user has no personalization",
+        "Replace ACLs for field visibility"
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ],
+      "explanation": "Default Fields define the out-of-the-box list view columns and act as the fallback when no personalization exists. They don't affect form layout or substitute for ACLs.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-design-030",
+      "question": "A dictionary entry's 'Calculation' field runs a script. Which variables are available inside the script?",
+      "options": [
+        "current (the record), previous (prior values on update)",
+        "g_form and g_user",
+        "Only platform constants — no record access",
+        "Only HTTP request parameters"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Calculated field scripts receive 'current' (the record being saved) and 'previous' (prior values on updates), enabling expressions over either or both.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-031",
+      "question": "An app's 'Logo' is configured. Where does it appear?",
+      "options": [
+        "Module icons in the left navigator and the app card in Studio",
+        "On the Home page only",
+        "As the favicon for the entire instance",
+        "Replaces the user's profile picture"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "App logos appear in the navigator menu next to the app's category and on the Studio app card. Favicons and home page branding are configured separately.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-design-032",
+      "question": "An app contains 200 records of seed data (e.g., reference rows). What is the SUPPORTED way to ship that data with the app?",
+      "options": [
+        "Create Fix Scripts that insert the data on install",
+        "Use 'Application Files' to package the records as Data Files",
+        "Reference the records via Update Set XML pasted into the source",
+        "Both A and B are acceptable depending on whether the data is install-once or per-version"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Fix Scripts run on install/upgrade and can populate or migrate data; Data Files in Application Files ship records directly. Both are first-class and the choice depends on whether logic is needed.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-033",
+      "question": "Which TWO field attributes can be set on the dictionary entry to influence platform behavior?",
+      "options": [
+        "no_audit (suppress history)",
+        "edge_encrypt (route through edge-encryption proxy)",
+        "ui_action (mark field as a button)",
+        "deprecated (warn on use)"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "no_audit and edge_encrypt are real dictionary attributes. There is no ui_action or deprecated attribute on dictionary entries.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-034",
+      "question": "A new view named 'mobile' is created for a table. How do you ensure the mobile app uses it?",
+      "options": [
+        "Configure the mobile launcher / config to reference the 'mobile' view for that table",
+        "Rename the view to 'default' so it is automatically picked",
+        "Set the dictionary's 'Mobile View' attribute to true",
+        "Mobile always uses the default view; custom views are ignored"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "The mobile experience explicitly maps tables to view names; you bind the view in the mobile config (or launcher/page config) to switch what's rendered.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-design-035",
+      "question": "Which Studio capability lets a developer search the entire app for occurrences of a string (e.g., a field name)?",
+      "options": [
+        "Code Search",
+        "Schema Map",
+        "ATF Test Runner",
+        "Update Set Preview"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Code Search scans across artifact bodies (scripts, conditions, queries) for matches — invaluable when renaming a field or hunting for callers.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-design-036",
+      "question": "Two tables in different scopes need to share base fields. Which approach BEST preserves scope encapsulation while reducing duplication?",
+      "options": [
+        "Create a parent table in the 'global' scope and extend it from both apps",
+        "Create a parent table in one app's scope and expose it via cross-scope read privileges, then extend from the other app",
+        "Hand-copy fields between the two tables and keep them in sync via a Business Rule",
+        "Use a Glide List on each table"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Parent-in-scoped-app with explicit cross-scope read privileges respects ownership and avoids global pollution. Putting the parent in global breaks isolation; manual sync diverges over time.",
+      "category": "Designing and Creating an Application",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-ui-013",
+      "question": "Which client-script type fires when a user changes a cell value directly inside a list view?",
+      "options": [
+        "onCellEdit",
+        "onChange",
+        "onSubmit",
+        "onLoad"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "onCellEdit runs for inline list edits and receives a callback to allow/deny the edit. onChange fires on form fields only.",
+      "category": "Application User Interface",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-ui-014",
+      "question": "g_form.addInfoMessage('Saved!') versus g_form.showFieldMsg('email', 'Bad format', 'error'). Which difference is correct?",
+      "options": [
+        "addInfoMessage shows a banner at the top of the form; showFieldMsg attaches a message to a specific field",
+        "addInfoMessage is server-side; showFieldMsg is client-side",
+        "Both show banners — only the icon differs",
+        "showFieldMsg is deprecated"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "addInfoMessage is a global form banner; showFieldMsg renders the message under a specific field. Both are client-side and current.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-015",
+      "question": "A 'Form Annotation' is added between two fields. What does it provide?",
+      "options": [
+        "Inline instructional text on the form (heading, line, or HTML content)",
+        "A new server-side calculation hook",
+        "Validation that runs on save",
+        "An attachment area"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Form Annotations are display-only elements (headings, separators, HTML text) inserted into the form layout to guide users — no logic attached.",
+      "category": "Application User Interface",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-ui-016",
+      "question": "Which TWO UI Action 'Action condition' options allow a button to appear ONLY when the record meets some criteria?",
+      "options": [
+        "The 'Condition' field (encoded query / JS expression)",
+        "The 'Show insert' / 'Show update' checkboxes",
+        "The 'Order' field",
+        "The 'Form button' checkbox"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Conditions and Show insert/update gate visibility. Order controls render order; Form button is a placement option.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-017",
+      "question": "A developer wants to redirect the user to a different page when a UI Action runs. Which API call achieves this in a server-side UI Action script?",
+      "options": [
+        "action.setRedirectURL('https://...')",
+        "g_form.redirect('https://...')",
+        "gs.redirect('https://...')",
+        "window.location.href = '...'"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Server-side UI Actions use action.setRedirectURL to navigate after save. g_form and window.location are client-only; gs.redirect doesn't exist.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-018",
+      "question": "A onChange Client Script needs to fetch a related record's value. What is the BEST API for this in modern releases?",
+      "options": [
+        "g_form.getReference('owner', callback)",
+        "Inline GlideRecord on the client (deprecated)",
+        "synchronous GlideAjax",
+        "Hard-code a Business Rule to push values"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "g_form.getReference with a callback fetches the referenced record asynchronously and is the supported modern pattern. Inline client GlideRecord is deprecated; synchronous GlideAjax blocks the UI.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-019",
+      "question": "Which g_form method conditionally locks a field so the user cannot edit it?",
+      "options": [
+        "g_form.setReadOnly('field', true)",
+        "g_form.disable('field')",
+        "g_form.lock('field')",
+        "g_form.freeze('field')"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "setReadOnly is the supported method. The others are not real APIs.",
+      "category": "Application User Interface",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-ui-020",
+      "question": "A UI Page renders custom HTML at /<scope>/<page>.do. Which TWO components make up a UI Page?",
+      "options": [
+        "HTML (Jelly) for layout",
+        "Client script (processing scripts) for client-side behavior",
+        "A Business Rule for server access",
+        "An ACL for inbound users"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "UI Pages have HTML (Jelly) and a Client script section. Server logic typically lives in Script Includes called via GlideAjax. BRs and ACLs are independent platform constructs.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-021",
+      "question": "What is a 'Formatter' on a form?",
+      "options": [
+        "A reference to a UI Macro that renders custom HTML in a specific form position",
+        "A function that pretty-prints field values",
+        "A field type for currency",
+        "A type of related list"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Formatters are form-layout records that point to a UI Macro to embed rich custom content (e.g., contextual side panels) at a chosen position.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-022",
+      "question": "How do you make a field read-only ONLY when the record's state is 'Closed'?",
+      "options": [
+        "UI Policy with condition 'state = Closed' and action 'Read only = true'",
+        "Set the dictionary's Read Only attribute",
+        "Add an ACL with operation 'write' and a script that checks state",
+        "Either A or C, depending on whether the protection is UI-only or full"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "UI Policy enforces UI-only read-only; an ACL also enforces it at API/import paths. Dictionary read-only is global. Both A and C are valid depending on threat model.",
+      "category": "Application User Interface",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-ui-023",
+      "question": "Service Portal widget client controller and server script communicate via:",
+      "options": [
+        "this.server.update() / this.server.get() and data/input bindings",
+        "g_form.submit()",
+        "RESTMessageV2",
+        "Direct GlideRecord on the client"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Widgets use the server.update / server.get pattern with 'data' (server-to-client) and 'input' (client-to-server) bindings. g_form is not available in widgets.",
+      "category": "Application User Interface",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-ui-024",
+      "question": "A Service Portal page is built using:",
+      "options": [
+        "A grid of rows, columns, and widgets",
+        "Only UI Macros",
+        "Only Angular components from an external CDN",
+        "Static HTML files served by the platform"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Service Portal pages are composed in the Page Designer by dropping widgets into rows/columns. Widgets may use Angular but the framework is hosted inside the platform.",
+      "category": "Application User Interface",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-ui-025",
+      "question": "Which UI Builder concept REPLACES classic UI Pages in modern 'Next Experience' (Now Experience) apps?",
+      "options": [
+        "Now Experience UI Framework components and pages built in UI Builder",
+        "Plain HTML attachments",
+        "Service Portal widgets only",
+        "UI Macros"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "UI Builder composes Now Experience component pages — the strategic direction for new custom UIs. Classic UI Pages remain supported but not preferred.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-026",
+      "question": "A form has 50 fields but only 10 should be visible to non-admins. The BEST control point is:",
+      "options": [
+        "A UI Policy that hides fields for non-admin roles",
+        "Two separate views, one per audience",
+        "Hard-coding visibility in 50 Client Scripts",
+        "An ACL on each field with operation 'read'"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Two views are simpler, more maintainable, and align with the platform's intended pattern for role-based form simplification. UI Policies and ACLs are correct for finer-grained per-record logic.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-027",
+      "question": "g_form.setMandatory('priority', true) is called in an onLoad Client Script. Which is TRUE?",
+      "options": [
+        "priority becomes mandatory immediately; the user cannot save without filling it",
+        "Mandatory persists across the session for this user",
+        "Mandatory only applies after the next field change",
+        "setMandatory is not a real method"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "setMandatory immediately marks the field, enforced on save. State applies to the current form lifecycle only.",
+      "category": "Application User Interface",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-ui-028",
+      "question": "Which TWO are valid uses of g_form.getValue() vs g_form.getDisplayBox()?",
+      "options": [
+        "getValue returns the stored value (sys_id for reference fields)",
+        "getDisplayBox returns the raw input element so additional UI tweaks can be applied",
+        "getValue throws on hidden fields",
+        "getDisplayBox is server-side"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "getValue: stored value; getDisplayBox: DOM input for the field. Hidden fields still return values; both are client-side.",
+      "category": "Application User Interface",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-ui-029",
+      "question": "When does an onLoad Client Script fire on a NEW record form (before save)?",
+      "options": [
+        "When the user clicks 'New' and the platform renders the empty form",
+        "Only after the first save",
+        "Only when the user navigates via URL parameter",
+        "Never — onLoad only fires for existing records"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "onLoad fires for new-record forms as well, immediately when the form renders — enabling default-value scripting or guidance UI.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-030",
+      "question": "A Form Section is restricted to the role 'x_acme_pet.shop_owner'. Which behavior follows for a user without that role?",
+      "options": [
+        "The section and its fields are hidden on the form",
+        "The fields appear read-only",
+        "The fields appear with greyed-out labels",
+        "Behavior is undefined"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Section-level role restriction hides the entire section (and its fields) from users without the role.",
+      "category": "Application User Interface",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-ui-031",
+      "question": "A multi-row variable set (MRVS) on a catalog item is used to:",
+      "options": [
+        "Collect multiple rows of structured input from a requester (e.g., a list of laptops)",
+        "Show a calendar widget",
+        "Display a chart",
+        "Restrict approval steps"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "MRVS lets users add N rows of structured fields — typical for ordering multiple items with per-row attributes.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-032",
+      "question": "What is the difference between a UI Page and a UI Macro?",
+      "options": [
+        "UI Page is a full standalone page (its own URL); UI Macro is embedded inside another artifact",
+        "UI Page is server-only; UI Macro is client-only",
+        "UI Page is for admins; UI Macro is for users",
+        "There is no difference — they are aliases"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "UI Pages render at their own URL; UI Macros are reusable Jelly snippets embedded in forms, lists, or other pages.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-033",
+      "question": "A custom 'Save and Stay' UI Action wants to save the record but keep the user on the current form. What is the canonical pattern?",
+      "options": [
+        "Set action.setRedirectURL(current.getLink(true)) so the platform returns to the same record",
+        "Use g_form.save() on the client and never run server logic",
+        "Use action.setReturnUrl(referer)",
+        "Disable the form's default Save"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Setting the redirect to current.getLink(true) returns to the saved record's form. g_form.save bypasses the UI Action; setReturnUrl is not the standard mechanism here.",
+      "category": "Application User Interface",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-ui-034",
+      "question": "Which view is automatically used by a UI Action's link/button rendering when no specific view is configured?",
+      "options": [
+        "The current form's view",
+        "Always 'default'",
+        "Always 'mobile'",
+        "Always 'list'"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "UI Actions render in the context of the active view; explicit per-view configuration is optional.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-ui-035",
+      "question": "g_form.addOption('priority', '1', 'Critical') adds a choice value to a choice field. When does this added choice persist beyond the session?",
+      "options": [
+        "Never — it is a runtime addition only",
+        "After the user saves the record",
+        "It is automatically written to sys_choice",
+        "After the next deployment"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "addOption is a runtime DOM-level modification; the choice is gone after the form is closed. Persistent choices require sys_choice records.",
+      "category": "Application User Interface",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-ui-036",
+      "question": "Which TWO modern alternatives exist to writing classic Client Scripts for form-level logic?",
+      "options": [
+        "UI Policies for declarative show/hide/read-only/mandatory",
+        "Catalog Client Scripts for catalog items (alternate scope)",
+        "g_user.getRoles() in an onLoad script",
+        "Inline HTML in the form"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "UI Policies are the no-code alternative for visibility/state; Catalog Client Scripts cover catalog-form interactions. The other options are syntactically still client scripts.",
+      "category": "Application User Interface",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-010",
+      "question": "What is a 'Subflow' in Flow Designer?",
+      "options": [
+        "A reusable, parameterized sequence of actions callable from other flows or subflows",
+        "A snapshot of a flow's execution log",
+        "A deprecated form of workflow",
+        "An approval pattern only"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Subflows are reusable flows with inputs/outputs, called from other flows like functions.",
+      "category": "Application Automation",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-automation-011",
+      "question": "A flow's 'Action' fails with a runtime exception. Which TWO mechanisms allow the flow to handle it gracefully?",
+      "options": [
+        "The action's 'Error Handler' branch",
+        "A 'Try / Catch' construct in Flow Designer",
+        "A Business Rule listening on the failure",
+        "Wrapping the flow in a Scheduled Job"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Actions expose Error Handlers; flows also support Try / Catch blocks. Business Rules and Scheduled Jobs are not error-handling primitives for flows.",
+      "category": "Application Automation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-automation-012",
+      "question": "An event 'pet.adopted' is registered. To run code when the event fires, you create a:",
+      "options": [
+        "Script Action subscribed to the event",
+        "Business Rule with the event name in the condition",
+        "UI Action with onclick eventQueue",
+        "ACL on the event table"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Script Actions are subscribed to a named event and run asynchronously when it is processed.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-013",
+      "question": "Which Email Notification 'When to Send' option triggers based on an explicit gs.eventQueue call?",
+      "options": [
+        "Event is fired",
+        "Record inserted or updated",
+        "Function",
+        "Scheduled"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "'Event is fired' lets the notification listen for a named event from sysevent — coupling delivery from detection.",
+      "category": "Application Automation",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-automation-014",
+      "question": "Which Flow Designer feature lets you make a decision based on a small lookup table of conditions and outputs?",
+      "options": [
+        "Decision Table",
+        "Subflow",
+        "Action",
+        "Schedule"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Decision Tables encode multiple input/output rules and return the matching output — cleaner than nested If steps for simple lookups.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-015",
+      "question": "A Notification's 'Recipients' tab supports which THREE selection types?",
+      "options": [
+        "Users by Role",
+        "Static user list",
+        "All employees of customer X's parent company recursively (custom join)",
+        "By Group"
+      ],
+      "correctAnswers": [
+        0,
+        1,
+        3
+      ],
+      "explanation": "Users by Role, static user list, and Groups are first-class. Arbitrary cross-table joins require an Advanced/Scripted recipient.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-016",
+      "question": "Workflow stages are most useful for:",
+      "options": [
+        "Showing the user progress through a multi-step process (e.g., 'Approval > Build > Test')",
+        "Hiding errors in script blocks",
+        "Defining ACLs on the workflow record",
+        "Triggering integrations"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Stages provide a visual progress indicator on the form, mapped to milestones in a (classic) Workflow.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-017",
+      "question": "Which TWO are true about asynchronous Business Rules?",
+      "options": [
+        "They run in a separate transaction, after the user's update completes",
+        "They are best for non-urgent side effects (e.g., notifications, indexing)",
+        "They guarantee execution before the next form load",
+        "They run only when explicitly invoked by gs.execute()"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Async BRs decouple side effects; they have no ordering guarantee relative to the next page load and run automatically when the trigger event fires.",
+      "category": "Application Automation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-automation-018",
+      "question": "A Flow Designer trigger is configured with 'Run as: System User'. What is the implication?",
+      "options": [
+        "Actions run with elevated privileges, bypassing the triggering user's role checks for the flow's internal operations",
+        "The flow can only edit system tables",
+        "Notifications appear from 'System'",
+        "The flow runs only at 03:00"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Run as System runs the flow under the system user identity — useful when actions must affect tables the triggering user cannot edit. Use carefully to avoid privilege escalation surprises.",
+      "category": "Application Automation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-automation-019",
+      "question": "Which API queues an event from a server-side script with two parameters available to subscribers?",
+      "options": [
+        "gs.eventQueue('pet.adopted', current, 'critical', 'east-region')",
+        "gs.fire('pet.adopted', current)",
+        "current.event('pet.adopted', 'critical')",
+        "events.publish('pet.adopted')"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "gs.eventQueue(name, record, parm1, parm2) is the standard signature. The others are not real platform APIs.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-020",
+      "question": "A 'Catalog Task' approval needs to require both the requester's manager AND the asset owner. The cleanest mechanism is:",
+      "options": [
+        "A Flow Designer 'Ask For Approval' step with multiple approvers (rule: 'All must approve')",
+        "Two separate Business Rules",
+        "Hard-coded approval emails",
+        "Reject by default; let approvers email back"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Ask For Approval supports composite rules (All / Any / By percentage), encapsulating the requirement declaratively.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-021",
+      "question": "A Notification template uses $\\{number\\} and $\\{caller_id.email\\}. What does the dot-walking access?",
+      "options": [
+        "Email of the user referenced by caller_id (a Reference field)",
+        "Email of the current record's creator",
+        "A literal field named 'caller_id.email' in the dictionary",
+        "An attachment named caller_id.email"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Notifications support dot-walking through Reference fields. caller_id.email = the email of the user the record's caller_id points to.",
+      "category": "Application Automation",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-automation-022",
+      "question": "Which TWO statements about Flow Designer's 'Run Asynchronously' option are TRUE?",
+      "options": [
+        "The flow executes in a background queue, not in the user's transaction",
+        "The trigger does not block the user's save",
+        "It guarantees the flow finishes before the user sees the saved record",
+        "It is the only way to run flows"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Async flows decouple from user transactions, do not block, and obviously do not guarantee completion before the next render. Sync execution is also supported.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-automation-023",
+      "question": "An SLA Definition is used to:",
+      "options": [
+        "Measure elapsed time against business hours for a record (e.g., time to resolution)",
+        "Authenticate API callers",
+        "Restrict access to certain views",
+        "Replace ACLs"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "SLA Definitions calculate elapsed time against schedules and conditions and produce Task SLA records the platform tracks and reports on.",
+      "category": "Application Automation",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-automation-024",
+      "question": "A Subflow accepts an input 'recordRef' typed as 'Record'. What does typing it as 'Record' (versus 'String') buy you?",
+      "options": [
+        "Type-aware actions (dot-walking, action inputs of matching type) inside the subflow",
+        "Faster execution",
+        "Encrypted storage",
+        "Automatic deduplication"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Typed inputs give Flow Designer type-aware data picker support — actions can use the record's fields and references seamlessly.",
+      "category": "Application Automation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-automation-025",
+      "question": "An action authored as a 'Script Step' has access to which special object to read inputs and set outputs?",
+      "options": [
+        "inputs and outputs (e.g., inputs.recordRef, outputs.result = ...)",
+        "current and previous",
+        "g_form and g_user",
+        "this.req and this.res"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Script Steps inside Flow Designer expose 'inputs' (declared input vars) and 'outputs' for setting return values, both flowing through the typed action contract.",
+      "category": "Application Automation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-automation-026",
+      "question": "An Inbound Email Action stops processing further actions on the same email by:",
+      "options": [
+        "Setting event.state = 'stop_processing' or via the action's 'Stop processing' checkbox",
+        "Returning false from the script",
+        "Calling email.abort()",
+        "Throwing an exception"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "The 'Stop processing' flag (or equivalent in newer versions, setting state) terminates further inbound actions for this email message. Throwing or returning false is not the contract.",
+      "category": "Application Automation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-automation-027",
+      "question": "A Scheduled Script Execution can run as a different user via:",
+      "options": [
+        "The 'Run as' field set to a sys_user",
+        "The script switching gs.getUser()",
+        "A Business Rule before the job",
+        "It always runs as system"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Run as field elects an alternate user identity. The script cannot self-elevate by swapping gs.getUser(); the platform enforces identity at job start.",
+      "category": "Application Automation",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-data-007",
+      "question": "A Transform Map's 'onBefore' script can:",
+      "options": [
+        "Skip the current import row by setting ignore = true",
+        "Modify field values before write",
+        "Both A and B",
+        "Neither — onBefore is read-only"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "onBefore scripts can mutate the target object and set ignore = true to skip the row entirely.",
+      "category": "Working with External Data",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-data-008",
+      "question": "An import is missing required fields on some rows. Which Transform Map behavior is configured by 'Run business rules' = false?",
+      "options": [
+        "Disables target table Business Rules during the transform",
+        "Disables data policies on the target",
+        "Forces every row to insert",
+        "Skips validation entirely"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Disabling 'Run business rules' bypasses BRs on the target table — useful for bulk loads where rules would otherwise misfire or slow the import.",
+      "category": "Working with External Data",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-data-009",
+      "question": "Which TWO authentication types does RESTMessageV2 natively support without custom scripting?",
+      "options": [
+        "Basic auth (user/password)",
+        "OAuth 2.0 (via Application Registry)",
+        "Kerberos via in-place Active Directory",
+        "DNS-only token rotation"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Basic and OAuth 2.0 (with several grant types) are first-class. Kerberos and ad-hoc DNS schemes are not built into the REST Message form.",
+      "category": "Working with External Data",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-data-010",
+      "question": "A Scripted REST API resource needs to read the request body. The correct API is:",
+      "options": [
+        "request.body.data (or request.body.dataString)",
+        "current.body",
+        "g_form.getBody()",
+        "gs.getRequest().body"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Scripted REST resources receive a 'request' object exposing body.data and body.dataString. The other accessors are not part of the Scripted REST contract.",
+      "category": "Working with External Data",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-data-011",
+      "question": "An IntegrationHub 'Spoke' is:",
+      "options": [
+        "A packaged set of Flow Designer actions for a specific third-party system (e.g., MS Teams)",
+        "A column in sys_import_set_row",
+        "A Scripted REST API namespace",
+        "A type of UI Action"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Spokes ship vendor-specific actions usable inside flows. Often they require an IntegrationHub entitlement.",
+      "category": "Working with External Data",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-data-012",
+      "question": "A Data Source is configured with type 'File' and Format 'JSON'. Where does the file come from?",
+      "options": [
+        "An attachment on the Data Source record, an FTP/SFTP location, or a JDBC/URL retrieval",
+        "Always pulled from /etc/now/imports",
+        "Only via a UI upload at run time",
+        "Generated automatically by the platform"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Data Sources support multiple retrieval modes — attachment, network locations, MID-server-aided, etc.",
+      "category": "Working with External Data",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-data-013",
+      "question": "An outbound REST call must run through a MID Server for connectivity to an internal endpoint. Where is this configured?",
+      "options": [
+        "On the REST Message record's 'Use MID Server' / 'MID Server' fields",
+        "In the calling Business Rule",
+        "On the Data Source",
+        "On the user's profile"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "REST Messages specify whether (and which) MID server to route through — required when the target is internal-network only.",
+      "category": "Working with External Data",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-data-014",
+      "question": "Which TWO are valid coalesce strategies in Transform Maps?",
+      "options": [
+        "Single-field coalesce (e.g., on email)",
+        "Multi-field composite coalesce (e.g., email + region)",
+        "Coalesce by sys_id only — never editable",
+        "Coalesce by reference qualifier"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Single-field and multi-field coalesce keys are supported. There is no 'reference-qualifier coalesce' and sys_id coalesce is not enforced as the only option.",
+      "category": "Working with External Data",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-data-015",
+      "question": "What does a Connection & Credential Alias enable?",
+      "options": [
+        "Promoting an integration across instances without re-typing endpoints and secrets",
+        "Restricting which records a user can view",
+        "Bundling UI Policies",
+        "Replacing scoped ACLs"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Aliases decouple endpoint configuration from logic — integration code references the alias, and the alias points to the right connection/credential per environment.",
+      "category": "Working with External Data",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-data-016",
+      "question": "A REST request needs a custom HTTP header on every call. What is the right configuration?",
+      "options": [
+        "Add the header to the REST Message's HTTP Headers related list (static), or set it per-call via setRequestHeader",
+        "Hard-code the header in a Business Rule that wraps the call",
+        "Configure it in the MID server only",
+        "Headers cannot be customized"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Static headers live on the REST Message; per-call dynamic headers use setRequestHeader on the request object.",
+      "category": "Working with External Data",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-data-017",
+      "question": "Which TWO are valid Scripted REST API versioning behaviors?",
+      "options": [
+        "Mark a resource version 'Deprecated' (still callable, returns a header warning)",
+        "Mark a resource 'Default' so unversioned calls land on a specific version",
+        "Automatically translate v1 payloads to v2 schema",
+        "Force every caller to v0 silently"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Deprecated and Default flags are real behaviors. Auto schema translation is not built-in; silent v0 forcing is contrary to the model.",
+      "category": "Working with External Data",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-data-018",
+      "question": "What information does sys_import_set_row record?",
+      "options": [
+        "One row of staging data plus the original source values and the transform outcome (insert/update/ignore/error)",
+        "An audit of role changes",
+        "A Workflow step",
+        "A flow execution log"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Each import-set row captures the raw input plus the result of each transform run — invaluable for troubleshooting bad imports.",
+      "category": "Working with External Data",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-security-010",
+      "question": "Which role provides 'elevated privileges' such as editing ACLs and high-security records, separate from admin?",
+      "options": [
+        "security_admin",
+        "itil_admin",
+        "personalize_dictionary",
+        "elevated"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "security_admin is the elevated role required for high-security actions like ACL edits, accepted only after explicit elevation in the UI.",
+      "category": "Security and Restricting Access",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-security-011",
+      "question": "Domain separation primarily:",
+      "options": [
+        "Partitions data so users in one domain cannot see records in another",
+        "Encrypts data at rest",
+        "Enables single sign-on",
+        "Provides row-level locking"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Domain separation is a multi-tenant data isolation feature used commonly by MSPs to keep customer data invisible across domains.",
+      "category": "Security and Restricting Access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-security-012",
+      "question": "A scoped app exposes a Scripted REST resource. By default, who can call it?",
+      "options": [
+        "Only authenticated users that pass the resource's ACL",
+        "Anyone on the internet, anonymously",
+        "Only the app's developer",
+        "Only users with admin"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Scripted REST resources require authentication unless explicitly marked 'Requires authentication' false (and even then, an ACL still gates access).",
+      "category": "Security and Restricting Access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-security-013",
+      "question": "A 'Public Page' makes a UI Page accessible without login. Which TWO safeguards remain?",
+      "options": [
+        "Captcha/anti-abuse controls if configured",
+        "ACLs on any data the page reads (must allow 'guest' or anonymous role)",
+        "It bypasses HTTPS",
+        "It elevates the caller to admin"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Public pages still respect ACLs (requiring grants to the guest/anonymous user), and admins can layer captchas. They do NOT bypass TLS or elevate anyone.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-014",
+      "question": "A scoped app needs to invoke a function from another scoped app's Script Include. Which configuration is required?",
+      "options": [
+        "The other app's Script Include must be marked 'Accessible from: All application scopes' OR have an explicit cross-scope read privilege",
+        "The calling user must have admin",
+        "The two apps must be in the same Update Set",
+        "Nothing — scoped scripts are always visible cross-scope"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Script Include 'Accessible from' on the target plus matching cross-scope privileges control cross-scope script reuse. User role doesn't override scoping; update sets are unrelated.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-015",
+      "question": "What does setting an ACL's 'Active' flag to false accomplish?",
+      "options": [
+        "Disables the ACL — it is ignored during access evaluation",
+        "Encrypts the records it covers",
+        "Hides the ACL from the UI but still evaluates it",
+        "Routes requests to a backup"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Inactive ACLs are skipped. There is no 'hidden but active' or routing semantics.",
+      "category": "Security and Restricting Access",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-security-016",
+      "question": "ACLs are evaluated in which order for a single operation?",
+      "options": [
+        "From the most specific (table.field) to the least specific (table.*); ALL applicable ACLs at the same level OR together, but levels are AND-ed",
+        "Random order with first-match-wins",
+        "Alphabetical by sys_id",
+        "By Order field only"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Multiple ACLs at the same level act as OR; different levels (table-level, field-level, *) are ANDed. Specificity is by table/field name pattern; Order influences within a level.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-017",
+      "question": "Which THREE statements about 'Script' element in an ACL are TRUE?",
+      "options": [
+        "It must set 'answer' to true or false to allow/deny",
+        "It runs in addition to the Role and Condition checks (all three must allow)",
+        "It can call gs APIs (gs.hasRole, gs.getUser, etc.)",
+        "It runs first and can short-circuit role checks"
+      ],
+      "correctAnswers": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "ACL Script sets 'answer'; runs alongside role/condition (AND); has access to gs APIs. It does NOT short-circuit role checks.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-018",
+      "question": "A 'Read-only mode' instance setting:",
+      "options": [
+        "Disables writes platform-wide during upgrades",
+        "Encrypts every row",
+        "Forces every UI Action to disabled",
+        "Replaces ACLs"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Read-only mode (set during upgrades or by support) prevents writes globally so the underlying data isn't mutated during maintenance.",
+      "category": "Security and Restricting Access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-security-019",
+      "question": "Which 'Login policy' would prevent a user from logging in outside business hours?",
+      "options": [
+        "Login Schedule Policy referencing a business-hours Schedule",
+        "An ACL on the user table",
+        "A Notification",
+        "A Service Portal page"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Login schedule policies tie authentication to a platform Schedule. ACLs gate access AFTER login; notifications and SP pages are unrelated to auth.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-020",
+      "question": "When 'High Security Settings' plugin is active, which behaviour is enforced?",
+      "options": [
+        "Many sensitive operations require security_admin elevation in addition to admin",
+        "Every record is encrypted",
+        "External calls are blocked",
+        "ACLs are disabled"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "High Security adds the security_admin elevation gate for sensitive admin actions, and tightens default ACLs across several base tables.",
+      "category": "Security and Restricting Access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-security-021",
+      "question": "An 'Anonymous' user accessing a public page is internally mapped to which sys_user record?",
+      "options": [
+        "sys_user record with user_name = 'guest' (the Guest user)",
+        "The application owner",
+        "Whatever user last logged in",
+        "A null user — no record"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Anonymous traffic runs under the 'guest' user. Grants to 'guest' determine what anonymous callers can see.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-022",
+      "question": "Which TWO debugging aids help diagnose why an ACL is failing?",
+      "options": [
+        "Enabling ACL Debug ('Session Debug') from the System Diagnostics menu",
+        "Inspecting the Application Log for security warnings",
+        "Disabling all ACLs and observing the difference",
+        "Looking at the Theme record"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Session Debug for ACLs renders the evaluation chain in the page footer; Application Logs capture related warnings. Disabling ACLs is destructive; themes are unrelated.",
+      "category": "Security and Restricting Access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-security-023",
+      "question": "A Reference field 'owner' points to sys_user. To prevent users from seeing the picker filled with inactive users, the best approach is:",
+      "options": [
+        "Reference Qualifier: active=true",
+        "ACL on sys_user that hides inactive users platform-wide",
+        "Hide inactive users via a Business Rule",
+        "Filter via client script after the picker loads"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Reference Qualifiers are designed for picker filtering. Platform-wide ACLs are overkill and side-effect-y; BRs and client-side filtering after the fact are fragile.",
+      "category": "Security and Restricting Access",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-security-024",
+      "question": "A scoped app reads from a base-system table (e.g., incident) that lives in 'global'. Which configuration is required?",
+      "options": [
+        "Cross-scope read privilege from the scoped app to incident; the table's accessible-from setting must permit it",
+        "The user has the 'incident_user' role only",
+        "Nothing — base-system tables are always accessible",
+        "Re-host incident inside the scoped app"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Cross-scope privileges plus 'Accessible from' on the target table govern cross-scope reads. Base-system tables aren't automatically open.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-025",
+      "question": "Field encryption 'Column-level encryption' protects data:",
+      "options": [
+        "At rest in the database, transparent to scripts that read via Glide APIs",
+        "Only in transit to the client",
+        "Only inside notifications",
+        "Only when accessed by guests"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Column encryption encrypts the underlying storage; Glide APIs transparently decrypt for callers with appropriate roles. Encryption-in-transit is separate (TLS).",
+      "category": "Security and Restricting Access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-security-026",
+      "question": "What does 'Restricted Caller Access' control?",
+      "options": [
+        "Whether (and which) other scoped applications can invoke this scope's scripts/tables",
+        "The user's calendar",
+        "The MID server's IP allowlist",
+        "Anonymous access to public pages"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Restricted Caller Access (RCA) is the platform mechanism through which a scoped app authorizes (or denies) cross-scope invocation requests — auditable in the sys_app_application form.",
+      "category": "Security and Restricting Access",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-security-027",
+      "question": "Which TWO are recommended responses when an automated security scan finds a missing ACL on a custom table?",
+      "options": [
+        "Add table.read / table.write / table.create / table.delete ACLs with appropriate roles and conditions",
+        "Add field-level ACLs for any sensitive columns",
+        "Disable the table to be safe",
+        "Mark the table 'Public' to standardize behavior"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Right answer: define explicit operation-level ACLs and field-level overlays for sensitive data. Disabling the table is overkill; marking 'Public' (no such switch in fact) goes the wrong direction.",
+      "category": "Security and Restricting Access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-013",
+      "question": "Studio's Git integration supports which TWO operations on a scoped app?",
+      "options": [
+        "Create branch (and switch the in-instance app to it)",
+        "Commit + push changes to the remote",
+        "Auto-merge across unrelated scopes",
+        "Replace Update Sets entirely"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Branch and commit/push are first-class; cross-scope auto-merge is not. Update Sets and Git coexist — neither replaces the other.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-014",
+      "question": "An ATF test is a sequence of:",
+      "options": [
+        "Test Steps (form actions, server asserts, REST calls, etc.) executed in order",
+        "Update Sets",
+        "Business Rules",
+        "UI Macros"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Tests are made up of Test Steps drawn from a catalog (form open, set value, click button, server-side script, assertions, REST). Steps execute sequentially.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-015",
+      "question": "A Test Suite differs from a Test by:",
+      "options": [
+        "A Suite groups multiple Tests (and other Suites) to run in sequence and report aggregately",
+        "A Suite is a single test with multiple steps",
+        "A Suite is server-only",
+        "There is no difference"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Suites compose Tests (and nested Suites) into runnable bundles with aggregate reporting and ordering control.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-016",
+      "question": "ATF 'Impersonate' step lets the test:",
+      "options": [
+        "Run subsequent steps as a specific user (testing role-gated behavior)",
+        "Skip security",
+        "Change the platform's running version",
+        "Mock external systems"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Impersonate switches the test's effective user — essential for validating ACL/UI Policy behavior for different roles.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-017",
+      "question": "Which THREE statements about Update Sets are TRUE?",
+      "options": [
+        "They capture only metadata changes — not user records, not transaction data",
+        "They can include 'Customer Updates' (sys_update_xml) for every artifact touched",
+        "They include attachments only when explicitly opted in",
+        "They automatically promote across instances when committed"
+      ],
+      "correctAnswers": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Update sets capture metadata customer updates and (optionally) attachments. They do not include transactional rows or auto-promote — they must be exported and committed manually.",
+      "category": "Managing Applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-manage-018",
+      "question": "What is the difference between 'Preview' and 'Commit' for an imported Update Set?",
+      "options": [
+        "Preview enumerates each update and surfaces conflicts/errors; Commit applies the (resolved) updates to the instance",
+        "Preview is automatic, Commit is manual",
+        "Preview deletes the source set",
+        "There is no difference"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Preview is read-only conflict detection; Commit is the destructive write. Always resolve preview errors before commit.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-019",
+      "question": "An app contains a 'Fix Script'. When does it run?",
+      "options": [
+        "On demand, when an admin executes it (or when configured to auto-run on install/upgrade)",
+        "Every form load",
+        "Every 5 minutes",
+        "Never — it is documentation only"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Fix Scripts are one-shot maintenance scripts, runnable on demand or marked to auto-run during install/upgrade.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-020",
+      "question": "A scoped app is installed from Application Repository v1.0.0. Later v1.1.0 is published. The 'Update' action does what?",
+      "options": [
+        "Replaces v1.0.0 metadata with v1.1.0 metadata, preserving in-instance customizations subject to protection levels",
+        "Deletes the application entirely and reinstalls",
+        "Forks the app",
+        "Nothing — repositories are read-only views"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Update is an in-place upgrade respecting protection policies. Customizations on Read-only artifacts are preserved as protected; otherwise the new version's artifact wins.",
+      "category": "Managing Applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-manage-021",
+      "question": "Which TWO platform features help track an artifact's customization history?",
+      "options": [
+        "sys_update_xml (Customer Updates)",
+        "The 'History' related list on the artifact's form",
+        "GlideForm logs in the user's browser",
+        "The Application Logo"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "sys_update_xml captures the artifact's update record per scope; the History related list shows prior values. Browser logs and logos do not.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-022",
+      "question": "An app's 'Dependencies' related list shows another app and a minimum version. What happens at install time if the dependency is missing?",
+      "options": [
+        "The install fails with a dependency error and the admin is prompted to resolve it",
+        "The app installs anyway and crashes at runtime",
+        "The platform auto-downloads the dependency",
+        "Nothing — dependencies are advisory"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Hard dependencies block installation until satisfied. Some plugins offer self-fetch, but custom apps generally don't.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-023",
+      "question": "Studio's 'Application Repository' tab can:",
+      "options": [
+        "Publish a new version of the current app to the company repository",
+        "Install another app from the repository",
+        "Show release notes per version",
+        "All of the above"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "The Repository view supports publish/install/release-notes — the central hub for app lifecycle.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-024",
+      "question": "A 'Family release' (e.g., Washington, Xanadu, Yokohama) determines:",
+      "options": [
+        "Base platform feature set and compatibility surface for installed apps",
+        "Which color the navigator uses",
+        "Which admin can edit ACLs",
+        "Whether ATF is available"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Family releases gate features and APIs; apps may require a minimum family. Other items are unrelated.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-025",
+      "question": "Which feature in Studio shows all sys_metadata records belonging to the current app, filtered by type?",
+      "options": [
+        "Application Files / Files navigator",
+        "Schema Map",
+        "Test Runner",
+        "Background Scripts"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Application Files lists every sys_metadata record by type — the primary navigator for browsing the app's metadata.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-026",
+      "question": "A 'Background Script' is BEST used for:",
+      "options": [
+        "Running ad-hoc server-side script for diagnostics or one-off data fixes",
+        "Defining recurring jobs",
+        "Authoring Business Rules",
+        "Storing reusable libraries"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Background Scripts are an interactive script runner — useful for one-off operations. Recurring jobs are Scheduled Script Executions; libraries are Script Includes.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-027",
+      "question": "Which THREE sources of telemetry help diagnose runtime errors in a scoped app?",
+      "options": [
+        "System Logs (Application Log, syslog)",
+        "Script Tracer / Slow Script log",
+        "ACL Debug session output",
+        "Theme records"
+      ],
+      "correctAnswers": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Logs, tracer, and ACL debug are all platform diagnostics. Themes don't influence runtime errors.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-028",
+      "question": "Performance Analytics 'Indicators' record:",
+      "options": [
+        "Time-series KPI values produced by definitions, scheduled jobs, and scoring rules — used for dashboards and trend analysis",
+        "Page load times",
+        "Browser memory leaks",
+        "Database row counts only"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "PA Indicators are KPI definitions whose values are recorded over time and rendered in dashboards.",
+      "category": "Managing Applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-manage-029",
+      "question": "Which TWO statements about the Now CLI / Application SDK are TRUE?",
+      "options": [
+        "It lets developers work on scoped apps in a local IDE with version control",
+        "It can deploy local changes to a remote dev instance",
+        "It replaces the Now platform's UI entirely",
+        "It only works for global-scope apps"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "The Now CLI/SDK supports local editing + deploy of scoped apps and is complementary (not a replacement) for the in-instance Studio. Global scope is not its primary target.",
+      "category": "Managing Applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-manage-030",
+      "question": "Studio's 'Code Search' supports which TWO features?",
+      "options": [
+        "Regex search across script bodies",
+        "Field-name search across dictionary and references",
+        "Auto-edit results in bulk",
+        "Search via JIRA links"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Regex search and field-name search are part of Code Search. Bulk auto-edit isn't offered; JIRA integration is unrelated to Code Search.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-031",
+      "question": "A 'Beta' or 'Preview' application version published to the repository:",
+      "options": [
+        "Is visible only to specific users/groups configured by the publisher (limited distribution)",
+        "Replaces the stable version automatically",
+        "Cannot be uninstalled",
+        "Bypasses ACLs"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Preview versions are scoped to a limited audience for testing before general release. They behave like a normal install otherwise.",
+      "category": "Managing Applications",
+      "difficulty": "hard"
+    },
+    {
+      "id": "snocad-manage-032",
+      "question": "Which Studio shortcut/keystroke opens the file picker?",
+      "options": [
+        "Ctrl/Cmd + O",
+        "Ctrl/Cmd + S",
+        "F12",
+        "Esc"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Ctrl/Cmd+O opens Studio's quick file picker — the same convention as many IDEs.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-033",
+      "question": "A test that fails consistently is marked 'Skipped' in a Test Suite by:",
+      "options": [
+        "Setting the Test's Active flag to false (or unchecking it in the Suite)",
+        "Deleting the Test",
+        "Renaming the Test to start with 'skip_'",
+        "Setting the Test's order to -1"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Inactive tests are skipped during runs. Renaming and order tricks aren't real switches.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-034",
+      "question": "Which TWO debug tools are useful when a Business Rule misbehaves?",
+      "options": [
+        "JS Debugger (script debugger) with breakpoints",
+        "gs.info / gs.print lines and System Logs",
+        "Hard refresh in the browser",
+        "Deleting the Business Rule and recreating it"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Debugger and logging are the canonical pair. Hard refresh and deletion are not debugging.",
+      "category": "Managing Applications",
+      "difficulty": "easy"
+    },
+    {
+      "id": "snocad-manage-035",
+      "question": "A Studio-managed app committed to Git from instance A is then pulled into instance B. The B instance needs to be told the remote URL via:",
+      "options": [
+        "Configure Git in Studio on B and link to the same repository",
+        "Edit sys_metadata directly",
+        "Re-export Update Sets",
+        "Re-install from the Application Repository"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Each instance's Studio independently configures its Git linkage to the same remote, then pulls the appropriate branch.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    },
+    {
+      "id": "snocad-manage-036",
+      "question": "What does 'Republish' do when releasing a new version of an app to the Application Repository?",
+      "options": [
+        "Creates a new version record on the repo and bundles the current scope's artifacts for distribution",
+        "Replaces all installed copies immediately on every instance",
+        "Deletes prior versions automatically",
+        "Resets the app's Update Sets"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Republish snapshots the current state into a new version. Installed instances must explicitly Update to receive it; prior versions remain available.",
+      "category": "Managing Applications",
+      "difficulty": "medium"
+    }
+  ]
+}

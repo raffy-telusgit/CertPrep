@@ -6,9 +6,9 @@ This file loads into every Claude Code session. Read it first, follow it always.
  
 ## 1. What we're building
  
-CertPrep is a browser-based practice exam app for cloud certifications (Azure, AWS, GCP). It runs entirely client-side — no backend, no runtime API calls, no user accounts. Question banks are static JSON files. All user data lives in `localStorage`.
+CertPrep is a browser-based practice exam app for cloud and platform certifications (Azure, AWS, GCP, ServiceNow). It runs entirely client-side — no backend, no runtime API calls, no user accounts. Question banks are static JSON files. All user data lives in `localStorage`.
  
-**Supported exams:** AZ-900, AZ-104, AZ-305, SC-900, GCP PCA, GCP PCDE, GCP PCD, AWS SAP-C02, AWS DOP-C02.
+**Supported exams:** AZ-900, AZ-104, AZ-305, SC-900, GCP PCA, GCP PCDE, GCP PCD, AWS SAP-C02, AWS DOP-C02, ServiceNow CAD.
  
 **Core features:**
 - Welcome screen with vendor-logo exam badges
@@ -176,6 +176,7 @@ When adding a new file, place it in the matching directory. Do not create new to
   - Azure: `#0078D4`
   - AWS: `#FF9900`
   - GCP: `#4285F4`
+  - ServiceNow: `#62D84E`
 ### Typography
 - Font: system font stack (Tailwind default) — do not import Google Fonts
 - Headings: `font-semibold` or `font-bold`, never `font-black`

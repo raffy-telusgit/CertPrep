@@ -1,4 +1,4 @@
-import { Flag } from 'lucide-react'
+import { CheckCircle2, Flag, XCircle } from 'lucide-react'
 import type { Question } from '@/types'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -84,7 +84,7 @@ function QuestionCard({
                   'flex items-center space-x-3 rounded-lg border p-3 transition-colors',
                   revealAnswer && state === 'correct' && 'border-green-500 bg-green-500/10',
                   revealAnswer && state === 'wrong' && 'border-destructive bg-destructive/10',
-                  !revealAnswer && selected.includes(index) && 'border-primary bg-primary/5',
+                  !revealAnswer && selected.includes(index) && 'border-primary bg-primary/10',
                 )}
               >
                 <Checkbox
@@ -103,12 +103,14 @@ function QuestionCard({
                   {option}
                 </Label>
                 {revealAnswer && state === 'correct' && (
-                  <span className="text-xs font-semibold text-green-600 dark:text-green-400" aria-label="Correct answer">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400" aria-label="Correct answer">
+                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
                     Correct
                   </span>
                 )}
                 {revealAnswer && state === 'wrong' && (
-                  <span className="text-xs font-semibold text-destructive" aria-label="Wrong answer">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive dark:text-red-400" aria-label="Wrong answer">
+                    <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
                     Wrong
                   </span>
                 )}
@@ -132,7 +134,7 @@ function QuestionCard({
                   'flex items-center space-x-3 rounded-lg border p-3 transition-colors',
                   revealAnswer && state === 'correct' && 'border-green-500 bg-green-500/10',
                   revealAnswer && state === 'wrong' && 'border-destructive bg-destructive/10',
-                  !revealAnswer && selected.includes(index) && 'border-primary bg-primary/5',
+                  !revealAnswer && selected.includes(index) && 'border-primary bg-primary/10',
                 )}
               >
                 <RadioGroupItem
@@ -148,12 +150,14 @@ function QuestionCard({
                   {option}
                 </Label>
                 {revealAnswer && state === 'correct' && (
-                  <span className="text-xs font-semibold text-green-600 dark:text-green-400" aria-label="Correct answer">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400" aria-label="Correct answer">
+                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
                     Correct
                   </span>
                 )}
                 {revealAnswer && state === 'wrong' && (
-                  <span className="text-xs font-semibold text-destructive" aria-label="Wrong answer">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive dark:text-red-400" aria-label="Wrong answer">
+                    <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
                     Wrong
                   </span>
                 )}

@@ -7,6 +7,20 @@ import ExamBadge from '@/components/ExamBadge'
 import ModeSelector from '@/components/ModeSelector'
 import { useExamStore } from '@/store/useExamStore'
 import { Button } from '@/components/ui/button'
+import { VENDOR_ICONS } from '@/lib/vendorIcons'
+
+interface VendorGroup {
+  vendor: Exam['vendor']
+  label: string
+  color: string
+}
+
+const VENDOR_GROUPS: VendorGroup[] = [
+  { vendor: 'azure', label: 'Microsoft Azure', color: '#0078D4' },
+  { vendor: 'gcp', label: 'Google Cloud', color: '#4285F4' },
+  { vendor: 'aws', label: 'Amazon Web Services', color: '#FF9900' },
+  { vendor: 'servicenow', label: 'ServiceNow', color: '#62D84E' },
+]
 
 function ExamSelector() {
   const navigate = useNavigate()
@@ -73,10 +87,38 @@ function ExamSelector() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {EXAMS.map((exam) => (
-          <ExamBadge key={exam.id} exam={exam} onClick={handleBadgeClick} />
-        ))}
+      <div className="space-y-8">
+        {VENDOR_GROUPS.map((group) => {
+          const groupExams = EXAMS.filter((e) => e.vendor === group.vendor)
+          if (groupExams.length === 0) return null
+          const icon = VENDOR_ICONS[group.vendor]
+          return (
+            <section key={group.vendor} aria-labelledby={`vendor-${group.vendor}`}>
+              <div className="flex items-center gap-3 mb-4">
+                <svg
+                  viewBox={icon.viewBox}
+                  className="h-5 w-5 shrink-0"
+                  fill={group.color}
+                  aria-hidden="true"
+                >
+                  <path d={icon.path} />
+                </svg>
+                <h2
+                  id={`vendor-${group.vendor}`}
+                  className="text-sm font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap"
+                >
+                  {group.label}
+                </h2>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {groupExams.map((exam) => (
+                  <ExamBadge key={exam.id} exam={exam} onClick={handleBadgeClick} />
+                ))}
+              </div>
+            </section>
+          )
+        })}
       </div>
 
       <ModeSelector

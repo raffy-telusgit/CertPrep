@@ -18,6 +18,7 @@ export interface Exam {
   passingScore: number;
   iconSlug: string;
   vendorColor: string;
+  disableOptionShuffle?: boolean;
 }
 
 export interface ExamSession {

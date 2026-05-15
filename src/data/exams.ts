@@ -45,6 +45,7 @@ export const EXAMS: Exam[] = [
     passingScore: 70,
     iconSlug: 'microsoftazure',
     vendorColor: '#0078D4',
+    disableOptionShuffle: true,
   },
   // Google Cloud
   {
@@ -68,6 +69,7 @@ export const EXAMS: Exam[] = [
     passingScore: 70,
     iconSlug: 'googlecloud',
     vendorColor: '#4285F4',
+    disableOptionShuffle: true,
   },
   {
     id: 'gcp-pcd',

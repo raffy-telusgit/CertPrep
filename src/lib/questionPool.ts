@@ -1,3 +1,4 @@
+import { getExamById } from '@/data/exams'
 import type { Question } from '@/types'
 
 const SEEN_KEY = (examId: string) => `certprep:seen:${examId}`
@@ -42,10 +43,13 @@ export function selectQuestions(
   const newSeen = [...seenIds, ...selected.map((q) => q.id)]
   saveSeenIds(examId, newSeen)
 
+  const exam = getExamById(examId)
+  const shouldShuffleOptions = !(exam?.disableOptionShuffle ?? false)
+
   const optionMappings: Record<string, number[]> = {}
   const preparedQuestions = selected.map((q) => {
     const indices = q.options.map((_, i) => i)
-    const shuffledIndices = shuffle(indices)
+    const shuffledIndices = shouldShuffleOptions ? shuffle(indices) : indices
     optionMappings[q.id] = shuffledIndices
     return {
       ...q,

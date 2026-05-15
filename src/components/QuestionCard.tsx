@@ -28,6 +28,11 @@ function QuestionCard({
 }: QuestionCardProps) {
   const isMulti = question.correctAnswers.length > 1
 
+  const hasPerOptionRationale =
+    revealAnswer &&
+    Array.isArray(question.optionExplanations) &&
+    question.optionExplanations.length === question.options.length
+
   function handleSingleChange(val: string) {
     onChange([parseInt(val, 10)])
   }
@@ -72,47 +77,72 @@ function QuestionCard({
         </p>
       )}
 
+      {revealAnswer && mode === 'practice' && question.explanationPreamble && (
+        <div
+          id={`preamble-${question.id}`}
+          role="note"
+          aria-label="Context for this question"
+          className="rounded-md border border-border bg-muted/50 px-3 py-2 mb-3 text-sm leading-relaxed"
+        >
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Context</p>
+          <p className="text-muted-foreground leading-relaxed">{question.explanationPreamble}</p>
+        </div>
+      )}
+
       {isMulti ? (
         <div className="space-y-3">
           {question.options.map((option, index) => {
             const state = getOptionState(index)
             const id = `option-${question.id}-${index}`
+            const rationaleId = `rationale-${question.id}-${index}`
             return (
               <div
                 key={index}
                 className={cn(
-                  'flex items-center space-x-3 rounded-lg border p-3 transition-colors',
+                  'flex flex-col rounded-lg border p-3 transition-colors',
                   revealAnswer && state === 'correct' && 'border-green-500 bg-green-500/10',
                   revealAnswer && state === 'wrong' && 'border-destructive bg-destructive/10',
                   !revealAnswer && selected.includes(index) && 'border-primary bg-primary/10',
                 )}
               >
-                <Checkbox
-                  id={id}
-                  checked={selected.includes(index)}
-                  onCheckedChange={(checked) =>
-                    handleMultiChange(index, checked === true)
-                  }
-                  disabled={revealAnswer}
-                  aria-label={`Option ${index + 1}: ${option}`}
-                />
-                <Label
-                  htmlFor={id}
-                  className="flex-1 cursor-pointer text-base leading-relaxed"
-                >
-                  {option}
-                </Label>
-                {revealAnswer && state === 'correct' && (
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400" aria-label="Correct answer">
-                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                    Correct
-                  </span>
-                )}
-                {revealAnswer && state === 'wrong' && (
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive dark:text-red-300" aria-label="Wrong answer">
-                    <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
-                    Wrong
-                  </span>
+                <div className="flex items-center space-x-3">
+                  <Checkbox
+                    id={id}
+                    checked={selected.includes(index)}
+                    onCheckedChange={(checked) =>
+                      handleMultiChange(index, checked === true)
+                    }
+                    disabled={revealAnswer}
+                    aria-label={`Option ${index + 1}: ${option}`}
+                    aria-describedby={hasPerOptionRationale ? rationaleId : undefined}
+                  />
+                  <Label
+                    htmlFor={id}
+                    className="flex-1 cursor-pointer text-base leading-relaxed"
+                  >
+                    {option}
+                  </Label>
+                  {revealAnswer && state === 'correct' && (
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400" aria-label="Correct answer">
+                      <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      Correct
+                    </span>
+                  )}
+                  {revealAnswer && state === 'wrong' && (
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive dark:text-red-300" aria-label="Wrong answer">
+                      <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                      Wrong
+                    </span>
+                  )}
+                </div>
+                {hasPerOptionRationale && (
+                  <div
+                    id={rationaleId}
+                    role="note"
+                    className="mt-2 pl-8 text-sm leading-relaxed text-muted-foreground"
+                  >
+                    {question.optionExplanations![index]}
+                  </div>
                 )}
               </div>
             )
@@ -127,39 +157,52 @@ function QuestionCard({
           {question.options.map((option, index) => {
             const state = getOptionState(index)
             const id = `option-${question.id}-${index}`
+            const rationaleId = `rationale-${question.id}-${index}`
             return (
               <div
                 key={index}
                 className={cn(
-                  'flex items-center space-x-3 rounded-lg border p-3 transition-colors',
+                  'flex flex-col rounded-lg border p-3 transition-colors',
                   revealAnswer && state === 'correct' && 'border-green-500 bg-green-500/10',
                   revealAnswer && state === 'wrong' && 'border-destructive bg-destructive/10',
                   !revealAnswer && selected.includes(index) && 'border-primary bg-primary/10',
                 )}
               >
-                <RadioGroupItem
-                  value={String(index)}
-                  id={id}
-                  disabled={revealAnswer}
-                  aria-label={`Option ${index + 1}: ${option}`}
-                />
-                <Label
-                  htmlFor={id}
-                  className="flex-1 cursor-pointer text-base leading-relaxed"
-                >
-                  {option}
-                </Label>
-                {revealAnswer && state === 'correct' && (
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400" aria-label="Correct answer">
-                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                    Correct
-                  </span>
-                )}
-                {revealAnswer && state === 'wrong' && (
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive dark:text-red-300" aria-label="Wrong answer">
-                    <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
-                    Wrong
-                  </span>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem
+                    value={String(index)}
+                    id={id}
+                    disabled={revealAnswer}
+                    aria-label={`Option ${index + 1}: ${option}`}
+                    aria-describedby={hasPerOptionRationale ? rationaleId : undefined}
+                  />
+                  <Label
+                    htmlFor={id}
+                    className="flex-1 cursor-pointer text-base leading-relaxed"
+                  >
+                    {option}
+                  </Label>
+                  {revealAnswer && state === 'correct' && (
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400" aria-label="Correct answer">
+                      <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      Correct
+                    </span>
+                  )}
+                  {revealAnswer && state === 'wrong' && (
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive dark:text-red-300" aria-label="Wrong answer">
+                      <XCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                      Wrong
+                    </span>
+                  )}
+                </div>
+                {hasPerOptionRationale && (
+                  <div
+                    id={rationaleId}
+                    role="note"
+                    className="mt-2 pl-8 text-sm leading-relaxed text-muted-foreground"
+                  >
+                    {question.optionExplanations![index]}
+                  </div>
                 )}
               </div>
             )
@@ -167,7 +210,7 @@ function QuestionCard({
         </RadioGroup>
       )}
 
-      {revealAnswer && mode === 'practice' && (
+      {revealAnswer && mode === 'practice' && !(hasPerOptionRationale) && (
         <Alert>
           <AlertTitle>Explanation</AlertTitle>
           <AlertDescription>{question.explanation}</AlertDescription>

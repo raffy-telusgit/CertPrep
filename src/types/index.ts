@@ -4,6 +4,10 @@ export interface Question {
   options: string[];
   correctAnswers: number[];
   explanation: string;
+  /** When present, must have length === options.length. optionExplanations[i] corresponds to options[i]. */
+  optionExplanations?: string[];
+  /** Optional setup/context text rendered above the option list after reveal (e.g., math derivations). */
+  explanationPreamble?: string;
   category: string;
   difficulty: 'easy' | 'medium' | 'hard';
 }

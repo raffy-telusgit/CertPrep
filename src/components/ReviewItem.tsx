@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronUp, Flag } from 'lucide-react'
+import { CheckCircle2, ChevronDown, ChevronUp, Flag, XCircle } from 'lucide-react'
 import type { Question } from '@/types'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -17,6 +17,10 @@ function ReviewItem({ question, selected, flagged, index }: ReviewItemProps) {
   const isCorrect =
     [...selected].sort((a, b) => a - b).join(',') ===
     [...question.correctAnswers].sort((a, b) => a - b).join(',')
+
+  const hasPerOptionRationale =
+    Array.isArray(question.optionExplanations) &&
+    question.optionExplanations.length === question.options.length
 
   return (
     <div className="rounded-lg border overflow-hidden">
@@ -61,15 +65,28 @@ function ReviewItem({ question, selected, flagged, index }: ReviewItemProps) {
         <div className="border-t bg-background p-4 space-y-4">
           <p className="text-base leading-relaxed">{question.question}</p>
 
+          {expanded && question.explanationPreamble && (
+            <div
+              id={`preamble-${question.id}`}
+              role="note"
+              aria-label="Context for this question"
+              className="rounded-md border border-border bg-muted/50 px-3 py-2 mb-3 text-sm leading-relaxed"
+            >
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Context</p>
+              <p className="text-muted-foreground leading-relaxed">{question.explanationPreamble}</p>
+            </div>
+          )}
+
           <div className="space-y-2">
             {question.options.map((option, optIdx) => {
               const isCorrectOpt = question.correctAnswers.includes(optIdx)
               const isSelectedOpt = selected.includes(optIdx)
+              const rationaleId = `rationale-${question.id}-${optIdx}`
               return (
                 <div
                   key={optIdx}
                   className={cn(
-                    'flex items-start gap-2 rounded-md px-3 py-2 text-sm',
+                    'flex flex-col rounded-md px-3 py-2 text-sm',
                     isCorrectOpt && 'bg-green-500/10 border border-green-500/50',
                     isSelectedOpt &&
                       !isCorrectOpt &&
@@ -77,38 +94,54 @@ function ReviewItem({ question, selected, flagged, index }: ReviewItemProps) {
                     !isCorrectOpt && !isSelectedOpt && 'border border-transparent',
                   )}
                 >
-                  <span className="font-medium text-muted-foreground shrink-0 mt-0.5">
-                    {optIdx + 1}.
-                  </span>
-                  <span className="flex-1">{option}</span>
-                  <div className="shrink-0 flex items-center gap-1">
-                    {isCorrectOpt && (
-                      <span className="text-xs font-medium text-green-600 dark:text-green-400">
-                        Correct
-                      </span>
-                    )}
-                    {isSelectedOpt && !isCorrectOpt && (
-                      <span className="text-xs font-medium text-destructive">
-                        Your answer
-                      </span>
-                    )}
-                    {isSelectedOpt && isCorrectOpt && (
-                      <span className="text-xs font-medium text-green-600 dark:text-green-400">
-                        Your answer
-                      </span>
-                    )}
+                  <div className="flex items-start gap-2">
+                    <span className="font-medium text-muted-foreground shrink-0 mt-0.5">
+                      {optIdx + 1}.
+                    </span>
+                    <span className="flex-1">{option}</span>
+                    <div className="shrink-0 flex items-center gap-1">
+                      {isCorrectOpt && !isSelectedOpt && (
+                        <span className="text-xs font-medium text-green-600 dark:text-green-400">
+                          <CheckCircle2 className="h-3.5 w-3.5 inline-block mr-1" aria-hidden="true" />
+                          Correct
+                        </span>
+                      )}
+                      {isSelectedOpt && !isCorrectOpt && (
+                        <span className="text-xs font-medium text-destructive dark:text-red-300">
+                          <XCircle className="h-3.5 w-3.5 inline-block mr-1" aria-hidden="true" />
+                          Your answer
+                        </span>
+                      )}
+                      {isSelectedOpt && isCorrectOpt && (
+                        <span className="text-xs font-medium text-green-600 dark:text-green-400">
+                          <CheckCircle2 className="h-3.5 w-3.5 inline-block mr-1" aria-hidden="true" />
+                          Your answer
+                        </span>
+                      )}
+                    </div>
                   </div>
+                  {hasPerOptionRationale && (
+                    <div
+                      id={rationaleId}
+                      role="note"
+                      className="mt-2 pl-8 text-sm leading-relaxed text-muted-foreground"
+                    >
+                      {question.optionExplanations![optIdx]}
+                    </div>
+                  )}
                 </div>
               )
             })}
           </div>
 
-          <div className="rounded-md bg-muted p-3 text-sm">
-            <p className="font-medium mb-1">Explanation</p>
-            <p className="text-muted-foreground leading-relaxed">
-              {question.explanation}
-            </p>
-          </div>
+          {!hasPerOptionRationale && (
+            <div className="rounded-md bg-muted p-3 text-sm">
+              <p className="font-medium mb-1">Explanation</p>
+              <p className="text-muted-foreground leading-relaxed">
+                {question.explanation}
+              </p>
+            </div>
+          )}
 
           <div className="flex items-center gap-2">
             <Badge variant="secondary">{question.category}</Badge>

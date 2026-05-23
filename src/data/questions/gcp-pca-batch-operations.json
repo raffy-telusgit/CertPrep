@@ -1,0 +1,424 @@
+{
+  "questions": [
+    {
+      "id": "pca-operations-001",
+      "question": "A platform team is adopting the operational excellence pillar of the Google Cloud Well-Architected Framework for a customer-facing API. Which combination of practices most directly reflects the pillar's core principles?",
+      "options": [
+        "Manually approving every production change in a weekly change-advisory board meeting and writing incident summaries only when customers escalate complaints to the support desk for tracking",
+        "Defining documented operational processes, automating routine toil with Terraform and Cloud Build, designing for observability with structured logs and metrics, and running blameless postmortems after every incident",
+        "Sizing Compute Engine instances 2x above projected peak load to eliminate the need for autoscaling, paging, runbooks, or any post-incident review cycle on production services",
+        "Standardizing on a single project for all environments so that all logs, metrics, and IAM bindings are co-located, simplifying day-to-day operations for the on-call rotation team"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because manual approvals and ad-hoc summaries contradict the principles of automation and learning from every incident, not just escalated ones. Option B is correct because it pairs all four operational excellence principles: defined processes, automation of toil, observability by design, and blameless learning from incidents. Option C is wrong because over-provisioning hardware does not replace the need for observability, runbooks, and incident review, and conflicts with cost-efficiency goals. Option D is wrong because a single project for all environments removes blast-radius isolation and complicates IAM, violating the framework's separation guidance.",
+      "category": "Operational excellence",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-002",
+      "question": "Your SRE team wants ops dashboards that align with the Well-Architected Framework recommendation for shared operational responsibility. Which dashboard design choice best supports that recommendation?",
+      "options": [
+        "Build one combined dashboard per service that exposes SLI compliance, error budget burn, latency percentiles, and saturation, and grant view access to both developers and operators of that service",
+        "Restrict all production dashboards to the central SRE team only so that developer teams cannot accidentally misinterpret signals while triaging issues during business hours",
+        "Build a single org-wide dashboard listing every service's raw CPU and memory metrics so leadership can scan utilization without needing per-service context or service-specific signals",
+        "Replace dashboards with weekly PDF reports emailed to product owners summarizing the previous week's incidents and uptime, eliminating the need for real-time monitoring screens"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because shared responsibility requires both developers and operators to see the same signals (SLI, error budget, latency, saturation) for the services they own. Option B is wrong because hiding dashboards from developers undermines the shared-responsibility principle and slows incident triage. Option C is wrong because raw CPU/memory without service context is a saturation-only view and obscures user-facing reliability signals. Option D is wrong because weekly PDFs are not real-time and cannot support the operational excellence principle of designing for observability.",
+      "category": "Operational excellence",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-003",
+      "question": "A team is debating whether to write runbooks for routine production tasks. Which justification most directly reflects the Well-Architected operational excellence guidance?",
+      "options": [
+        "Runbooks codify the steps for repeatable operations and incident response, reduce reliance on tribal knowledge during on-call, and create an artifact that can be reviewed, tested, and ultimately automated",
+        "Runbooks are mainly an audit artifact required by regulators in financial services and are unnecessary for engineering teams whose services are deployed on managed Google Cloud products",
+        "Runbooks should be written only by managers because operational engineers tend to skip them at 3 a.m. and prefer to debug from first principles regardless of the documented procedure",
+        "Runbooks can replace alerting policies and SLOs because a well-written runbook tells the on-call engineer exactly when to take action without needing a separate notification channel"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because runbooks support repeatability, reduce tribal knowledge, and serve as the input for automation, which are core operational excellence principles. Option B is wrong because runbooks are an engineering best practice regardless of regulation or whether services run on managed products. Option C is wrong because authorship belongs to the engineers who know the procedures; manager-only authorship is not a real-world pattern. Option D is wrong because runbooks do not replace alerting or SLOs; they complement them by guiding response when alerts fire.",
+      "category": "Operational excellence",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-004",
+      "question": "Your application emits per-request structured JSON logs to Cloud Logging. The data engineering team needs to run ad-hoc SQL across 90 days of logs for trend analysis. Which sink configuration best meets the requirement while controlling cost?",
+      "options": [
+        "Create a Cloud Logging sink that exports the relevant log filter to a Pub/Sub topic, then have a Dataflow job stream the messages into a Cloud SQL instance with a 90-day retention policy",
+        "Create a Cloud Logging sink that exports the relevant log filter to a partitioned BigQuery table and rely on BigQuery's table expiration to manage retention while enabling ad-hoc SQL queries",
+        "Increase the retention of the _Default log bucket to 90 days and query the logs directly using Logs Explorer's advanced filters, which provide a SQL-compatible interface to logs in place",
+        "Create a Cloud Logging sink that exports the relevant log filter to a Cloud Storage bucket in Nearline storage class so the data engineering team can mount it to BigQuery via external tables"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Cloud SQL is not optimized for ad-hoc analytical SQL across high-volume log data and adds a Dataflow streaming hop that is unnecessary. Option B is correct because a BigQuery sink with partitioned tables and table expiration is the recommended pattern for ad-hoc SQL over logs while controlling cost via partition pruning and TTL. Option C is wrong because Logs Explorer is not SQL-compatible and extending _Default bucket retention does not enable analytical SQL. Option D is wrong because GCS Nearline external tables work for archival but are slower and more expensive for repeated ad-hoc analytical queries than native BigQuery storage.",
+      "category": "Cloud Logging",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-005",
+      "question": "You are designing a logging strategy for a regulated workload. Which combination of Cloud Logging features and controls is appropriate? (Choose 2.)",
+      "options": [
+        "Route Data Access audit logs to a dedicated log bucket with a custom retention period and apply a locked retention policy to prevent early deletion",
+        "Configure the _Required log bucket retention to 30 days to reduce storage cost for admin activity audit logs across the entire organization",
+        "Create an aggregated organization-level sink that exports admin activity logs to a Cloud Storage bucket with Bucket Lock and an object retention policy for tamper-evident archival",
+        "Disable the _Default log bucket to stop ingestion of application logs and rely solely on each service's stdout output for debugging during production incidents"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Option A is correct because Data Access logs in a dedicated bucket with a locked retention policy give configurable retention with immutability guarantees suitable for a regulated workload. Option B is wrong because the _Required bucket retention is fixed at 400 days by Google Cloud and cannot be shortened; admin activity audit logs are retained there regardless of cost preference. Option C is correct because an aggregated org-level sink to a Cloud Storage bucket with Bucket Lock provides tamper-evident long-term archival of admin activity logs across the organization. Option D is wrong because disabling _Default loses logs and stdout alone is not a compliant logging strategy.",
+      "category": "Cloud Logging",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-operations-006",
+      "question": "You need a metric that counts how many times the string 'PaymentDeclined' appears in your application's logs so you can alert when the rate exceeds a threshold. Which Cloud Logging feature most directly supports this requirement?",
+      "options": [
+        "Create a Cloud Trace span filter that captures the payment service spans and emit a metric derived from the span attribute carrying the decline reason for use in alerting policies",
+        "Create a counter log-based metric in Cloud Logging with a filter that matches the 'PaymentDeclined' string, then build a Cloud Monitoring alert policy over that metric",
+        "Create a synthetic monitor that runs a test transaction every minute and emits a custom metric whenever the response body contains the 'PaymentDeclined' marker for downstream alerting",
+        "Enable Cloud Profiler on the payment service and configure it to alert when wall-clock time spent in the decline handler exceeds a configurable percentage of total CPU time"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Cloud Trace measures latency of spans; it is not a substring counter over logs and is not designed to drive simple count-based alerts. Option B is correct because counter log-based metrics are the purpose-built feature for turning log line matches into time-series metrics that Cloud Monitoring alert policies can evaluate. Option C is wrong because synthetic monitors test a single probe and would not count real-traffic decline events; that pattern misses production volume. Option D is wrong because Cloud Profiler measures code performance, not log line occurrences; it cannot count business events.",
+      "category": "Cloud Logging",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-operations-007",
+      "question": "A Cloud Run service shows steady-state CPU at 45% but its p99 latency has doubled. Cloud Profiler is enabled. Which step is most likely to identify the cause without changing code first?",
+      "options": [
+        "Switch the profiler view to heap profiling and look for the largest allocations, since heap pressure is the most common cause of latency regressions in containerized services on Cloud Run",
+        "Increase the CPU allocation of the Cloud Run revision to give the service more headroom; the doubled latency suggests CPU saturation despite the moderate steady-state utilization figure",
+        "Switch to contention profiling and tune the database connection pool size, since p99 doubling in a Cloud Run service is almost always caused by lock contention on connection pool acquisition",
+        "Open Cloud Profiler's wall-clock view filtered by service_version of the slow revision and inspect functions that appear hot in wall-clock but cold in CPU time to find off-CPU waits"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because heap profiling helps with memory pressure or GC pauses, not directly with latency unless GC is implicated; that is a guess, not a diagnostic step. Option B is wrong because adding CPU without a root cause is a workaround and the data (45% steady CPU) does not point to CPU saturation. Option C is wrong because contention profiling is a candidate but assuming connection pool contention without evidence is not a diagnostic step. Option D is correct because wall-clock profiling reveals functions blocked on I/O or RPCs that look cold in CPU time but dominate latency; filtering by service_version isolates the affected revision.",
+      "category": "Cloud Profiler",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-operations-008",
+      "question": "Your team uses OpenTelemetry to instrument a polyglot microservices fleet on GKE and ships traces to Cloud Trace. Which propagation header should you standardize on for trace context across services?",
+      "options": [
+        "x-cloud-trace-context as the canonical header because it is the Google-native format and Cloud Trace exclusively understands this legacy GCP format from older Stackdriver client libraries",
+        "traceparent as defined by the W3C Trace Context specification, which is the OpenTelemetry default and is supported end-to-end by Cloud Trace ingestion",
+        "x-b3-traceid because Zipkin's B3 multi-header format is the industry default for OpenTelemetry SDKs and is required for ingestion into Cloud Trace from non-Google services",
+        "x-amzn-trace-id rebadged in a custom propagator because it provides the richest segment metadata across cloud providers and integrates natively with Cloud Trace via the AWS SDK shim"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because x-cloud-trace-context is supported but is not the OpenTelemetry default; the modern recommendation is W3C traceparent. Option B is correct because W3C Trace Context (traceparent) is the OpenTelemetry default propagator and is ingested by Cloud Trace, making it the right standardization for a polyglot fleet. Option C is wrong because B3 is one of several supported formats but is not the OpenTelemetry SDK default. Option D is wrong because x-amzn-trace-id is AWS X-Ray's format and is not appropriate for a GKE + Cloud Trace deployment.",
+      "category": "Cloud Trace",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-009",
+      "question": "A service exposes a /metrics endpoint in Prometheus exposition format on GKE. You want this scraped into Cloud Monitoring without running your own Prometheus server. Which approach is recommended?",
+      "options": [
+        "Deploy a Cloud Monitoring agent on each Compute Engine VM in the cluster and point it at the /metrics endpoint URL via static configuration files maintained by the platform team",
+        "Use Cloud Monitoring's legacy custom metric ingestion API and write a sidecar that polls /metrics every 60 seconds, parses the Prometheus exposition format, and posts each series to the API",
+        "Enable Google Cloud Managed Service for Prometheus in collection mode on the GKE cluster, which scrapes /metrics endpoints and stores series queryable via PromQL in Cloud Monitoring",
+        "Export /metrics to Pub/Sub via a Dataflow pipeline that transforms Prometheus exposition to JSON, then ingest the JSON into Cloud Logging and create log-based metrics for each Prometheus series"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because the legacy Monitoring agent for VMs is not the scraping path for GKE-hosted Prometheus endpoints and Compute Engine VMs are not the GKE workload runtime. Option B is wrong because writing a sidecar to post each series to the custom metric API is high-toil and ignores the purpose-built managed Prometheus product. Option C is correct because Google Cloud Managed Service for Prometheus provides managed scrape and storage of Prometheus metrics with PromQL queryability, which is the recommended path. Option D is wrong because logs-based metrics from a Pub/Sub pipeline is a roundabout and lossy way to ingest Prometheus data compared to Managed Service for Prometheus.",
+      "category": "Cloud Monitoring",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-operations-010",
+      "question": "Your team runs an HTTP API behind an external HTTPS load balancer. You want to be alerted when the global endpoint is unreachable from multiple regions for more than 5 minutes. Which feature is most appropriate?",
+      "options": [
+        "Cloud Profiler's wall-clock view set to alert when the request handler's wall-clock latency exceeds a configurable threshold across the regions where the API is deployed and reachable",
+        "Cloud Logging counter log-based metric on the load balancer access logs combined with an alert policy that fires when the count of 200 responses drops below an expected lower bound",
+        "Cloud Trace span filter targeting the load balancer's frontend span and an alert policy on the trace ingestion rate so a sudden drop indicates the endpoint is unreachable from the public internet",
+        "Cloud Monitoring uptime check configured against the public endpoint from multiple geographic regions, paired with an alert policy on the uptime check failure metric over a 5-minute window"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because Cloud Profiler measures internal performance, not external reachability; it cannot detect unreachable public endpoints from outside the network. Option B is wrong because dropping 200-response counts can have many causes (rollout, traffic drop) and is a much noisier signal than a purpose-built reachability check. Option C is wrong because Cloud Trace ingestion is not a reachability monitor and depends on traffic existing in the first place. Option D is correct because Cloud Monitoring uptime checks probe from multiple geographic locations and the failure metric is the direct signal an alert policy should observe for reachability.",
+      "category": "Cloud Monitoring",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-operations-011",
+      "question": "Your service has a 99.9% availability SLO over a 30-day window. You are designing alerting per the SRE workbook. Which alert configurations together form a multi-window, multi-burn-rate strategy? (Choose 2.)",
+      "options": [
+        "A page-severity alert when the 1-hour burn rate exceeds 14.4 and the 5-minute burn rate also exceeds 14.4, indicating consumption of 2% of the monthly budget within the alerting window",
+        "A page-severity alert when the cumulative monthly error rate exceeds 0.1% measured at the end of each calendar month so the alert always corresponds to final budget exhaustion across the window",
+        "A ticket-severity alert when the 6-hour burn rate exceeds 6 and the 30-minute burn rate also exceeds 6, indicating a slower budget burn that warrants attention but not immediate paging",
+        "A ticket-severity alert when CPU utilization exceeds 80% for 15 minutes, since CPU saturation is the strongest leading indicator of upcoming SLO violations across all service architectures"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Option A is correct because a 14.4x burn over 1 hour consumes 2% of the monthly budget and pairing it with a short 5-minute window reduces false positives, which is the canonical fast-burn page configuration. Option B is wrong because end-of-month evaluation is too late; the alert fires only after the budget is exhausted. Option C is correct because a 6x burn over 6 hours is the canonical slow-burn ticket configuration that catches sustained low-rate budget loss. Option D is wrong because CPU saturation is a resource signal, not an SLI; it should not drive SLO-based pages.",
+      "category": "SLI/SLO",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-012",
+      "question": "Your stakeholders are confused about SLI, SLO, and SLA. Which definition set is correct?",
+      "options": [
+        "SLI is the indicator (a ratio of good events to valid events), SLO is the target value the SLI should meet over a window, and SLA is an external agreement with consequences if the SLO is missed",
+        "SLI is the agreement signed with customers, SLO is the maximum number of incidents allowed per quarter, and SLA is an indicator value computed from raw telemetry over a sliding window",
+        "SLI, SLO, and SLA are interchangeable abbreviations used by different teams to describe the same availability percentage measured by uptime checks over a 30-day rolling window",
+        "SLI is the alerting threshold in Cloud Monitoring, SLO is a synonym for error budget remaining, and SLA is the latency objective enforced by the load balancer's outlier detection feature"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct: an SLI is the indicator (typically good/valid event ratio), an SLO is the target the SLI must meet over a window, and an SLA is an external contract with consequences for missing the SLO. Option B is wrong because it swaps the meanings of SLI and SLA. Option C is wrong because the three terms are distinct levels of abstraction and not interchangeable. Option D is wrong because none of the definitions match the Google SRE definitions; SLI is not an alerting threshold and SLA is not a latency outlier policy.",
+      "category": "SLI/SLO",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-operations-013",
+      "question": "Your team measures availability as a ratio of successful HTTP requests to total valid requests. You want to exclude requests from synthetic monitors and load tests from the SLI to avoid distorting the measurement. Which approach is best?",
+      "options": [
+        "Tag synthetic and load-test traffic with a distinguishing HTTP header at the source and filter those requests out of the SLI's good and valid event counts in Cloud Monitoring's SLI query",
+        "Lower the SLO target by a percentage equal to the expected fraction of synthetic and test traffic so the overall ratio still represents real-user experience without per-request filtering logic",
+        "Run synthetic and load-test traffic through a separate Cloud Load Balancer hostname so all of its requests are physically isolated from the production SLI even though it duplicates infrastructure",
+        "Discard the request-ratio SLI entirely and rely on Cloud Trace span counts as the primary SLI, since traces from internal probes are automatically excluded from SLO calculations by default"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because filtering by a distinguishing header in the SLI's numerator and denominator is the canonical way to exclude non-user traffic from availability calculations. Option B is wrong because adjusting the SLO target is arbitrary, not principled, and does not actually remove the distortion. Option C is wrong because it requires duplicating infrastructure and is operationally heavy compared to header-based filtering. Option D is wrong because Cloud Trace is not a substitute for an event-ratio SLI and does not automatically exclude any traffic.",
+      "category": "SLI/SLO",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-014",
+      "question": "You are implementing a canary release for a Cloud Run service using Cloud Deploy. Which configuration most accurately describes a canary rollout?",
+      "options": [
+        "Deploy two equal-traffic revisions in parallel, then use Cloud Deploy's verify step to compare metrics; if both revisions report similar SLI compliance, promote whichever happened to roll out first",
+        "Deploy the new revision with zero traffic for 24 hours so it can warm up its caches, then atomically cut 100% of traffic to the new revision once the warm-up timer in the pipeline expires",
+        "Deploy the new revision to a separate Cloud Run service in a different region and use Cloud DNS weighted records to route 5% of users to it for a measurable period before flipping all DNS weight",
+        "Deploy the new revision and route a small percentage of production traffic to it (e.g., 5%), verify SLI compliance via Cloud Deploy's verify step, then progressively promote traffic to 100%"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because a 50/50 split is not a canary; canary specifically means a small percentage to limit blast radius before promotion. Option B is wrong because zero-traffic warm-up followed by an atomic cutover is closer to blue-green, not canary. Option C is wrong because DNS-based weighting is slow to converge due to client caching and is not how Cloud Deploy implements canary on Cloud Run. Option D is correct because canary deployments send a small percentage of real traffic to the new revision and progressively promote, which Cloud Deploy supports natively with verify and promote steps.",
+      "category": "Release management",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-015",
+      "question": "A platform team is choosing between blue-green and rolling deployments for a stateless GKE service. Which difference is correct?",
+      "options": [
+        "Blue-green requires zero downtime during cutover only when the service is stateful; for stateless workloads, rolling deployments inherently produce more downtime than blue-green during any update",
+        "Rolling deployments require Anthos Service Mesh for traffic shifting, while blue-green deployments can be performed natively in GKE without service mesh capabilities to support rollback",
+        "Blue-green deployments mutate pods in place by patching the container image label, while rolling deployments allocate a separate node pool for the new version and drain the old node pool",
+        "Blue-green deployments allocate parallel capacity for both old and new versions during cutover and can instantly roll back by switching traffic; rolling deployments incrementally replace pods and roll back by re-deploying the prior version"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because rolling deployments do not inherently produce more downtime than blue-green for stateless workloads; both can be zero-downtime. Option B is wrong because rolling deployments are a native Kubernetes capability and do not require Anthos Service Mesh. Option C is wrong because the description of blue-green and rolling deployments is inverted and inaccurate; blue-green typically uses parallel deployments, not in-place patching. Option D is correct: blue-green keeps both versions running and switches traffic atomically, enabling instant rollback at the cost of double capacity; rolling deployments incrementally replace pods and roll back by re-deploying the prior version.",
+      "category": "Release management",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-016",
+      "question": "Your team wants to decouple feature release from binary deployment. Which approach best implements that goal?",
+      "options": [
+        "Use Cloud Deploy's canary rollout strategy with the verify step set to a 24-hour soak so each new feature has a long observation window before reaching all production traffic across regions",
+        "Stand up parallel Cloud Run services per feature, each with its own URL, and use a frontend router to send users to the URL corresponding to features they should see for that session",
+        "Adopt feature flags via a centralized configuration service so binaries can be deployed dark and features turned on per cohort, region, or percentage without redeploying any container image",
+        "Maintain long-lived feature branches in source control and merge to main only when the feature is ready to launch, ensuring no feature reaches production until the moment it is announced publicly"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because a 24-hour canary soak is still tied to deployment timing and does not decouple feature release from binary deployment. Option B is wrong because per-feature parallel services is operationally expensive and does not address per-user rollout cleanly. Option C is correct because feature flags allow binaries to be deployed without exposing features, enabling per-cohort, per-region, or percentage-based rollout without redeployment. Option D is wrong because long-lived feature branches are a source-control anti-pattern (trunk-based development is recommended) and do not decouple deployment from release.",
+      "category": "Release management",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-017",
+      "question": "Your Cloud Deploy pipeline targets dev, staging, and prod. The team wants automated promotion from dev to staging on every successful build, but manual approval before promotion to prod. Which configuration best matches?",
+      "options": [
+        "Configure all three targets with require_approval=true so every promotion is gated; rely on the on-call engineer to auto-approve dev and staging during business hours via a chat-ops bot integration",
+        "Configure all three targets with require_approval=false and instead use Cloud Build's approval feature on the build step that produces the release artifact destined for the production environment",
+        "Configure the dev and staging targets with require_approval=false and the prod target with require_approval=true so Cloud Deploy automatically promotes through dev and staging but pauses at prod",
+        "Use a single target with environment variables and let Cloud Build orchestrate the order of deployments to dev, staging, and prod by gating each environment with a separate trigger and approval"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because requiring approval everywhere defeats the goal of automated dev/staging promotion. Option B is wrong because gating at the Cloud Build step is the wrong layer; Cloud Deploy is the delivery system with promotion targets. Option C is correct because Cloud Deploy targets support per-target require_approval; setting only prod to true achieves automated dev/staging promotion with a manual gate before prod. Option D is wrong because a single target with env vars is not how Cloud Deploy models environment progression; targets are the unit of environment separation.",
+      "category": "Release management",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-operations-018",
+      "question": "Your team wants to ensure operational readiness for a new production service. Which practices align with industry on-call and incident response guidance? (Choose 2.)",
+      "options": [
+        "Centralize all incident response to a single SRE platform team while keeping product engineers focused exclusively on feature development, since SREs are better equipped to handle production",
+        "Integrate all alerting policies with a single high-volume catch-all notification channel so no signal is ever missed regardless of severity or which service emitted the alert during a shift",
+        "Rotate on-call duty among service owners, document runbooks per failure mode, and require every alert to map to an explicit, actionable response so engineers are never paged for ambiguous signals",
+        "Define clear severity levels (e.g., SEV1 for customer impact, SEV2 for partial degradation), establish escalation paths with a documented commander role, and tie alert routing to those severities"
+      ],
+      "correctAnswers": [3, 2],
+      "explanation": "Option A is wrong because excluding product engineers from on-call removes the feedback loop that improves the service and contradicts shared responsibility. Option B is wrong because a catch-all channel guarantees alert fatigue and undermines actionability. Option C is correct because rotation, per-failure-mode runbooks, and actionable alerts together form the foundation of on-call readiness. Option D is correct because severity levels, escalation paths, and a commander role are core incident management practices, and tying routing to severity prevents page fatigue.",
+      "category": "Incident response",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-019",
+      "question": "After a production incident, your team is writing a postmortem. Which approach reflects the blameless postmortem practice?",
+      "options": [
+        "Focus the document on identifying which engineer ran the command that triggered the incident so the team has a clear lesson about who should be retrained on the affected production system",
+        "Focus the document on contributing factors, timeline, customer impact, and concrete remediation actions; explicitly avoid attributing fault and instead examine the systems that allowed the error",
+        "Skip the postmortem when the incident lasted less than one hour, since short incidents have insufficient signal to learn from and produce postmortem fatigue across the engineering team",
+        "Share the postmortem only with the engineers directly involved in the incident, since publishing it widely could embarrass the team and discourage future operational transparency"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because attributing blame contradicts the blameless practice and discourages transparency. Option B is correct because blameless postmortems focus on systemic factors, the timeline, impact, and remediation, treating human errors as symptoms of system design. Option C is wrong because short incidents are still worth learning from; routine postmortems even on minor incidents build the muscle. Option D is wrong because wide sharing is encouraged so the whole org can learn; restricting distribution undermines the practice.",
+      "category": "Incident response",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-operations-020",
+      "question": "Your team uses error budgets to govern release velocity. The service has burned 95% of its 30-day error budget with 10 days remaining. Per Google SRE practice, what is the most appropriate response?",
+      "options": [
+        "Continue normal release cadence because the budget is not fully exhausted; the remaining 5% is sufficient buffer for routine deployments and any new features that are already in the pipeline",
+        "Permanently raise the SLO target from 99.9% to 99.99% so future periods have more budget headroom and the current period's near-exhaustion becomes acceptable in retrospective measurement",
+        "Slow or freeze risky feature releases, prioritize reliability work, and re-evaluate after the next window resets; the error budget policy should be invoked when the budget is near exhaustion",
+        "Lower the SLO target from 99.9% to 99.5% so the budget appears to have more remaining, then continue releasing at the prior cadence without further reliability investment for the current window"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because continuing normal cadence at 95% burn ignores the early-warning signal and increases the risk of full exhaustion. Option B is wrong because raising the SLO makes the situation worse, not better; tighter targets reduce budget. Option C is correct because the error budget policy should be invoked when budget is near or fully exhausted, slowing risky changes and prioritizing reliability work. Option D is wrong because lowering the SLO to mask the burn rate is dishonest and undermines the value of the error budget framework.",
+      "category": "SLI/SLO",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-021",
+      "question": "You want to add quality gates to your CI/CD pipeline before promotion to production. Which set of gates is most appropriate for a typical web service?",
+      "options": [
+        "Unit test coverage minimum, manual sign-off from the engineering manager, manual security scan triggered nightly, and post-deployment smoke test that runs only after traffic reaches 100% of users",
+        "Lint pass, formatter check, integration tests in a staging environment, and a single approval required from any engineer in the company before promotion to the production target in Cloud Deploy",
+        "A spreadsheet-tracked manual checklist completed by the on-call engineer the day of the deployment, covering tests, security, and rollout plan, with no automated gates required in the pipeline itself",
+        "Lint and type check pass, unit and integration tests pass, vulnerability scan on the container image, infrastructure plan review for IaC changes, and an automated verify step that checks SLIs after canary deployment"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because post-100%-traffic smoke tests defeat the purpose of canary verification, and nightly security scans are too infrequent to gate releases. Option B is wrong because any-engineer approval is too weak and lint/format alone are not sufficient quality gates. Option C is wrong because manual spreadsheet checklists are not quality gates in the CI/CD sense; they are too easy to skip and not reproducible. Option D is correct because it covers static analysis, tests, vulnerability scanning, IaC review, and SLI verification at canary, which together form a defense-in-depth set of automated gates.",
+      "category": "Release management",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-operations-022",
+      "question": "Your team wants to introduce chaos engineering. Which approach reflects industry guidance for getting started safely?",
+      "options": [
+        "Begin with monthly game days in production that introduce arbitrary failures across all critical services so the team builds reflexes through realistic stress before designing controlled experiments",
+        "Start with full multi-region failovers triggered without prior notification to the on-call team so the test reflects an unannounced incident response scenario as closely as possible",
+        "Start with a clear steady-state hypothesis, scope the smallest meaningful experiment, run first in a non-production environment with observability in place, and expand scope as confidence grows",
+        "Skip non-production experiments because they do not reflect real traffic patterns; only production chaos experiments deliver meaningful signal about the resilience of the system under test"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because beginning with arbitrary failures in production is the opposite of controlled chaos engineering and can cause real customer harm. Option B is wrong because unannounced multi-region failovers are not how chaos engineering is introduced safely. Option C is correct because chaos engineering starts with a steady-state hypothesis, small scope, non-production environments, and observability, then expands as confidence grows. Option D is wrong because non-production experiments are essential to build confidence before testing in production.",
+      "category": "Reliability testing",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-023",
+      "question": "Which of the following are recommended reliability testing practices that complement chaos engineering in production? (Choose 2.)",
+      "options": [
+        "Disabling all uptime checks during peak business hours to avoid double-counting traffic against capacity limits and to reduce noise in the production monitoring dashboard for stakeholders",
+        "Pinning production traffic at 50% capacity utilization year-round so any unexpected spike has built-in headroom and there is no need to load-test the system before major launches",
+        "Continuously running synthetic monitoring that exercises critical user journeys from multiple geographic locations and emits availability and latency metrics suitable for alerting and SLI computation",
+        "Load testing the system at or above expected peak traffic in a representative environment before major launches to validate capacity, autoscaling, and dependency behavior end-to-end"
+      ],
+      "correctAnswers": [2, 3],
+      "explanation": "Option A is wrong because disabling uptime checks during peak removes reachability signal exactly when it is most valuable. Option B is wrong because pinning to 50% capacity is wasteful and does not replace load testing as a pre-launch validation step. Option C is correct because synthetic monitoring exercises critical user journeys continuously and provides reliable availability and latency signals. Option D is correct because load testing at or above expected peak validates capacity, autoscaling, and dependency behavior before launches.",
+      "category": "Reliability testing",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-operations-024",
+      "question": "A penetration test is being planned against a Google Cloud workload. Which step is required before executing the test?",
+      "options": [
+        "Notify Google Cloud Support 24 hours in advance via a support case so the abuse team can suppress automated controls and avoid throttling your tests during the planned execution window",
+        "Submit a Vulnerability Reward Program (VRP) submission to Google before the test so any findings are eligible for the bug bounty and Google security operations is informed of the activity",
+        "Open a Cloud Armor preview-mode security policy across the target endpoints so Google's WAF logs the test traffic in preview mode without blocking it during the active penetration test",
+        "Coordinate the test with stakeholders, ensure it complies with the Google Cloud Acceptable Use Policy (testing your own assets is generally permitted without prior approval), and define scope and rules of engagement"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because Google Cloud does not require advance notification for testing your own assets and does not 'suppress controls' on request. Option B is wrong because the VRP is for reporting vulnerabilities in Google's products, not for customer pen tests against their own workloads. Option C is wrong because preview-mode Cloud Armor is not a prerequisite for pen testing and conflates monitoring with permission. Option D is correct because customers may test their own assets under the AUP, with stakeholder coordination, scope, and rules of engagement; prior Google approval is generally not required for testing your own resources.",
+      "category": "Reliability testing",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-operations-025",
+      "question": "Your team is choosing where to store long-lived audit logs for compliance. Which Cloud Logging configuration is most appropriate?",
+      "options": [
+        "Increase _Default bucket retention to 7 years across all log types so every log in every project is retained, simplifying audit responses by removing the need for sinks or separate buckets",
+        "Store all logs in a Cloud SQL database via a Pub/Sub sink and Dataflow pipeline to support SQL audit queries and TTL-based deletion that matches the organization's data retention requirements",
+        "Create an aggregated organization-level sink that filters for admin activity and data access logs, route to a dedicated log bucket with a custom retention period, and apply a locked retention policy",
+        "Disable Cloud Logging in all production projects and instead write audit events to a self-hosted Elasticsearch cluster on Compute Engine so the team retains full control of retention and access"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because extending _Default retention to 7 years for all logs is wasteful and does not provide tamper-evident, scope-limited storage. Option B is wrong because Cloud SQL is not designed for high-volume audit log archival and the pipeline adds operational overhead. Option C is correct because an aggregated org-level sink for the specific log types, routed to a dedicated bucket with a locked retention policy, provides scoped, immutable, long-lived audit storage. Option D is wrong because disabling Cloud Logging loses native integration with admin activity and data access audit logs and self-hosting is unnecessary.",
+      "category": "Cloud Logging",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-operations-026",
+      "question": "Your team needs to aggregate uncaught exceptions across many services and see counts, first-seen, last-seen, and affected versions. Which Google Cloud service is the best fit?",
+      "options": [
+        "Error Reporting, which automatically groups exception stacks from supported runtimes and presents counts, first/last seen, and affected service versions in a single interface",
+        "Cloud Trace, since exceptions appear as span events and the trace UI can group similar span events into aggregate exception groups with first-seen and last-seen timestamps",
+        "Cloud Monitoring alerting policies on a custom metric incremented from a try/catch block in each service, which provides a count-based view of exceptions in dashboards across services",
+        "Cloud Profiler's heap view, since uncaught exceptions tend to correspond to large object allocations and the heap view can group these by stack across all running service instances"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Error Reporting is the purpose-built service that aggregates exception stacks across runtimes and shows counts, first/last seen, and affected versions. Option B is wrong because Cloud Trace focuses on latency spans, not exception aggregation. Option C is wrong because custom metrics give counts but lack the grouping by stack and the first/last-seen UI Error Reporting provides. Option D is wrong because Cloud Profiler measures performance, not exception occurrences.",
+      "category": "Cloud Monitoring",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-operations-027",
+      "question": "Your alert policies on Cloud Monitoring fire frequently but the on-call engineers report that most pages do not require action. Which adjustment best reduces alert fatigue without losing real signal?",
+      "options": [
+        "Increase the notification rate limit on each notification channel so each engineer receives at most one page per hour regardless of how many alerts fire during the rate-limited window",
+        "Re-anchor alerts to SLIs and SLO burn rates so pages reflect actual user-facing budget consumption, then prune any non-SLO alerts that do not map to an actionable runbook step",
+        "Disable the noisiest alert policies entirely so the on-call rotation only sees the policies that historically required action, then revisit the disabled policies during the next quarterly review",
+        "Add more notification channels (chat, email, SMS) for the same alert policy so the engineer is more likely to notice the page across at least one of the configured delivery methods"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because rate-limiting hides real signal during incident bursts and does not address the underlying cause of fatigue. Option B is correct because re-anchoring on SLO burn rates ensures alerts reflect user-visible budget loss and pruning unactionable alerts targets the root cause of fatigue. Option C is wrong because blanket-disabling noisy alerts removes signal indiscriminately and defers the problem to a quarterly review. Option D is wrong because more channels does not reduce noise; it amplifies the same page across mediums.",
+      "category": "Cloud Monitoring",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-operations-028",
+      "question": "Your service has SLOs in Cloud Monitoring SLO management. You want to standardize burn-rate alerting policies across many services. Which approach minimizes per-service configuration drift?",
+      "options": [
+        "Have each service team open a manual ticket to the central SRE team whenever a new alerting policy is needed, then have SRE create policies via the Cloud Console UI to ensure expert review per request",
+        "Define burn-rate alerting policies as Terraform modules with the SLO target and windows as variables, instantiate per service from a shared platform module, and code-review changes via pull request",
+        "Generate alerting policies via a one-time gcloud script kept on a shared engineering laptop and re-run the script monthly when service owners request alert changes for their services and dependencies",
+        "Allow each service team to author their own burn-rate alerts in the Cloud Console, then have a quarterly audit by the SRE team to spot inconsistencies and request remediation by the owning team"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because the Cloud Console manual ticket workflow is exactly what causes drift and bottlenecks the platform team. Option B is correct because Terraform modules with parameterized SLO targets, instantiated per service and code-reviewed, minimize drift and provide a single source of truth. Option C is wrong because shared-laptop scripts are not reproducible infrastructure-as-code. Option D is wrong because per-team console authorship and quarterly audits guarantee drift between audits.",
+      "category": "Cloud Monitoring",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-029",
+      "question": "A team migrated from Cloud Debugger to alternatives after deprecation. Which feature set most directly replaces production debugging workflows?",
+      "options": [
+        "Cloud Logging as the sole replacement, since structured logs at debug level provide the same point-in-time variable inspection that Cloud Debugger offered in production environments",
+        "Cloud Profiler for performance analysis, Error Reporting for exception aggregation, Cloud Trace for distributed latency analysis, combined with structured logging in Cloud Logging for runtime diagnostics",
+        "Cloud Monitoring uptime checks and dashboards, since real-time variable inspection has been deemed unnecessary by Google for production workloads running on managed services",
+        "A self-hosted GDB server attached to each Compute Engine instance, since Google Cloud does not provide a managed substitute for production breakpoint debugging in any of its services"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because structured logging alone does not replace performance, error aggregation, and trace analysis. Option B is correct because Cloud Profiler, Error Reporting, Cloud Trace, and structured Cloud Logging together cover the diagnostic surface area that Cloud Debugger formerly addressed. Option C is wrong because uptime checks and dashboards do not replace debugging tooling. Option D is wrong because self-hosted GDB is not the recommended substitute; Google Cloud provides Profiler, Trace, Error Reporting, and Logging as the modern stack.",
+      "category": "Cloud Monitoring",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-operations-030",
+      "question": "A team is debating whether to define an SLO before measuring baseline SLI performance for a new service. Which approach reflects the SRE workbook guidance?",
+      "options": [
+        "Measure baseline SLI performance over a representative window using existing telemetry, then set an initial SLO slightly below current performance, and iterate on the target over subsequent windows",
+        "Set the SLO at 99.99% by default because four nines is the de-facto standard for production services and provides ambitious headroom that motivates the team to invest in reliability work",
+        "Defer setting an SLO until the service has shipped to all customers because pre-launch traffic patterns do not reflect real user behavior and would distort the SLI's denominator inappropriately",
+        "Set the SLO at the strictest dependency's published SLO so the team is guaranteed to be at least as reliable as its weakest direct dependency, even if the baseline measurement is lower"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because the SRE workbook recommends measuring baseline performance, setting the initial SLO slightly below it, and iterating; this produces a realistic and actionable target. Option B is wrong because arbitrary 99.99% targets without baseline data lead to unreasonable expectations and cost. Option C is wrong because waiting for full launch removes the value of using SLO discipline during early adoption. Option D is wrong because chaining to a dependency's SLO ignores composition and your own service's failure modes; the resulting target may be infeasible.",
+      "category": "SLI/SLO",
+      "difficulty": "easy"
+    }
+  ]
+}

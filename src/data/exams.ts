@@ -58,6 +58,7 @@ export const EXAMS: Exam[] = [
     passingScore: 70,
     iconSlug: 'googlecloud',
     vendorColor: '#4285F4',
+    disableOptionShuffle: true,
   },
   {
     id: 'gcp-pcde',

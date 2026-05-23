@@ -1,0 +1,319 @@
+{
+  "questions": [
+    {
+      "id": "pca-cs-knightmotives-automotive-001",
+      "question": "KnightMotives needs a storage solution for high-volume vehicle telemetry streamed from its BEV fleet — sensor readings, battery telemetry, and GPS coordinates arriving at millions of points per second, queried by vehicle ID and time range for fleet diagnostics. Which Google Cloud database should KnightMotives use as the primary store for this telemetry?",
+      "options": [
+        "Cloud SQL for PostgreSQL with read replicas in each region where KnightMotives operates",
+        "Bigtable with a row key designed as the vehicle ID concatenated with a reverse timestamp",
+        "Firestore in Native mode using vehicle ID as the document ID and one document per telemetry point",
+        "BigQuery as the operational store, with the streaming inserts API used to write each telemetry point"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Cloud SQL is a relational OLTP database not designed for ingesting millions of writes per second; vertical scaling tops out long before fleet-scale telemetry ingestion. Option B is correct because Bigtable is purpose-built for high-throughput time-series workloads, scales linearly with nodes, and a row key combining vehicle ID with a reverse timestamp gives efficient point-in-time lookups and recent-data scans per vehicle while avoiding hotspotting. Option C is wrong because Firestore has per-document write rate limits (about 1 write per second per document), and one document per telemetry point would explode storage cost and still throttle writes. Option D is wrong because BigQuery is an analytical warehouse — streaming inserts are supported but it is not optimized for the low-latency single-vehicle lookups KnightMotives needs for fleet diagnostics; BigQuery is appropriate for the downstream analytics layer, not the operational telemetry store.",
+      "optionExplanations": [
+        "Option A is wrong because Cloud SQL is a relational OLTP database not designed for ingesting millions of writes per second; vertical scaling tops out long before fleet-scale telemetry ingestion.",
+        "Option B is correct because Bigtable is purpose-built for high-throughput time-series workloads, scales linearly with nodes, and a row key combining vehicle ID with a reverse timestamp gives efficient point-in-time lookups and recent-data scans per vehicle while avoiding hotspotting.",
+        "Option C is wrong because Firestore has per-document write rate limits (about 1 write per second per document), and one document per telemetry point would explode storage cost and still throttle writes.",
+        "Option D is wrong because BigQuery is an analytical warehouse — streaming inserts are supported but it is not optimized for the low-latency single-vehicle lookups KnightMotives needs for fleet diagnostics; BigQuery is appropriate for the downstream analytics layer, not the operational telemetry store."
+      ],
+      "category": "Designing a solution infrastructure that meets technical requirements",
+      "difficulty": "easy",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-002",
+      "question": "KnightMotives is launching its autonomous driving platform in the EU and must comply with GDPR data residency requirements. Personal data and AV sensor data from EU vehicles must remain within EU borders, but the workload also needs regional high availability. Which architecture best satisfies both requirements?",
+      "options": [
+        "Deploy the AV platform in the global multi-region us with Cloud CDN caching enabled so EU users receive responses from EU edge locations",
+        "Deploy in a single US region and rely on Customer-Managed Encryption Keys stored in Cloud KMS in europe-west1 to satisfy GDPR residency",
+        "Deploy the AV platform across two EU regions (for example europe-west1 and europe-west4) with regional resources in each, and use the EU multi-region for Cloud Storage and BigQuery datasets that hold EU vehicle data",
+        "Deploy in a single EU region and accept the regional failure risk, since GDPR forbids replicating EU data to any other region including other EU regions"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because the us multi-region stores data in United States locations regardless of where it is cached; CDN caching does not satisfy data residency for the data of record. Option B is wrong because GDPR data residency is about where the data is stored and processed, not just where the encryption key lives; storing data in a US region with a KMS key in the EU still violates residency. Option C is correct because deploying across multiple EU regions provides regional high availability while keeping data inside the EU, and the EU multi-region location for Cloud Storage and BigQuery keeps the data of record within EU geography while providing multi-region durability — exactly what KnightMotives's EU GDPR requirement demands for its autonomous platform. Option D is wrong because GDPR does not forbid replication between EU regions — it requires the data stay within the EU, and multi-region EU deployment is the standard pattern for compliance plus availability.",
+      "optionExplanations": [
+        "Option A is wrong because the us multi-region stores data in United States locations regardless of where it is cached; CDN caching does not satisfy data residency for the data of record.",
+        "Option B is wrong because GDPR data residency is about where the data is stored and processed, not just where the encryption key lives; storing data in a US region with a KMS key in the EU still violates residency.",
+        "Option C is correct because deploying across multiple EU regions provides regional high availability while keeping data inside the EU, and the EU multi-region location for Cloud Storage and BigQuery keeps the data of record within EU geography while providing multi-region durability — exactly what KnightMotives's EU GDPR requirement demands for its autonomous platform.",
+        "Option D is wrong because GDPR does not forbid replication between EU regions — it requires the data stay within the EU, and multi-region EU deployment is the standard pattern for compliance plus availability."
+      ],
+      "category": "Designing a solution infrastructure that meets business requirements",
+      "difficulty": "medium",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-003",
+      "question": "KnightMotives is designing business continuity for its connected-vehicle backend, which authenticates drivers, streams telemetry, and serves OTA updates. Their existing technical environment notes that vehicle connectivity in rural areas is unreliable, and a regional outage of the backend must not strand vehicles. Which design best meets this requirement?",
+      "options": [
+        "Run the backend in a single zone using a managed instance group with autoscaling, and rely on automatic VM restart to recover from any failure",
+        "Run the backend as a regional active-active deployment across multiple zones and additionally maintain a warm standby in a second region, with the vehicle client SDK caching credentials and queueing telemetry locally for replay when connectivity returns",
+        "Run the backend in two regions in cold-standby mode with no automated failover, requiring an operator to manually promote the standby on outage",
+        "Run the backend only on the local manufacturing plant network so that vehicles always have a low-latency connection from the dealer's lot"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because a single zone deployment offers no protection against zonal or regional failure; rural vehicles already face connectivity gaps, and adding a zonal single point of failure compounds the risk. Option B is correct because a regional active-active deployment removes zonal failure as a risk, a warm standby in a second region addresses regional outage, and client-side caching plus telemetry queueing on the vehicle handles the rural-connectivity reality so an intermittent link does not strand the driver or lose data. Option C is wrong because cold standby with manual failover violates the requirement that vehicles must not be stranded — recovery time would be hours, not the minutes required for safety-relevant services. Option D is wrong because plant-local hosting cannot serve vehicles in the field at all — the use case is a connected-vehicle backend that must be reachable from any KnightMotives car worldwide.",
+      "optionExplanations": [
+        "Option A is wrong because a single zone deployment offers no protection against zonal or regional failure; rural vehicles already face connectivity gaps, and adding a zonal single point of failure compounds the risk.",
+        "Option B is correct because a regional active-active deployment removes zonal failure as a risk, a warm standby in a second region addresses regional outage, and client-side caching plus telemetry queueing on the vehicle handles the rural-connectivity reality so an intermittent link does not strand the driver or lose data.",
+        "Option C is wrong because cold standby with manual failover violates the requirement that vehicles must not be stranded — recovery time would be hours, not the minutes required for safety-relevant services.",
+        "Option D is wrong because plant-local hosting cannot serve vehicles in the field at all — the use case is a connected-vehicle backend that must be reachable from any KnightMotives car worldwide."
+      ],
+      "category": "Designing for business continuity and disaster recovery",
+      "difficulty": "medium",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-004",
+      "question": "KnightMotives's in-vehicle software is fragmented across multiple code bases (BEV, hybrid, ICE) carrying significant backwards-compatibility tech debt, and Michael Knight wants a consistent UX across all models within five years. The architect must propose a unification strategy that lets new AI features ship once and run on every model without forking. Which approach should the architect recommend?",
+      "options": [
+        "Maintain the existing per-model code bases and add a thin compatibility shim per platform so each model team can continue independent development of the same feature",
+        "Rewrite all three code bases simultaneously over a six-month feature freeze with no new feature delivery during the rewrite",
+        "Migrate only the BEV code base to the new architecture and let hybrid and ICE remain on the legacy stack until those models are retired",
+        "Define a shared platform contract (a versioned API and event schema) implemented by a portable runtime such as containerized services on Anthos on bare metal for the in-vehicle compute, with model-specific hardware abstraction layers behind the contract so feature code is written once against the contract"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because adding shims keeps three independent code bases — feature parity will continue to drift and the consistent UX goal is missed; this is the trap KnightMotives is already in. Option B is wrong because a six-month feature freeze on a manufacturer with declining ICE sales is commercially unacceptable; the unification must be incremental. Option C is wrong because the case study explicitly says hybrid and ICE drivers and critics view those models poorly today and the goal is to modernize all vehicles within five years — leaving them on the legacy stack contradicts the business requirement. Option D is correct because a shared platform contract plus a portable runtime (Anthos on bare metal is designed for exactly this kind of edge/in-vehicle deployment) lets KnightMotives write a feature once against the contract and let hardware abstraction layers handle BEV vs hybrid vs ICE differences underneath, which is the proven architectural pattern for unifying fragmented automotive platforms.",
+      "optionExplanations": [
+        "Option A is wrong because adding shims keeps three independent code bases — feature parity will continue to drift and the consistent UX goal is missed; this is the trap KnightMotives is already in.",
+        "Option B is wrong because a six-month feature freeze on a manufacturer with declining ICE sales is commercially unacceptable; the unification must be incremental.",
+        "Option C is wrong because the case study explicitly says hybrid and ICE drivers and critics view those models poorly today and the goal is to modernize all vehicles within five years — leaving them on the legacy stack contradicts the business requirement.",
+        "Option D is correct because a shared platform contract plus a portable runtime (Anthos on bare metal is designed for exactly this kind of edge/in-vehicle deployment) lets KnightMotives write a feature once against the contract and let hardware abstraction layers handle BEV vs hybrid vs ICE differences underneath, which is the proven architectural pattern for unifying fragmented automotive platforms."
+      ],
+      "category": "Designing a solution infrastructure that meets business requirements",
+      "difficulty": "hard",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-005",
+      "question": "KnightMotives is investing in fully autonomous driving and needs to train very large multi-modal AV perception models on petabytes of sensor data. They want to use Google Cloud's AI Hypercomputer offering with the highest performance per dollar for both training and large-scale inference batch jobs. Which TWO components should the architect select? (Choose 2)",
+      "options": [
+        "Compute Engine N2 instances with attached local SSDs and no accelerators, scaled out to thousands of VMs for parallel training",
+        "Cloud Functions invoked once per training step, with each function reading a shard of the dataset and returning gradients",
+        "A3 (or newer) VMs with NVIDIA GPUs (H100 / B200 class) for training and inference workloads that need CUDA ecosystem compatibility",
+        "Cloud TPU v5p for large model training, using TPU Multislice to scale training across many TPU pods with a single training job"
+      ],
+      "correctAnswers": [3, 2],
+      "explanation": "Option A is wrong because CPU-only training at fleet-AV scale is economically and physically impractical; modern AV perception models require accelerators, not just more N2 VMs. Option B is wrong because Cloud Functions have execution-time and memory limits that make them unsuitable for training steps, and per-invocation overhead destroys throughput; functions are an event-driven serverless tool, not a training compute substrate. Option C is correct because A3 / A4 series GPU VMs with H100 / B200-class NVIDIA accelerators are the AI Hypercomputer's GPU lineup and are the right choice when the team needs CUDA-ecosystem compatibility, NVIDIA-specific libraries, or large-scale inference workloads — common in AV teams using PyTorch with CUDA-only kernels. Option D is correct because TPU v5p (and successors) plus TPU Multislice are the AI Hypercomputer's purpose-built training accelerators for very large models, delivering high throughput and tight interconnect across pods — appropriate for KnightMotives's petabyte-scale AV perception training.",
+      "optionExplanations": [
+        "Option A is wrong because CPU-only training at fleet-AV scale is economically and physically impractical; modern AV perception models require accelerators, not just more N2 VMs.",
+        "Option B is wrong because Cloud Functions have execution-time and memory limits that make them unsuitable for training steps, and per-invocation overhead destroys throughput; functions are an event-driven serverless tool, not a training compute substrate.",
+        "Option C is correct because A3 / A4 series GPU VMs with H100 / B200-class NVIDIA accelerators are the AI Hypercomputer's GPU lineup and are the right choice when the team needs CUDA-ecosystem compatibility, NVIDIA-specific libraries, or large-scale inference workloads — common in AV teams using PyTorch with CUDA-only kernels.",
+        "Option D is correct because TPU v5p (and successors) plus TPU Multislice are the AI Hypercomputer's purpose-built training accelerators for very large models, delivering high throughput and tight interconnect across pods — appropriate for KnightMotives's petabyte-scale AV perception training."
+      ],
+      "category": "Designing a solution infrastructure that meets technical requirements",
+      "difficulty": "hard",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-006",
+      "question": "KnightMotives needs to ingest vehicle telemetry from millions of connected cars into Google Cloud for near-real-time analytics, with the recognition that Cloud IoT Core is no longer available. What is the recommended Google Cloud ingestion pattern for the telemetry pipeline?",
+      "options": [
+        "Have each vehicle open a long-lived TCP socket to a single Compute Engine VM that writes every message to Cloud Storage as an individual object",
+        "Have each vehicle POST directly to BigQuery's REST API using a shared service account key embedded in the vehicle firmware",
+        "Have each vehicle publish messages to Pub/Sub (via an MQTT-to-Pub/Sub bridge or directly), process the stream with Dataflow, and land the results in BigQuery and Bigtable",
+        "Continue to use Cloud IoT Core because it is the only managed Google Cloud service that supports MQTT-based vehicle ingestion"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because a single VM is a scalability and reliability bottleneck for fleet-scale ingestion, and writing one Cloud Storage object per message creates an object-count and cost problem. Option B is wrong because embedding a service account key in millions of vehicle firmware images is a severe security anti-pattern; KnightMotives has already suffered past breaches and would never accept this. Option C is correct because the recommended pattern after Cloud IoT Core's retirement is vehicles publishing to Pub/Sub through an MQTT-to-Pub/Sub bridge (or a third-party broker) with Dataflow for stream processing into BigQuery for analytics and Bigtable for time-series operational queries — this is the documented Google Cloud architecture for connected-vehicle telemetry. Option D is wrong because Cloud IoT Core has been deprecated and is no longer offered; Pub/Sub plus a bridge is the replacement.",
+      "optionExplanations": [
+        "Option A is wrong because a single VM is a scalability and reliability bottleneck for fleet-scale ingestion, and writing one Cloud Storage object per message creates an object-count and cost problem.",
+        "Option B is wrong because embedding a service account key in millions of vehicle firmware images is a severe security anti-pattern; KnightMotives has already suffered past breaches and would never accept this.",
+        "Option C is correct because the recommended pattern after Cloud IoT Core's retirement is vehicles publishing to Pub/Sub through an MQTT-to-Pub/Sub bridge (or a third-party broker) with Dataflow for stream processing into BigQuery for analytics and Bigtable for time-series operational queries — this is the documented Google Cloud architecture for connected-vehicle telemetry.",
+        "Option D is wrong because Cloud IoT Core has been deprecated and is no longer offered; Pub/Sub plus a bridge is the replacement."
+      ],
+      "category": "Designing a solution infrastructure that meets technical requirements",
+      "difficulty": "easy",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-007",
+      "question": "KnightMotives wants AI inference for safety-critical in-vehicle features (lane keeping, pedestrian detection) to run locally on the vehicle so it works reliably in rural areas where connectivity is unreliable, while still receiving model updates and pushing aggregated metrics back to the cloud. Which architecture best fits?",
+      "options": [
+        "Send every camera frame to a regional Vertex AI endpoint over LTE and rely on the cloud to make the inference decision",
+        "Run inference inside Cloud Functions invoked over HTTPS from each vehicle for each sensor reading",
+        "Run a Google Distributed Cloud (Anthos on bare metal) edge runtime in the vehicle with on-device accelerators (Edge TPU class) for local inference, manage model rollouts via a central control plane, and stream only aggregated metrics back to the cloud",
+        "Store the model in Cloud Storage and have the vehicle download the entire model before every inference"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because safety-critical perception cannot depend on round-tripping every frame to a regional endpoint — rural connectivity gaps and latency budgets make it unworkable; the case study explicitly calls out rural connectivity as a problem. Option B is wrong because Cloud Functions are remote and add network and cold-start latency unsuited to per-frame perception; they also do not run on the vehicle. Option C is correct because a managed edge runtime on the vehicle (Google Distributed Cloud / Anthos on bare metal class deployment) combined with on-device accelerators (Edge TPU and equivalent) lets safety inference run locally with predictable latency, while a central control plane handles model rollouts and only aggregated metrics flow back — the standard architecture pattern for autonomous vehicle inference. Option D is wrong because downloading the entire model per inference is wasteful and adds network dependency to every decision; models are loaded once and inference happens locally.",
+      "optionExplanations": [
+        "Option A is wrong because safety-critical perception cannot depend on round-tripping every frame to a regional endpoint — rural connectivity gaps and latency budgets make it unworkable; the case study explicitly calls out rural connectivity as a problem.",
+        "Option B is wrong because Cloud Functions are remote and add network and cold-start latency unsuited to per-frame perception; they also do not run on the vehicle.",
+        "Option C is correct because a managed edge runtime on the vehicle (Google Distributed Cloud / Anthos on bare metal class deployment) combined with on-device accelerators (Edge TPU and equivalent) lets safety inference run locally with predictable latency, while a central control plane handles model rollouts and only aggregated metrics flow back — the standard architecture pattern for autonomous vehicle inference.",
+        "Option D is wrong because downloading the entire model per inference is wasteful and adds network dependency to every decision; models are loaded once and inference happens locally."
+      ],
+      "category": "Designing a solution infrastructure that meets technical requirements",
+      "difficulty": "medium",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-008",
+      "question": "KnightMotives must meet EU autonomous vehicle data protection rules: customer PII captured by EU vehicles cannot leave the EU, and KnightMotives's security team wants automatic detection and de-identification of any PII that does land in BigQuery tables used by data scientists. Which combination should the architect propose?",
+      "options": [
+        "Store all data in the us multi-region for cost efficiency and apply column-level IAM only to PII columns",
+        "Store EU data in a single zone in europe-west1 and let data scientists copy the data to their local laptops for analysis",
+        "Store EU vehicle data in the EU multi-region for BigQuery, apply VPC Service Controls perimeters around the EU project, and use Sensitive Data Protection (formerly Cloud DLP) to scan and de-identify PII in datasets used by data scientists",
+        "Encrypt EU data with a customer-supplied key (CSEK) stored on-premises and replicate the data freely to any region since the key never leaves the EU"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because storing EU data in the us multi-region directly violates EU residency rules regardless of column-level IAM. Option B is wrong because copying EU customer PII to data scientist laptops removes it from controlled EU infrastructure entirely — a residency, governance, and breach-risk failure all at once. Option C is correct because the EU multi-region for BigQuery keeps the data of record inside the EU, VPC Service Controls creates a perimeter that blocks data exfiltration outside the project, and Sensitive Data Protection provides automated PII discovery and de-identification — together these match KnightMotives's stated EU autonomous platform compliance and security-after-past-breaches requirements. Option D is wrong because data residency is about where the data physically lives, not just where the key lives; freely replicating EU data to other regions still breaches residency.",
+      "optionExplanations": [
+        "Option A is wrong because storing EU data in the us multi-region directly violates EU residency rules regardless of column-level IAM.",
+        "Option B is wrong because copying EU customer PII to data scientist laptops removes it from controlled EU infrastructure entirely — a residency, governance, and breach-risk failure all at once.",
+        "Option C is correct because the EU multi-region for BigQuery keeps the data of record inside the EU, VPC Service Controls creates a perimeter that blocks data exfiltration outside the project, and Sensitive Data Protection provides automated PII discovery and de-identification — together these match KnightMotives's stated EU autonomous platform compliance and security-after-past-breaches requirements.",
+        "Option D is wrong because data residency is about where the data physically lives, not just where the key lives; freely replicating EU data to other regions still breaches residency."
+      ],
+      "category": "Designing for security and compliance",
+      "difficulty": "medium",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-009",
+      "question": "KnightMotives has suffered past data breaches and the board wants a comprehensive, defensible security posture for the public-facing build-to-order site and the dealer APIs. The architect must propose the right Google Cloud services for centralized threat detection, posture management, and edge protection. Which combination should the architect recommend?",
+      "options": [
+        "Enable only Cloud Audit Logs and export them to BigQuery; rely on quarterly manual reviews to identify breaches",
+        "Deploy Security Command Center Premium (or Enterprise) for posture, vulnerability, and threat findings across the organization, place Cloud Armor with managed WAF and DDoS protection in front of the build-to-order site and dealer APIs, and ingest findings into a central SIEM via Chronicle / SCC integrations",
+        "Deploy a third-party EDR agent on every Compute Engine VM and ignore Google Cloud's native security services as they are duplicative",
+        "Rely on default project settings since Google Cloud is secure by default and additional services are not needed"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because log export plus quarterly human review is exactly the posture that allowed the prior breaches — there is no real-time detection, no posture management, and no edge protection on the build-to-order or dealer APIs. Option B is correct because Security Command Center Premium (or Enterprise) provides centralized posture, misconfiguration, vulnerability, and threat findings across the organization, Cloud Armor provides managed WAF rules (OWASP top-10) and DDoS protection on the public surface, and SIEM ingestion (Chronicle) gives the SOC the correlation and retention needed to investigate incidents — together they form the layered defense KnightMotives needs after past breaches. Option C is wrong because EDR is one layer (endpoint), not a full cloud security framework — ignoring native services like SCC, Cloud Armor, and VPC Service Controls leaves perimeter, network, and posture gaps. Option D is wrong because secure-by-default does not mean configured-for-you; the board's stated paramount concern requires explicit controls, monitoring, and an incident response plan, all of which require active service deployment.",
+      "optionExplanations": [
+        "Option A is wrong because log export plus quarterly human review is exactly the posture that allowed the prior breaches — there is no real-time detection, no posture management, and no edge protection on the build-to-order or dealer APIs.",
+        "Option B is correct because Security Command Center Premium (or Enterprise) provides centralized posture, misconfiguration, vulnerability, and threat findings across the organization, Cloud Armor provides managed WAF rules (OWASP top-10) and DDoS protection on the public surface, and SIEM ingestion (Chronicle) gives the SOC the correlation and retention needed to investigate incidents — together they form the layered defense KnightMotives needs after past breaches.",
+        "Option C is wrong because EDR is one layer (endpoint), not a full cloud security framework — ignoring native services like SCC, Cloud Armor, and VPC Service Controls leaves perimeter, network, and posture gaps.",
+        "Option D is wrong because secure-by-default does not mean configured-for-you; the board's stated paramount concern requires explicit controls, monitoring, and an incident response plan, all of which require active service deployment."
+      ],
+      "category": "Designing for security and compliance",
+      "difficulty": "medium",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-010",
+      "question": "KnightMotives is building an AI-powered dealer assistant chatbot (Gemini-based) that lets dealer staff ask natural-language questions about inventory and customer orders. The security team requires that the chatbot block prompt-injection attacks, jailbreak attempts, and unsafe outputs and that any PII echoed back to the user is masked. Which Google Cloud capabilities best meet this requirement?",
+      "options": [
+        "Rely on Gemini's built-in safety filters alone; no additional service is required because Gemini already refuses harmful prompts",
+        "Place Cloud Armor with WAF rules in front of the chatbot and consider this equivalent to AI-specific safety filtering",
+        "Disable safety filtering entirely so that dealer staff can ask any question, since the application is internal and not customer-facing",
+        "Use Model Armor in front of the Gemini model for prompt-injection and jailbreak filtering plus harmful-content safeguards, and use Sensitive Data Protection (formerly Cloud DLP) to mask PII in prompts and responses"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because built-in safety filters do not provide the layered prompt-injection / jailbreak protection, response screening, and centralized policy control that an enterprise deployment needs — Model Armor exists specifically to fill that gap. Option B is wrong because Cloud Armor protects HTTP-layer threats (DDoS, common exploits) and is not aware of LLM prompts or outputs; it cannot detect prompt injection or jailbreaks. Option C is wrong because disabling safety filtering on an internal app still leaves KnightMotives exposed to insider misuse, hallucination, and PII leakage; the security team's requirement is explicit. Option D is correct because Model Armor is purpose-built to screen LLM prompts and responses for prompt injection, jailbreaks, and unsafe content, and Sensitive Data Protection inspects and de-identifies PII in both directions — together they meet KnightMotives's requirement for the dealer-assistant chatbot.",
+      "optionExplanations": [
+        "Option A is wrong because built-in safety filters do not provide the layered prompt-injection / jailbreak protection, response screening, and centralized policy control that an enterprise deployment needs — Model Armor exists specifically to fill that gap.",
+        "Option B is wrong because Cloud Armor protects HTTP-layer threats (DDoS, common exploits) and is not aware of LLM prompts or outputs; it cannot detect prompt injection or jailbreaks.",
+        "Option C is wrong because disabling safety filtering on an internal app still leaves KnightMotives exposed to insider misuse, hallucination, and PII leakage; the security team's requirement is explicit.",
+        "Option D is correct because Model Armor is purpose-built to screen LLM prompts and responses for prompt injection, jailbreaks, and unsafe content, and Sensitive Data Protection inspects and de-identifies PII in both directions — together they meet KnightMotives's requirement for the dealer-assistant chatbot."
+      ],
+      "category": "Designing for security and compliance",
+      "difficulty": "medium",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-011",
+      "question": "KnightMotives's supply chain runs on an outdated mainframe and the ERP system is also outdated, making promotions and dealer discounts difficult to implement. The architect has been asked which Google Cloud offering is purpose-built to help assess, refactor, and migrate the mainframe COBOL workload to GCP. Which service should the architect name?",
+      "options": [
+        "Google Cloud Mainframe Modernization (the dedicated portfolio including refactor tools, Dual Run, and Connector services) for mainframe assessment, refactoring, and migration",
+        "Cloud Composer scheduled to run COBOL programs as DAG tasks",
+        "Cloud Bigtable as a drop-in replacement for the mainframe with no code changes",
+        "Cloud Workstations for developers to ssh into the mainframe"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Google Cloud Mainframe Modernization is the dedicated offering (a portfolio including refactor tools, Dual Run, and Connector services) for assessing, refactoring, replatforming, and migrating mainframe COBOL workloads — exactly what KnightMotives needs to retire the outdated supply chain mainframe and free promotions/dealer-discount work from the legacy ERP. Option B is wrong because Cloud Composer orchestrates pipelines via Apache Airflow DAGs; it does not modernize COBOL programs. Option C is wrong because Bigtable is a NoSQL wide-column store with a completely different data model from a relational mainframe DB — calling it a drop-in replacement is incorrect. Option D is wrong because Cloud Workstations provides managed developer workstations; it has nothing to do with migrating off a mainframe.",
+      "optionExplanations": [
+        "Option A is correct because Google Cloud Mainframe Modernization is the dedicated offering (a portfolio including refactor tools, Dual Run, and Connector services) for assessing, refactoring, replatforming, and migrating mainframe COBOL workloads — exactly what KnightMotives needs to retire the outdated supply chain mainframe and free promotions/dealer-discount work from the legacy ERP.",
+        "Option B is wrong because Cloud Composer orchestrates pipelines via Apache Airflow DAGs; it does not modernize COBOL programs.",
+        "Option C is wrong because Bigtable is a NoSQL wide-column store with a completely different data model from a relational mainframe DB — calling it a drop-in replacement is incorrect.",
+        "Option D is wrong because Cloud Workstations provides managed developer workstations; it has nothing to do with migrating off a mainframe."
+      ],
+      "category": "Analyzing and optimizing technical and business processes",
+      "difficulty": "easy",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-012",
+      "question": "After multiple past breaches at KnightMotives, the CISO wants to introduce a blameless postmortem culture across the security and platform teams so that incidents lead to systemic improvement rather than individual blame. As the architect advising on process change, which approach best embodies SRE postmortem practice?",
+      "options": [
+        "Require every postmortem to identify the responsible engineer by name and assign mandatory training to that individual",
+        "Run blameless postmortems focused on systemic causes, document timeline, contributing factors, impact, and action items with owners and due dates, share postmortems broadly across teams, and track action-item completion as a leading indicator",
+        "Skip postmortems for incidents that did not exceed the error budget for the quarter so the team can stay focused on feature delivery",
+        "Hold postmortems privately within the affected team only, since publishing details outside the team would expose security weaknesses and embarrass engineers"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because naming a responsible engineer in a postmortem is the definition of a blameful culture and discourages honest disclosure; the next incident will be hidden, not surfaced. Option B is correct because blameless postmortems focused on systemic causes, structured around timeline / contributing factors / impact / action items, shared broadly to spread learning, and tracked through action-item completion are the SRE-canonical practice — directly addressing KnightMotives's stated business requirement to improve communication between business and technical teams and prevent recurrence of past breaches. Option C is wrong because error-budget consumption is not the only trigger for a postmortem; near-misses and security incidents warrant postmortems regardless of budget impact, and skipping them loses learning. Option D is wrong because keeping postmortems private to the affected team defeats the cross-team learning that is the whole point — KnightMotives has multiple breaches in its history and the organization needs to spread the lessons, not hide them.",
+      "optionExplanations": [
+        "Option A is wrong because naming a responsible engineer in a postmortem is the definition of a blameful culture and discourages honest disclosure; the next incident will be hidden, not surfaced.",
+        "Option B is correct because blameless postmortems focused on systemic causes, structured around timeline / contributing factors / impact / action items, shared broadly to spread learning, and tracked through action-item completion are the SRE-canonical practice — directly addressing KnightMotives's stated business requirement to improve communication between business and technical teams and prevent recurrence of past breaches.",
+        "Option C is wrong because error-budget consumption is not the only trigger for a postmortem; near-misses and security incidents warrant postmortems regardless of budget impact, and skipping them loses learning.",
+        "Option D is wrong because keeping postmortems private to the affected team defeats the cross-team learning that is the whole point — KnightMotives has multiple breaches in its history and the organization needs to spread the lessons, not hide them."
+      ],
+      "category": "Analyzing and optimizing technical and business processes",
+      "difficulty": "hard",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-013",
+      "question": "KnightMotives is rebuilding its dealer integration layer. Dealers need stable, versioned APIs for inventory, build-to-order, and customer records, and KnightMotives also needs to migrate the relational ERP database off the legacy on-prem appliance to Cloud SQL with minimal downtime. Which TWO Google Cloud services directly support these goals? (Choose 2)",
+      "options": [
+        "Cloud DNS as the dealer API gateway providing OAuth and rate limiting",
+        "Apigee for managing, versioning, securing, and monitoring the dealer-facing APIs (with rate limiting, OAuth, developer portal, and analytics)",
+        "Database Migration Service (DMS) for an automated, near-zero-downtime migration of the on-prem ERP database to Cloud SQL using ongoing replication then cutover",
+        "BigQuery BI Engine as the live transactional database for the ERP after migration"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Option A is wrong because Cloud DNS is a managed DNS service; it does not provide API gateway functionality such as OAuth, rate limiting, or developer portal. Option B is correct because Apigee is Google Cloud's API management platform — it provides API versioning, OAuth/JWT enforcement, rate limiting, quotas, developer portal, and analytics, which are exactly the capabilities KnightMotives needs for a stable dealer-facing API surface. Option C is correct because Database Migration Service (DMS) is the managed migration tool for moving relational databases to Cloud SQL with continuous replication and near-zero-downtime cutover — the right fit for moving the ERP off the on-prem appliance with minimal disruption. Option D is wrong because BigQuery BI Engine is an in-memory analytical acceleration layer for BigQuery, not a transactional database; running ERP transactions on BigQuery is an architectural misfit.",
+      "optionExplanations": [
+        "Option A is wrong because Cloud DNS is a managed DNS service; it does not provide API gateway functionality such as OAuth, rate limiting, or developer portal.",
+        "Option B is correct because Apigee is Google Cloud's API management platform — it provides API versioning, OAuth/JWT enforcement, rate limiting, quotas, developer portal, and analytics, which are exactly the capabilities KnightMotives needs for a stable dealer-facing API surface.",
+        "Option C is correct because Database Migration Service (DMS) is the managed migration tool for moving relational databases to Cloud SQL with continuous replication and near-zero-downtime cutover — the right fit for moving the ERP off the on-prem appliance with minimal disruption.",
+        "Option D is wrong because BigQuery BI Engine is an in-memory analytical acceleration layer for BigQuery, not a transactional database; running ERP transactions on BigQuery is an architectural misfit."
+      ],
+      "category": "Managing implementation",
+      "difficulty": "medium",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-014",
+      "question": "KnightMotives is rebuilding the build-to-order online ordering system on Google Cloud and wants identical, repeatable dev / staging / pre-prod / prod environments so that promotions and dealer-discount changes can be tested confidently before reaching customers. Which approach best supports this?",
+      "options": [
+        "Provision each environment manually via the Cloud Console and document the clicks in a shared spreadsheet for the next provision",
+        "Use Terraform (or Infrastructure Manager backed by Terraform) to define the build-to-order stack as code, store the modules in a Git repository, and apply per-environment variable files in a CI/CD pipeline so all four environments are provisioned identically",
+        "Use a single shared project for all four environments and rely on naming conventions to keep resources separate",
+        "Skip non-prod environments and apply changes directly in production behind a feature flag"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because manual provisioning is the source of the very environmental drift KnightMotives wants to eliminate; documented clicks in a spreadsheet are not idempotent or auditable. Option B is correct because Terraform (or Infrastructure Manager built on Terraform) with a Git-backed module repo and per-environment variable files applied through CI/CD is the canonical Google Cloud approach to identical, repeatable, reviewable environment provisioning — directly enabling safe promotion and dealer-discount testing across the four environments. Option C is wrong because a single shared project has shared IAM, shared quotas, and shared audit scope; relying on naming conventions does not provide real isolation between dev and prod. Option D is wrong because skipping non-prod environments and hiding changes behind feature flags in production is fragile and breaks the test-before-customer-impact principle KnightMotives needs after its existing unreliable ordering system.",
+      "optionExplanations": [
+        "Option A is wrong because manual provisioning is the source of the very environmental drift KnightMotives wants to eliminate; documented clicks in a spreadsheet are not idempotent or auditable.",
+        "Option B is correct because Terraform (or Infrastructure Manager built on Terraform) with a Git-backed module repo and per-environment variable files applied through CI/CD is the canonical Google Cloud approach to identical, repeatable, reviewable environment provisioning — directly enabling safe promotion and dealer-discount testing across the four environments.",
+        "Option C is wrong because a single shared project has shared IAM, shared quotas, and shared audit scope; relying on naming conventions does not provide real isolation between dev and prod.",
+        "Option D is wrong because skipping non-prod environments and hiding changes behind feature flags in production is fragile and breaks the test-before-customer-impact principle KnightMotives needs after its existing unreliable ordering system."
+      ],
+      "category": "Managing implementation",
+      "difficulty": "medium",
+      "caseStudyId": "knightmotives-automotive"
+    },
+    {
+      "id": "pca-cs-knightmotives-automotive-015",
+      "question": "KnightMotives's autonomous vehicle simulation environment runs thousands of scenarios per hour as part of the AV regression suite. The platform team wants a measurable reliability target so the AV team can move fast on model changes without breaking the simulator, and they want signals to drive incident response when the simulator regresses. Which approach best applies SRE practices?",
+      "options": [
+        "Define an SLI as the ratio of successfully completed simulation scenarios to total submitted scenarios, set an initial SLO (e.g., 99.5% over a 28-day window) measured from real workload, use error budget burn alerts to drive paging, and run periodic chaos experiments (controlled fault injection on the simulator's dependencies) to validate resilience",
+        "Set an availability SLO of 100% on the simulator and page the on-call engineer for every failed scenario regardless of cause",
+        "Avoid SLOs for the simulator because it is an internal tool and only customer-facing systems need reliability targets",
+        "Measure only CPU utilization of the simulator cluster and declare the SLO met whenever utilization stays below 80%"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because a meaningful user-visible SLI (successful scenarios over total scenarios) plus an evidence-based initial SLO measured from real workload, error-budget burn alerts to drive paging, and chaos engineering to validate resilience are the canonical SRE practices — they give the AV team a quantitative reliability target, signal-driven on-call, and continuous resilience verification for the simulator. Option B is wrong because 100% is not a feasible or useful SLO — there is no error budget, every flake pages on-call, and engineers stop trusting alerts; SRE guidance is to choose a target justified by user impact, not perfection. Option C is wrong because internal tools that gate AV model releases are on the critical path for the business; SRE practice applies equally to internal services that other teams depend on. Option D is wrong because CPU utilization is a saturation/resource signal, not a user-facing SLI; high CPU does not tell the AV team whether their simulation scenarios actually completed successfully.",
+      "optionExplanations": [
+        "Option A is correct because a meaningful user-visible SLI (successful scenarios over total scenarios) plus an evidence-based initial SLO measured from real workload, error-budget burn alerts to drive paging, and chaos engineering to validate resilience are the canonical SRE practices — they give the AV team a quantitative reliability target, signal-driven on-call, and continuous resilience verification for the simulator.",
+        "Option B is wrong because 100% is not a feasible or useful SLO — there is no error budget, every flake pages on-call, and engineers stop trusting alerts; SRE guidance is to choose a target justified by user impact, not perfection.",
+        "Option C is wrong because internal tools that gate AV model releases are on the critical path for the business; SRE practice applies equally to internal services that other teams depend on.",
+        "Option D is wrong because CPU utilization is a saturation/resource signal, not a user-facing SLI; high CPU does not tell the AV team whether their simulation scenarios actually completed successfully."
+      ],
+      "category": "Ensuring solution and operations excellence",
+      "difficulty": "hard",
+      "caseStudyId": "knightmotives-automotive"
+    }
+  ]
+}

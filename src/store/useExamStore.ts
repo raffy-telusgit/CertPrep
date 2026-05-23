@@ -43,14 +43,15 @@ export const useExamStore = create<ExamStore>((set, get) => ({
     const exam = getExamById(examId)
     if (!exam) throw new Error(`Unknown exam: ${examId}`)
 
-    const bank = await loadQuestionBank(examId)
+    const { questions: poolQuestions, caseStudies } = await loadQuestionBank(examId)
     const count = mode === 'practice' && questionCount !== undefined
       ? questionCount
       : exam.sessionQuestionCount
     const { questions, optionMappings } = selectQuestions(
-      bank,
+      poolQuestions,
       count,
       examId,
+      caseStudies,
     )
 
     const session: ExamSession = {
@@ -62,6 +63,7 @@ export const useExamStore = create<ExamStore>((set, get) => ({
       flagged: [],
       startedAt: Date.now(),
       timeRemaining: mode === 'exam' ? exam.durationMinutes * 60 : undefined,
+      caseStudies: caseStudies.length > 0 ? caseStudies : undefined,
     }
 
     storage.setCurrentSession(session)

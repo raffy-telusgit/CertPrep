@@ -1,0 +1,229 @@
+{
+  "questions": [
+    {
+      "id": "pca-cs-ehr-healthcare-001",
+      "question": "EHR Healthcare must maintain its legacy file- and API-based integrations with insurance providers on-premises while moving customer-facing workloads to Google Cloud. The lease on one colocation facility is expiring soon and the technical team requires a secure, high-performance connection between the remaining on-premises systems and Google Cloud. Which connectivity option best satisfies EHR Healthcare's hybrid requirement for its production PHI traffic?",
+      "options": [
+        "Provision Dedicated Interconnect between the remaining colocation facility and a Google Cloud region close to the colo, deploying redundant 10 Gbps connections across two metro availability domains for a 99.9% SLA",
+        "Use HA VPN over the public internet with two tunnels per region, accepting public-internet routing for legacy insurance interfaces because IPsec encryption is sufficient for the PHI workloads in transit",
+        "Set up Carrier Peering through a supported ISP so that EHR Healthcare can reach Google APIs from the colocation facility without provisioning private connectivity for VPC traffic to GKE",
+        "Use Direct Peering at a Google Cloud edge point of presence to exchange routes between the colocation facility and EHR Healthcare's VPC, avoiding any partner or carrier-managed circuit"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Dedicated Interconnect provides a private, high-bandwidth, low-latency physical connection between the colocation facility and Google Cloud; deploying redundant connections across two metro availability domains is the documented topology for a 99.9% SLA, which aligns with EHR Healthcare's 99.9% customer-facing availability target and the technical requirement for a secure, high-performance link. Option B is wrong because HA VPN over the public internet introduces variable latency and is not 'high-performance' for sustained PHI workloads between EHR Healthcare's colo and Google Cloud; it is an acceptable backup, not the primary link. Option C is wrong because Carrier Peering only provides access to Google public APIs (e.g., Workspace) and cannot carry traffic to VPC resources such as GKE clusters hosting customer-facing apps. Option D is wrong because Direct Peering exchanges routes only for Google public services and is not a supported path for VPC-bound private traffic; it also does not provide a Google-backed SLA for EHR Healthcare's hybrid workloads.",
+      "category": "Managing and provisioning a cloud solution infrastructure",
+      "difficulty": "easy",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-002",
+      "question": "EHR Healthcare has recently containerized many of its customer-facing web applications onto a group of Kubernetes clusters and needs a consistent way to manage these clusters across multiple environments, including the remaining colocation facility during migration. The platform team wants centralized policy, configuration, and observability for every cluster regardless of where it runs. Which Google Cloud approach best meets this requirement?",
+      "options": [
+        "Migrate every cluster to GKE Autopilot in a single region and shut down the on-premises Kubernetes clusters immediately so that EHR Healthcare only has to manage one control plane during the colocation lease wind-down",
+        "Standardize on self-managed Kubernetes installed on Compute Engine MIGs in each environment, scripting upgrades and policy with Ansible so EHR Healthcare retains full control of every component of the control plane",
+        "Register the existing on-premises clusters and the new GKE clusters into a GKE Enterprise (Anthos) fleet, then apply Config Sync and Policy Controller from a central config repository to enforce consistent configuration and policies across all environments",
+        "Deploy a separate Cloud Run service for each containerized application and decommission the Kubernetes clusters, accepting that the on-premises insurance integrations will keep running in the colocation facility unchanged"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because EHR Healthcare cannot immediately shut down on-premises clusters: the legacy insurance interfaces remain on-premises and customer-facing workloads must keep running during migration, so a single-region GKE Autopilot target ignores the multi-environment requirement. Option B is wrong because self-managed Kubernetes on Compute Engine reintroduces the heavy operational burden EHR Healthcare is trying to leave behind in the colocation facility and provides no centralized policy or configuration plane across environments. Option C is correct because GKE Enterprise (Anthos) fleets are the documented Google-recommended way to manage multiple Kubernetes clusters across Google Cloud and on-premises with a consistent control plane, Config Sync for GitOps configuration, and Policy Controller for guardrails, directly satisfying EHR Healthcare's requirements for consistent management and multiple container-based environments. Option D is wrong because rewriting every containerized workload to Cloud Run abandons the recent containerization investment, does not address multi-environment Kubernetes management, and removes Kubernetes-level controls EHR Healthcare's platform team already operates.",
+      "category": "Designing and planning a cloud solution architecture",
+      "difficulty": "medium",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-003",
+      "question": "EHR Healthcare's existing data layer includes a large MySQL footprint used by its containerized customer-facing applications. The architecture team wants the lowest operational burden, automated backups, point-in-time recovery, and built-in high availability that supports the 99.9% customer-facing SLA without rewriting the schema. Which target should EHR Healthcare select for its MySQL workloads on Google Cloud?",
+      "options": [
+        "Run MySQL on Compute Engine instances behind a regional managed instance group, scripting binlog backups to Cloud Storage and configuring Pacemaker for failover to retain the same operational pattern used in the colocation facility",
+        "Migrate the MySQL databases to Spanner using a custom application-side ORM rewrite so EHR Healthcare can benefit from external strong consistency across continents, even though the schema must be redesigned",
+        "Move the MySQL data into BigQuery so it can also be queried for healthcare trend insights, and let customer-facing applications issue transactional queries through the BigQuery Storage Write API",
+        "Migrate the MySQL databases to Cloud SQL for MySQL with the Enterprise Plus edition and a regional (high-availability) configuration, enabling automated backups and point-in-time recovery to meet the 99.9% SLA"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because self-managed MySQL on Compute Engine reproduces the high-operational-cost pattern EHR Healthcare wants to leave behind in the colocation facility and conflicts with the business requirement to decrease infrastructure administration costs. Option B is wrong because Spanner is a different data model that requires schema and application changes; EHR Healthcare's stated goal is to migrate MySQL without rewriting applications, and Spanner's strengths are not required for typical EHR workloads. Option C is wrong because BigQuery is an analytical warehouse, not a transactional OLTP store; using it for customer-facing transactional MySQL traffic is an architectural mismatch even though BigQuery is useful for the separate healthcare-trends analytics requirement. Option D is correct because Cloud SQL for MySQL (Enterprise Plus) with a regional HA configuration is the Google-recommended managed-MySQL target: automated backups, point-in-time recovery, automatic failover within the region, and minimal operational overhead, all of which support EHR Healthcare's 99.9% customer-facing SLA and lower-infrastructure-administration-cost requirement.",
+      "category": "Designing and planning a cloud solution architecture",
+      "difficulty": "medium",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-004",
+      "question": "EHR Healthcare must provide a minimum of 99.9% availability for all customer-facing systems, and the new GKE-based platform on Google Cloud must keep operating during a regional impairment. The architecture team is finalizing the disaster recovery design for the customer-facing tier and its supporting data layer. Which two design decisions are most appropriate? (Choose two.)",
+      "options": [
+        "Run customer-facing GKE clusters as zonal clusters in a single zone with daily snapshots restored to a different region on demand to keep costs low while still being able to recover within the 99.9% allowance",
+        "Configure Cloud SQL for MySQL with cross-region read replicas and document a tested replica-promotion runbook so the OLTP tier can be recovered in a second region during a regional outage",
+        "Keep MongoDB and Redis writable only from on-premises during the migration window and treat the cloud copies as cold backups, restoring them manually from snapshots only if both colocation facilities fail",
+        "Deploy each customer-facing GKE workload as a regional GKE cluster in two regions and front them with a global external Application Load Balancer that automatically fails over between regional backends"
+      ],
+      "correctAnswers": [3, 1],
+      "explanation": "Option A is wrong because zonal GKE clusters offer only zonal availability and on-demand snapshot restore to another region produces RTOs that easily violate 99.9%; this fails the SLA. Option B is correct because Cloud SQL for MySQL cross-region read replicas (with a tested promotion runbook) give EHR Healthcare a documented path to recover the OLTP tier in a second region during a regional outage, complementing the regional HA configuration. Option C is wrong because leaving MongoDB and Redis writable only on-premises during migration removes the cloud DR path, contradicts the goal of replacing the colocation facilities, and exposes EHR Healthcare to a single-site failure for those data stores. Option D is correct because EHR Healthcare's 99.9% customer-facing SLA and the technical requirement to dynamically scale and provision new environments are best satisfied by regional GKE clusters in at least two regions fronted by a global external Application Load Balancer, which provides automatic regional failover for the containerized customer-facing apps.",
+      "category": "Designing and planning a cloud solution architecture",
+      "difficulty": "hard",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-005",
+      "question": "EHR Healthcare's data stores include a Microsoft SQL Server footprint that backs several customer-facing applications. The team wants to migrate SQL Server to a managed service on Google Cloud with minimal application changes, native Windows authentication support, and automated patching. Which target should EHR Healthcare choose for the MS SQL Server workloads?",
+      "options": [
+        "Self-host SQL Server Always On availability groups on Compute Engine Windows VMs in two regions, scripting backups to Cloud Storage so the database team can keep using the same on-premises operations playbook",
+        "Refactor every SQL Server-bound application to PostgreSQL and move the data to AlloyDB for PostgreSQL so EHR Healthcare can standardize on a single open-source engine across the platform",
+        "Migrate the MS SQL Server databases to Cloud SQL for SQL Server with a regional HA configuration, taking advantage of automated backups, point-in-time recovery, and managed patching",
+        "Move the SQL Server schema and data into BigQuery so analytics and OLTP queries can share the same warehouse, eliminating the need for a dedicated relational database tier"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because self-hosting SQL Server Always On availability groups on Compute Engine retains heavy operational overhead and contradicts EHR Healthcare's goal to decrease infrastructure administration costs. Option B is wrong because rewriting every SQL Server application to PostgreSQL is a major refactor that EHR Healthcare has no stated capacity for and removes Windows-auth compatibility for customer-facing apps. Option C is correct because Cloud SQL for SQL Server with a regional HA configuration is the documented managed target for MS SQL Server: it provides automated backups, point-in-time recovery, managed patching, and Windows authentication support, matching EHR Healthcare's requirement to lower operational burden without rewriting applications. Option D is wrong because BigQuery is an analytical warehouse, not a transactional OLTP engine, and using it to back customer-facing SQL Server applications is an architectural mismatch even though BigQuery may serve EHR Healthcare's separate analytics needs.",
+      "category": "Designing and planning a cloud solution architecture",
+      "difficulty": "medium",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-006",
+      "question": "EHR Healthcare must maintain regulatory compliance for protected health information (PHI) stored and processed in its electronic health record SaaS. The compliance team is preparing the move to Google Cloud and asks the architect for the most accurate description of what is required so that EHR Healthcare can operate HIPAA-regulated workloads on Google Cloud. Which statement best reflects what EHR Healthcare must do?",
+      "options": [
+        "Because Google Cloud is HIPAA-certified end to end, EHR Healthcare can store PHI in any Google Cloud product without further action as long as the data is encrypted at rest using Google-managed keys",
+        "EHR Healthcare must restrict PHI to Google Workspace and BigQuery only, because those are the only Google Cloud products that support a Business Associate Addendum (BAA) for healthcare customers",
+        "EHR Healthcare can rely on Cloud HSM as its sole HIPAA compliance control because HSM-backed encryption keys are equivalent to a Business Associate Addendum under HIPAA Security Rule guidance",
+        "EHR Healthcare must execute a Business Associate Addendum (BAA) with Google, restrict PHI workloads to Google Cloud products covered by the BAA, and implement its own administrative, physical, and technical safeguards on top"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because no cloud provider is 'HIPAA-certified' end to end; HIPAA compliance is a shared responsibility and requires the customer to execute a BAA and configure services correctly. Option B is wrong because the BAA-covered list is much broader than just Workspace and BigQuery, and includes the core compute, storage, networking, database, and security products EHR Healthcare relies on (e.g., GKE, Cloud SQL, Cloud Storage, Cloud Logging). Option C is wrong because Cloud HSM is a single technical control; it does not substitute for the BAA and does not by itself constitute HIPAA compliance. Option D is correct because HIPAA on Google Cloud requires that EHR Healthcare execute a Business Associate Addendum with Google, keep PHI workloads on the BAA-covered services, and implement its own administrative, physical, and technical safeguards (access controls, audit logging, encryption configuration, training, incident response) — this matches Google's documented shared-responsibility model and EHR Healthcare's regulatory-compliance business requirement.",
+      "category": "Designing for security and compliance",
+      "difficulty": "hard",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-007",
+      "question": "EHR Healthcare wants to prevent PHI stored in Cloud Storage and BigQuery from being exfiltrated from its production project, even if a user with valid IAM credentials is phished. The security team needs a perimeter control that blocks data movement outside an approved set of projects regardless of identity. Which Google Cloud capability should the team implement?",
+      "options": [
+        "Configure VPC Service Controls around the production project to define a service perimeter that includes Cloud Storage and BigQuery and blocks data movement to projects outside the perimeter",
+        "Rely on uniform bucket-level access on Cloud Storage and column-level IAM on BigQuery, because consistent IAM policy is sufficient to prevent data exfiltration without a perimeter control",
+        "Enable Access Transparency logs and rotate Google-managed encryption keys monthly so EHR Healthcare can detect exfiltration after it happens, satisfying the regulatory-compliance requirement",
+        "Replace all PHI storage with Cloud HSM-managed encrypted blobs and let only client-side decryption happen on customer laptops, removing the need for any network or perimeter control"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because VPC Service Controls create an identity-independent service perimeter around Google-managed services like Cloud Storage and BigQuery, blocking data movement to projects outside the perimeter even when valid IAM credentials are presented — the exact control EHR Healthcare needs to mitigate phished-credential exfiltration of PHI. Option B is wrong because IAM alone (including uniform bucket-level access and column-level IAM) is identity-based and is bypassed when an attacker has valid credentials; it does not implement a perimeter. Option C is wrong because Access Transparency provides post-hoc visibility into Google support access, not a preventive control against customer-side exfiltration, and key rotation does not prevent exfiltration. Option D is wrong because client-side encryption with HSM-managed keys does not stop a credentialed user from exporting ciphertext-plus-decryption-context out of the perimeter, and it abandons managed Google Cloud data services that EHR Healthcare already depends on.",
+      "category": "Designing for security and compliance",
+      "difficulty": "easy",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-008",
+      "question": "EHR Healthcare's users are managed via Microsoft Active Directory on-premises. The platform team wants employees to keep using their existing AD credentials to access Google Cloud resources during and after the migration, without manually creating Cloud Identity users. Which approach is the most appropriate identity strategy?",
+      "options": [
+        "Provision Cloud Identity by configuring Google Cloud Directory Sync (GCDS) to provision users and groups from on-premises Active Directory, then federate authentication to AD via SAML so employees use AD credentials to sign in",
+        "Export the Active Directory user list to a CSV file once and manually create matching Cloud Identity users for every employee, then maintain the mapping spreadsheet whenever AD changes occur",
+        "Skip Cloud Identity entirely and grant every employee access to Google Cloud through their personal Google account, mapping permissions by email convention so AD remains the only identity store",
+        "Run Active Directory Domain Services on Compute Engine and have every Google Cloud resource authenticate users directly through LDAP, eliminating the need to federate identities with Cloud Identity"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Google Cloud Directory Sync (GCDS) provisions users and groups from on-premises Active Directory into Cloud Identity, and SAML-based federation to AD (typically via AD Federation Services) lets EHR Healthcare's employees sign in to Google Cloud with their existing AD credentials. This is the documented Google pattern for AD-backed identity and meets EHR Healthcare's stated environment without rebuilding the directory. Option B is wrong because manual CSV-driven user provisioning does not scale, drifts immediately, and leaves no automated lifecycle (joiner/mover/leaver) integration with AD. Option C is wrong because relying on personal Google accounts bypasses corporate identity controls, breaks auditability, and does not satisfy EHR Healthcare's regulatory-compliance posture. Option D is wrong because Google Cloud services authenticate against Cloud Identity, not LDAP directly; running AD DS on Compute Engine still requires GCDS plus federation for cloud sign-in.",
+      "category": "Designing for security and compliance",
+      "difficulty": "medium",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-009",
+      "question": "EHR Healthcare's compliance team requires that the encryption keys protecting PHI at rest be controlled by EHR Healthcare and rotated on a fixed schedule independent of Google. The architect must select an encryption-key approach that works across Cloud Storage, BigQuery, Cloud SQL, and Persistent Disks used by the GKE workloads. Which approach is the most appropriate?",
+      "options": [
+        "Configure Cloud KMS with customer-managed encryption keys (CMEK) and apply them to the relevant Cloud Storage buckets, BigQuery datasets, Cloud SQL instances, and Persistent Disks, automating key rotation through a defined CMEK rotation schedule",
+        "Continue using Google-managed default encryption keys for every service and treat the existing AES-256 at-rest encryption as sufficient because EHR Healthcare's BAA already covers cryptographic controls",
+        "Use Secret Manager to store a single AES key as a secret and have each application read the secret to perform client-side encryption of PHI before writing to any storage backend, removing any need for KMS",
+        "Configure each Cloud Storage bucket with customer-supplied encryption keys (CSEK) only and accept that BigQuery, Cloud SQL, and Persistent Disks will keep using default Google-managed keys"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Cloud KMS with customer-managed encryption keys (CMEK) is supported across Cloud Storage, BigQuery, Cloud SQL, and Persistent Disks, and CMEK with a configured rotation schedule gives EHR Healthcare ownership of the key material and rotation cadence required by its compliance team. Option B is wrong because while default Google-managed encryption is real, it does not give EHR Healthcare control over the key or rotation schedule and so does not satisfy the stated requirement. Option C is wrong because pushing client-side AES encryption to every application is a substantial development effort, breaks integration with managed services (e.g., BigQuery analytics, Cloud SQL native indexing) and provides no centralized key lifecycle. Option D is wrong because CSEK is supported only on a narrow set of services (notably Cloud Storage and Compute Engine disks) and does not cover BigQuery or Cloud SQL CMEK requirements, leaving most of EHR Healthcare's PHI under default keys.",
+      "category": "Designing for security and compliance",
+      "difficulty": "medium",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-010",
+      "question": "EHR Healthcare commits to a minimum 99.9% availability for all customer-facing systems and the SRE team is publishing the first Service Level Objective (SLO) for the GKE-based patient portal. Which approach best defines this initial availability SLO in a way that reflects the business commitment and real user experience?",
+      "options": [
+        "Define the SLO as the ratio of customer HTTP requests to the patient portal that return a non-5xx status within a documented latency budget over total valid requests, with a 99.9% target measured over a rolling 28-day window",
+        "Define the SLO as the percentage of Cloud Monitoring uptime checks from a single region that return a 200 over the last 24 hours, alerting whenever any probe fails so the team always responds quickly",
+        "Define the SLO as the CPU utilization of the GKE node pool staying below 80% for 99.9% of the time, since saturation is the strongest leading indicator of patient-portal availability",
+        "Defer publishing an SLO for 12 months until the team has accumulated a full year of production traffic, at which point a statistically rigorous target can be derived from long-term trends"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because a customer-facing SLO should be expressed as a ratio of good events to total events using real user traffic, with a defined latency budget and a rolling measurement window; the 99.9% target and 28-day window match EHR Healthcare's business commitment and SRE practice. Option B is wrong because synthetic uptime checks measure probe reachability, not real user traffic, and alerting on every probe failure ignores the error-budget framework. Option C is wrong because CPU utilization is a saturation signal, not a user-facing availability indicator; high CPU does not mean requests are succeeding. Option D is wrong because delaying SLOs for 12 months prevents EHR Healthcare from using error budgets to make engineering and rollout decisions; SRE practice is to publish an initial SLO based on baseline data and iterate.",
+      "category": "Ensuring solution and operations excellence",
+      "difficulty": "medium",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-011",
+      "question": "EHR Healthcare's monitoring is currently done via various open-source tools, and alerts are sent via email and are often ignored. The SRE lead is migrating to Cloud Operations and wants to make alert fatigue measurably lower by aligning alerts to error-budget consumption on the 99.9% patient-portal SLO. Which alerting configuration most faithfully implements the SRE workbook recommendation for a 'fast burn' page on a 30-day SLO window?",
+      "options": [
+        "Configure a multi-window, multi-burn-rate alert that pages on-call when the 1-hour burn rate exceeds 14.4x and the 5-minute burn rate also exceeds 14.4x, corresponding to consuming 2% of the 30-day error budget inside the short window",
+        "Send an email alert any time the 24-hour request error rate rises above 0.1% so that any small breach over a long window triggers a notification to the entire engineering distribution list",
+        "Page on-call any time the 30-day rolling SLO compliance drops below 99.9%, ensuring that no alert fires until the customer-facing SLA is already breached and customers are clearly impacted",
+        "Page on-call any time a single GKE node reports above 80% CPU for one minute, because saturation correlates closely enough with portal availability to act as a leading SLO signal"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because multi-window, multi-burn-rate alerting (e.g., 1-hour burn rate gated by a 5-minute burn rate, both above 14.4x for a 30-day 99.9% SLO) is the documented SRE workbook recommendation for a fast-burn page: it catches rapid budget consumption (~2% in the alerting window) without firing on transient blips, directly attacking the alert-fatigue problem at EHR Healthcare. Option B is wrong because email-only alerts on a long 24-hour window reproduce the exact failure mode EHR Healthcare is trying to escape (ignored email alerts) and do not align to error-budget burn. Option C is wrong because alerting only when the 30-day SLO is already breached defeats the purpose of an SLO — by then customers are impacted and the error budget is exhausted. Option D is wrong because CPU saturation is not a user-facing SLI; paging on node CPU bypasses the SLO entirely and reintroduces noisy operational alerts.",
+      "category": "Ensuring solution and operations excellence",
+      "difficulty": "hard",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-012",
+      "question": "EHR Healthcare's data layer is a mixture of MySQL, MS SQL Server, Redis, and MongoDB hosted in the colocation facilities. The migration architect needs to move these databases to Google Cloud and is selecting target services and migration tools. Which two statements describe the most appropriate combinations? (Choose two.)",
+      "options": [
+        "Migrate MongoDB to BigQuery by exporting collections to JSON every night and treat BigQuery as the new operational store, since BigQuery now supports MongoDB-compatible queries for live workloads",
+        "Use Database Migration Service to perform a minimal-downtime migration of MySQL and SQL Server into Cloud SQL for MySQL and Cloud SQL for SQL Server, taking advantage of native change-data-capture for the cutover",
+        "Migrate every database to Spanner by rewriting application data access layers to use Spanner's SQL dialect, because Spanner is the only Google Cloud database that can meet a 99.9% availability target",
+        "Migrate Redis workloads to Memorystore for Redis (or Memorystore for Redis Cluster, depending on scale) and use a tool such as RIOT to perform a managed cutover from the on-premises Redis instances"
+      ],
+      "correctAnswers": [1, 3],
+      "explanation": "Option A is wrong because BigQuery is an analytical warehouse, not an operational document store, and is not MongoDB-compatible for live transactional workloads; moving MongoDB to BigQuery would break customer-facing applications. Option B is correct because Database Migration Service supports MySQL into Cloud SQL for MySQL and SQL Server into Cloud SQL for SQL Server with continuous change-data-capture, allowing EHR Healthcare to perform a minimal-downtime cutover from the colocation facility — the exact pattern the migration plan needs for those two engines. Option C is wrong because Spanner is not the only database that can meet 99.9% on Google Cloud — Cloud SQL HA, Memorystore HA, and Bigtable all meet 99.9% — and forcing a rewrite of every application to Spanner is far more disruption than EHR Healthcare's plan allows. Option D is correct because Memorystore for Redis (and Memorystore for Redis Cluster for higher scale) is the documented managed target for Redis on Google Cloud, and tools such as RIOT or replication-based cutover allow EHR Healthcare to migrate the cache tier with minimal disruption.",
+      "category": "Managing implementation",
+      "difficulty": "medium",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-013",
+      "question": "A business priority for EHR Healthcare is to on-board new insurance providers as quickly as possible by exposing standardized APIs for ingest and integration. The team wants centralized API lifecycle management, developer portal access for new partners, traffic policies, and analytics across every provider integration. Which Google Cloud product should they adopt?",
+      "options": [
+        "Apigee API Management, fronting the new ingestion APIs with policies, quota and rate limiting, OAuth-based partner authentication, and a developer portal that lets insurance providers self-serve credentials and documentation",
+        "Cloud Endpoints alone with API keys distributed manually to each insurance provider over email, because Endpoints is sufficient for any provider-facing API regardless of governance requirements",
+        "Cloud Functions exposed directly to the public internet with no gateway, since serverless endpoints already include quota enforcement, partner key issuance, and a developer portal out of the box",
+        "Internal Application Load Balancer with a single shared OAuth client used across all insurance providers, accepting that quota and per-provider analytics will have to be implemented inside each backend service"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Apigee API Management is Google Cloud's full API platform: it provides traffic policies, quota and rate limiting, OAuth-based partner authentication, a developer portal, and end-to-end analytics — exactly what EHR Healthcare needs to onboard new insurance providers quickly with consistent governance. Option B is wrong because Cloud Endpoints is a lightweight gateway and does not include a partner developer portal or rich lifecycle management; emailing API keys is not an acceptable onboarding workflow for a healthcare SaaS. Option C is wrong because Cloud Functions exposed directly to the public internet have neither a developer portal nor partner key issuance built in, and serverless endpoints alone do not deliver per-provider quota and analytics. Option D is wrong because an Internal Application Load Balancer is not internet-reachable to insurance providers, sharing a single OAuth client across all partners breaks isolation, and pushing analytics and quota into each backend recreates the manual sprawl EHR Healthcare is trying to leave behind.",
+      "category": "Managing implementation",
+      "difficulty": "easy",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-014",
+      "question": "EHR Healthcare's technical requirements include the ability to dynamically scale and provision new environments — for example, when on-boarding a new insurance provider that needs a dedicated set of ingest infrastructure. The platform team wants every environment to be reproducible, peer-reviewable, and consistent across production, staging, and provider sandboxes. Which approach should they adopt?",
+      "options": [
+        "Have engineers click through the Google Cloud console to create each new environment, taking screenshots in a runbook so that another engineer can re-create the environment by following the screenshots",
+        "Use Terraform to define every Google Cloud resource as code, store the modules in a Git repository, and apply changes through a CI/CD pipeline that runs plans on pull requests and applies on merge",
+        "Use ad hoc gcloud shell scripts maintained by each provider-onboarding engineer on their workstation, sharing snippets through chat whenever a new provider environment must be stood up",
+        "Provision every environment manually with Deployment Manager templates copied into each project, hand-editing the YAML for each new insurance provider because no two providers are identical"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because console-click provisioning is not reproducible, is not peer-reviewable, and inevitably drifts between environments — directly contrary to EHR Healthcare's requirement for dynamic, consistent provisioning. Option B is correct because Terraform (Google's recommended infrastructure-as-code approach for Google Cloud) defines every resource as code, supports modular reuse across environments, is peer-reviewable in Git, and integrates with CI/CD to apply changes safely; this is the documented pattern for repeatable environment provisioning that lets EHR Healthcare onboard new insurance providers quickly. Option C is wrong because ad hoc shell scripts on engineer laptops are not version controlled, are not peer reviewed, and produce inconsistent environments. Option D is wrong because Deployment Manager is no longer the recommended Google Cloud IaC path (Google now recommends Terraform with Infrastructure Manager for managed runs), and manual YAML editing per provider abandons the reproducibility EHR Healthcare needs.",
+      "category": "Managing implementation",
+      "difficulty": "medium",
+      "caseStudyId": "ehr-healthcare"
+    },
+    {
+      "id": "pca-cs-ehr-healthcare-015",
+      "question": "EHR Healthcare's existing monitoring uses various open-source tools and alerts are sent via email and are often ignored. The SRE lead is rebuilding alerting around the new 99.9% SLOs and wants on-call to be paged through a real incident-management workflow, not email, with alert noise reduced and missed alerts treated as a learning opportunity rather than blame. Which combination of practices should the team adopt?",
+      "options": [
+        "Configure Cloud Monitoring alerting policies to route fast-burn SLO alerts to PagerDuty through a webhook integration, deduplicate by incident, and run blameless postmortems for every missed or ignored alert with the goal of finding and fixing systemic causes",
+        "Add more on-call engineers to the email distribution list so that every alert is more likely to be read by someone, and discipline engineers who do not respond to the email within fifteen minutes",
+        "Route every Cloud Monitoring alert to a single shared inbox monitored by a rotating volunteer, and rely on engineers' goodwill to scan the inbox between coding tasks throughout the workday",
+        "Disable Cloud Monitoring alerting entirely and instead schedule daily 15-minute Slack standups where engineers can read out a summary of the previous day's incidents, removing the need for real-time pages"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because routing fast-burn SLO alerts from Cloud Monitoring to PagerDuty via a webhook integration delivers real on-call paging (not email), and adopting blameless postmortems for missed or ignored alerts is the SRE practice for converting alert misses into systemic fixes — directly attacking EHR Healthcare's existing 'alerts via email and ignored' pattern while aligning to the new 99.9% SLO error budget. Option B is wrong because adding more emails to a distribution list amplifies noise and discipline-based culture worsens psychological safety, neither of which reduces missed alerts. Option C is wrong because a shared inbox watched by a volunteer is not real-time paging and does not satisfy 99.9% SLO incident-response expectations. Option D is wrong because disabling alerting in favor of daily standups removes any timely incident response and guarantees customer-facing breaches will go undetected, violating the 99.9% commitment.",
+      "category": "Ensuring solution and operations excellence",
+      "difficulty": "hard",
+      "caseStudyId": "ehr-healthcare"
+    }
+  ]
+}

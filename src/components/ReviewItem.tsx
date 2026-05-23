@@ -9,9 +9,10 @@ interface ReviewItemProps {
   selected: number[]
   flagged: boolean
   index: number
+  caseStudyTitle?: string
 }
 
-function ReviewItem({ question, selected, flagged, index }: ReviewItemProps) {
+function ReviewItem({ question, selected, flagged, index, caseStudyTitle }: ReviewItemProps) {
   const [expanded, setExpanded] = useState(false)
 
   const isCorrect =
@@ -148,6 +149,15 @@ function ReviewItem({ question, selected, flagged, index }: ReviewItemProps) {
             <Badge variant="outline" className="capitalize">
               {question.difficulty}
             </Badge>
+            {question.caseStudyId && caseStudyTitle && (
+              <Badge
+                variant="outline"
+                className="border-[#4285F4]/60 text-foreground"
+                title={caseStudyTitle}
+              >
+                <span className="inline-block max-w-40 truncate">{caseStudyTitle}</span>
+              </Badge>
+            )}
             {flagged && (
               <Badge variant="outline" className="text-yellow-600 border-yellow-500">
                 <Flag className="h-3 w-3 mr-1" />

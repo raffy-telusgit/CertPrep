@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import QuestionCard from '@/components/QuestionCard'
 import Timer from '@/components/Timer'
+import CaseStudyPanel from '@/components/CaseStudyPanel'
 import { getExamById } from '@/data/exams'
 import CertBot from '@/components/CertBot/CertBot'
 
@@ -34,6 +35,7 @@ function ExamRunner() {
 
   const [showAnswer, setShowAnswer] = useState(false)
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false)
+  const [expandedCaseStudyId, setExpandedCaseStudyId] = useState<string | null>(null)
 
   // Transition state for question fade/slide animation
   const [displayIdx, setDisplayIdx] = useState(currentQuestionIndex)
@@ -60,6 +62,17 @@ function ExamRunner() {
     setShowAnswer(false)
     ;(document.activeElement as HTMLElement | null)?.blur()
   }, [currentQuestionIndex])
+
+  // Auto-expand case study panel on first question of a new cluster
+  const prevCaseStudyIdRef = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    const displayQuestion = currentSession?.questions[currentQuestionIndex]
+    const csId = displayQuestion?.caseStudyId
+    if (csId && csId !== prevCaseStudyIdRef.current) {
+      setExpandedCaseStudyId(csId)
+    }
+    prevCaseStudyIdRef.current = csId
+  }, [currentQuestionIndex, currentSession])
 
   // Keyboard shortcuts — capture phase so we run before Radix listeners
   useEffect(() => {
@@ -175,6 +188,22 @@ function ExamRunner() {
         </div>
         <Progress value={((currentQuestionIndex + 1) / total) * 100} className="h-2" />
       </div>
+
+      {/* Case study panel — only when the current question has a caseStudyId */}
+      {(() => {
+        const csId = displayQuestion?.caseStudyId
+        if (!csId) return null
+        const sessionCaseStudies = currentSession.caseStudies ?? []
+        const caseStudy = sessionCaseStudies.find((cs) => cs.id === csId)
+        if (!caseStudy) return null
+        return (
+          <CaseStudyPanel
+            caseStudy={caseStudy}
+            expanded={expandedCaseStudyId === caseStudy.id}
+            onToggle={(open) => setExpandedCaseStudyId(open ? caseStudy.id : null)}
+          />
+        )
+      })()}
 
       {/* Question card with fade + slide transition */}
       <div

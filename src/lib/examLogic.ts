@@ -1,4 +1,4 @@
-import type { ExamSession, Question, QuestionBankFile } from '@/types'
+import type { CaseStudy, ExamSession, Question, QuestionBankFile } from '@/types'
 import { getExamById } from '@/data/exams'
 
 export interface SessionScore {
@@ -62,7 +62,15 @@ export function formatDuration(seconds: number): string {
   return `${m}m ${s}s`
 }
 
-export async function loadQuestionBank(examId: string): Promise<Question[]> {
+export interface LoadedBank {
+  questions: Question[]
+  caseStudies: CaseStudy[]
+}
+
+export async function loadQuestionBank(examId: string): Promise<LoadedBank> {
   const module = (await import(`@/data/questions/${examId}.json`)) as { default: QuestionBankFile }
-  return module.default.questions
+  return {
+    questions: module.default.questions,
+    caseStudies: module.default.caseStudies ?? [],
+  }
 }

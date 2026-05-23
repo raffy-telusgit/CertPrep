@@ -1,0 +1,229 @@
+{
+  "questions": [
+    {
+      "id": "pca-cs-cymbal-retail-001",
+      "question": "Cymbal Retail needs a storage tier for the millions of supplier-provided product photos and gen-AI-generated image variations that feed the catalog. The workload pattern is write-once, read-many from the storefront CDN, with frequent reads for the first 30 days after upload and infrequent reads after 90 days. Which storage design best fits this access pattern?",
+      "options": [
+        "Store all supplier and generated images on a regional Persistent Disk attached to a GKE pod that streams files to the storefront CDN through a NodePort Service, scaling the disk up as the catalog grows",
+        "Store images in a multi-regional Filestore Enterprise instance mounted to the catalog service pods over NFS so the storefront CDN can pull files directly from the mount",
+        "Store images in a multi-region Cloud Storage bucket with lifecycle rules to Nearline after 30 days and Coldline after 90 days, fronted by Cloud CDN",
+        "Store images in BigQuery as base64-encoded BYTES columns alongside product metadata so a single query returns both the description and the image binary for the storefront"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because Persistent Disk is block storage tied to a single zone (regional PD spans two zones), does not serve traffic directly to a CDN, and does not auto-tier by access age. Option B is wrong because Filestore is a paid NFS service intended for POSIX workloads such as render farms or lift-and-shift, not for serving static web assets at retail-catalog scale; it is far more expensive than Cloud Storage and does not natively integrate with Cloud CDN. Option C is correct because Cloud Storage with Object Lifecycle Management is the standard pattern for image catalogs: the multi-region location gives high availability for the storefront, Nearline and Coldline lower the cost of older variations Cymbal still must keep, and Cloud CDN integrates directly with the bucket. Option D is wrong because storing binary images in BigQuery defeats columnar analytics, inflates storage and query cost, and BigQuery is not a content-serving system for an e-commerce CDN.",
+      "category": "Designing and planning a cloud solution architecture",
+      "difficulty": "easy",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-002",
+      "question": "Cymbal Retail's product catalog runs on a MySQL database hosted in their on-premises data center. The team wants to migrate to a fully managed Google Cloud database that supports their existing MySQL schemas with minimal application rewrites while also enabling low-latency reads for the catalog browse path. Which target service best fits?",
+      "options": [
+        "Migrate to Cloud Spanner using the PostgreSQL interface so Cymbal gets globally distributed strong consistency and horizontal scale for the catalog",
+        "Migrate to Cloud SQL for MySQL with regional read replicas, keeping the schema and SQL dialect intact",
+        "Migrate to AlloyDB for PostgreSQL, which is wire-compatible with PostgreSQL and uses a columnar engine for fast analytical workloads",
+        "Migrate to Bigtable so the catalog browse path benefits from single-digit-millisecond row lookups at any scale Cymbal needs"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Spanner's PostgreSQL interface still requires schema and query changes from MySQL and Spanner targets global, strongly consistent workloads at a price point above Cymbal's catalog needs. Option B is correct because Cloud SQL for MySQL is the managed equivalent of Cymbal's existing engine, preserving the schema and SQL dialect, and read replicas in close regions deliver the low-latency catalog browse experience the storefront requires. Option C is wrong because AlloyDB is PostgreSQL-compatible, not MySQL-compatible; migrating to it would force a dialect change and schema rewrite that contradicts the stated minimal-rewrite goal. Option D is wrong because Bigtable is a wide-column NoSQL store with no SQL or relational schema; the catalog application queries names and categories through joins that Bigtable cannot serve without a full rewrite.",
+      "category": "Designing and planning a cloud solution architecture",
+      "difficulty": "medium",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-003",
+      "question": "Cymbal Retail uses Redis on-premises as a cache in front of the product catalog database to keep browse-page latency low. As part of the technical-stack modernization, the team wants to move the cache to Google Cloud without changing the Redis client libraries already in their applications. Which approach should they take?",
+      "options": [
+        "Run open-source Redis in a self-managed GKE StatefulSet behind a headless Service, with persistent volumes for the AOF and snapshots",
+        "Migrate the cache to Memorystore for Redis, which is fully managed and speaks the Redis protocol so existing clients connect unchanged",
+        "Replace Redis with Firestore in Datastore mode, configured with high write throughput so it behaves like an in-memory cache for the catalog",
+        "Replace Redis with Memorystore for Memcached because Memcached delivers higher throughput than Redis for read-heavy catalog workloads"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because self-managing Redis on GKE shifts the operational burden of patching, failover, persistence, and capacity planning onto Cymbal, contradicting the modernization goal of reducing manual effort. Option B is correct because Memorystore for Redis is the Google Cloud managed Redis service: it is wire-compatible with the open-source Redis protocol, so Cymbal's existing Redis client libraries continue to work, and it provides managed HA, failover, and patching. Option C is wrong because Firestore in Datastore mode is a NoSQL document database, not an in-memory cache; latency, cost, and access patterns all differ from Redis. Option D is wrong because Memcached lacks the data structures, persistence, and replication features Cymbal already depends on in Redis, and changing protocols would require client library changes.",
+      "category": "Designing and planning a cloud solution architecture",
+      "difficulty": "medium",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-004",
+      "question": "Cymbal Retail's executive team has classified the product catalog and order systems as Tier 1: a regional outage must not stop customers from browsing or placing orders. The architecture team must define a business continuity posture for the migrated catalog database. Which TWO actions together best meet this requirement? (Choose two.)",
+      "options": [
+        "Run Cloud SQL for MySQL as a single zonal instance and rely on automated backups to restore service after a regional outage event",
+        "Configure the Cloud SQL for MySQL primary as a regional HA instance and add cross-region read replicas that can be promoted on failover",
+        "Front the storefront with an external Application Load Balancer using serverless NEGs and Cloud Run services in multiple regions",
+        "Store the catalog only in a multi-region Cloud Storage bucket and have the storefront read product data directly from JSON files served from the bucket"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Option A is wrong because a single zonal instance fails when its zone fails and backups give an RPO measured in hours, which violates the Tier 1 requirement. Option B is correct because a Cloud SQL HA (regional) configuration survives zone failure within a region and cross-region read replicas can be promoted to recover from a regional failure, giving the catalog database a regional-resilience posture. Option C is correct because pairing the database posture with a multi-region front end via an external Application Load Balancer and serverless NEGs ensures customer traffic can still reach a healthy region during a regional outage. Option D is wrong because static JSON in Cloud Storage cannot satisfy the relational query patterns Cymbal's storefront uses, and it does not address the database tier at all.",
+      "category": "Designing and planning a cloud solution architecture",
+      "difficulty": "hard",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-005",
+      "question": "Cymbal Retail wants to automate the catalog and content enrichment pipeline so that supplier feeds are processed into structured product attributes, descriptions, and category-aligned tags. The team needs a managed, repeatable workflow that orchestrates Vertex AI prompts, evaluation steps, and writes the results to the catalog database with full lineage. Which service should they use?",
+      "options": [
+        "Cloud Composer DAGs that shell out to gcloud commands to call Vertex AI endpoints and then run bash scripts to update the catalog rows",
+        "Cloud Run jobs triggered by Pub/Sub that each invoke a separate prompt and write results directly to Cloud SQL with no orchestration layer between them",
+        "Cloud Workflows steps that call Vertex AI generative-model REST endpoints, leaving retry, evaluation, and lineage tracking to the application code",
+        "Vertex AI Pipelines using the KFP SDK to orchestrate prompt steps, evaluation, HITL routing, and catalog writes with built-in lineage"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because Cloud Composer with bash-style shell-outs is brittle, lacks ML lineage tracking, and ignores the purpose-built ML orchestration capabilities Vertex AI Pipelines provides. Option B is wrong because Cloud Run jobs with no orchestrator make ordering, retries, and lineage the developer's problem, and writing directly to Cloud SQL bypasses the HITL review the case requires. Option C is wrong because Cloud Workflows can call Vertex AI, but it does not provide the ML-specific evaluation, parameter tracking, or component reuse that an attribute-generation pipeline needs at catalog scale. Option D is correct because Vertex AI Pipelines is the purpose-built managed orchestrator for ML workflows: components, parameters, and artifacts are tracked in Vertex ML Metadata, retries and conditional branching are built in, and HITL approval steps can be modeled as pipeline components before the catalog write.",
+      "category": "Managing and provisioning a cloud solution infrastructure",
+      "difficulty": "medium",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-006",
+      "question": "Cymbal Retail wants to generate alternative product images from a single supplier-provided base image, supporting tasks such as background swaps, color variations, and text overlays for promotional copy. Compliance requires that the model never train on Cymbal's image data and that all generations stay within their Google Cloud project. Which approach satisfies the requirements?",
+      "options": [
+        "Call a third-party public image-generation API from a Cloud Run service that uploads each base image to the provider and stores the result in a Cloud Storage bucket for the storefront",
+        "Fine-tune an open-source diffusion model on a GKE GPU node pool using current supplier images as training data, then serve it through a custom Flask endpoint with autoscaling",
+        "Use Vertex AI's Generative AI Studio in playground mode by uploading images interactively so associates can generate variations one product at a time through the console",
+        "Use Imagen on Vertex AI for image generation and editing through the Vertex AI API, with project-scoped governance and no training on customer data"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because routing supplier images to a third-party API moves Cymbal's catalog data outside their project boundary and conflicts with the requirement that generations stay within their Google Cloud project. Option B is wrong because self-hosting and fine-tuning a diffusion model on GKE adds significant infrastructure, MLOps, and safety-tuning work that Cymbal's modernization goals explicitly try to avoid. Option C is wrong because Generative AI Studio playground is for ad-hoc exploration, not the automated, programmatic image-variation pipeline a catalog of Cymbal's scale needs. Option D is correct because Imagen on Vertex AI provides the required image generation, background editing, and color and text-overlay capabilities through a managed API, and Vertex AI's data governance explicitly states that customer data sent to foundation models is not used to train Google's base models.",
+      "category": "Managing and provisioning a cloud solution infrastructure",
+      "difficulty": "hard",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-007",
+      "question": "Cymbal Retail wants to replace the current category-search experience with natural-language product discovery: a shopper types or speaks a request like 'lightweight waterproof jacket for spring hiking under 100 dollars' and gets ranked, relevant product results. The team prefers a Google Cloud product purpose-built for retail product discovery rather than building a generic search stack. Which service should they adopt?",
+      "options": [
+        "Build a custom semantic search index on top of OpenSearch deployed on a GKE cluster, using embeddings generated from Vertex AI text models for the catalog",
+        "Adopt Vertex AI Search for commerce (Discovery AI for retail), ingesting the catalog to serve natural-language queries and ranked product results",
+        "Use BigQuery ML's CREATE MODEL with text embeddings and run vector_search functions inside SQL queries triggered by each storefront request",
+        "Use Vertex AI Vector Search alone with a custom retrieval service the team writes to score and rank results for each customer query"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because building OpenSearch with custom embeddings on GKE reintroduces exactly the kind of self-managed infrastructure Cymbal's modernization aims to eliminate, and it lacks retail-specific ranking signals. Option B is correct because Vertex AI Search for commerce (also marketed as Discovery AI for retail) is Google's purpose-built product-discovery service: it ingests retail product catalogs, supports natural-language queries, and provides retail-tuned ranking, recommendations, and merchandising controls out of the box, exactly matching the case requirement. Option C is wrong because BigQuery is an analytical warehouse; running vector search inside SQL on every storefront query would create latency and cost characteristics that are inappropriate for an interactive shopping experience. Option D is wrong because Vector Search alone is a vector database; it does not include retail-specific ranking, browse, recommendations, or merchandising controls, so the team would still have to build the discovery layer themselves.",
+      "category": "Managing and provisioning a cloud solution infrastructure",
+      "difficulty": "medium",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-008",
+      "question": "Cymbal Retail processes customer credit-card transactions, so the new Google Cloud environment must be designed for PCI DSS compliance. The team is deciding where to place the cardholder data environment (CDE) and how to limit its scope. Which design best reduces PCI scope while still meeting business needs?",
+      "options": [
+        "Run the entire storefront, catalog, and payment-processing workloads in a single project with broad IAM roles so that on-call engineers can debug across services quickly during peak shopping events",
+        "Place all GKE clusters and Cloud SQL instances into one shared VPC and one project, relying on Cloud Audit Logs alone to demonstrate PCI segmentation to assessors",
+        "Isolate payment processing into a dedicated project and VPC with Assured Workloads guardrails, restrict CDE access via IAM and VPC Service Controls, and tokenize PANs through a PCI-certified provider",
+        "Store full primary account numbers in Cloud SQL with column-level encryption keys managed by Cloud KMS and grant the storefront service account direct read access for performance reasons"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because broad IAM and a single shared project make every workload part of the cardholder data environment, expanding PCI scope to the entire estate. Option B is wrong because a single VPC and project with only audit logs does not provide the network segmentation, identity controls, or data-flow boundaries PCI DSS requires to limit CDE scope. Option C is correct because PCI scope reduction is achieved by isolating the CDE in its own project and VPC, applying strong identity boundaries with IAM and VPC Service Controls, and using tokenization so non-CDE systems hold only tokens rather than primary account numbers, which is the Google-recommended pattern for PCI-bound retail workloads. Option D is wrong because storing primary account numbers in the application database keeps the storefront inside CDE scope and increases blast radius if credentials are leaked; tokenization with a PCI-certified provider is the standard mitigation.",
+      "category": "Designing for security and compliance",
+      "difficulty": "medium",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-009",
+      "question": "Cymbal Retail wants to make sure the supplier feeds and customer-conversation transcripts going into the generative-AI catalog and conversational-commerce pipelines do not accidentally leak personally identifiable information such as customer names, email addresses, or phone numbers into prompts and stored artifacts. Which Google Cloud capability should they apply?",
+      "options": [
+        "Sensitive Data Protection (formerly Cloud DLP) inspection and de-identification templates run on supplier feeds and transcripts before they reach Vertex AI",
+        "Cloud KMS customer-managed encryption keys on the Cloud Storage buckets that hold the feeds so the data is encrypted at rest with Cymbal-managed keys throughout the pipeline",
+        "VPC Service Controls perimeter around the Vertex AI APIs so prompts and outputs cannot move outside the configured perimeter under any service account",
+        "Binary Authorization policies on the catalog-enrichment GKE workloads so only signed container images are allowed to call the Vertex AI API endpoints"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Sensitive Data Protection (formerly Cloud DLP) is Google Cloud's managed service for discovering and de-identifying sensitive data such as names, emails, phone numbers, and government IDs; running inspection and de-identification templates on supplier feeds and conversation transcripts before they reach Vertex AI prevents PII from being included in prompts and artifacts. Option B is wrong because customer-managed encryption keys protect data at rest but do nothing to keep PII out of prompt text or generated outputs. Option C is wrong because VPC Service Controls restrict where data can be sent but do not classify or remove PII within data that is allowed to flow. Option D is wrong because Binary Authorization controls which container images can run, not what payload they send; it does not address PII inside prompts.",
+      "category": "Designing for security and compliance",
+      "difficulty": "medium",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-010",
+      "question": "Cymbal Retail's HITL associates need a web UI where they can review and approve gen-AI-generated product attributes, descriptions, and images before the catalog is updated. The UI must be accessible only to authenticated Cymbal employees, and the team wants to avoid exposing it on the public internet without an identity check. Which approach best fits?",
+      "options": [
+        "Deploy the HITL UI to Cloud Run and front it with Identity-Aware Proxy, granting access through the company's Cloud Identity group for retail associates",
+        "Deploy the HITL UI to App Engine and rely on a long, hard-to-guess URL so only associates who have been told the URL can reach the review screens",
+        "Deploy the HITL UI as a public Cloud Run service and put a self-managed username-and-password form on the landing page for associates",
+        "Deploy the HITL UI to an internal-only GKE Service and require associates to use a VPN client whenever they need to review generated catalog content"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Identity-Aware Proxy enforces authentication and authorization for HTTPS applications at the edge using Cloud Identity, supports group-based access for the HITL associate role, and works natively with Cloud Run, App Engine, GKE, and Compute Engine backends, removing the need to build authentication into the application. Option B is wrong because security by URL obscurity provides no real protection; anyone who learns or guesses the URL reaches the UI. Option C is wrong because rolling a custom username and password form recreates well-understood authentication risks (password storage, MFA, account lockout) and bypasses Cymbal's existing identity platform. Option D is wrong because VPN-only access is operationally heavier than IAP, ties UI access to a network appliance, and still does not provide per-user authorization controls without additional identity integration.",
+      "category": "Designing for security and compliance",
+      "difficulty": "easy",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-011",
+      "question": "Cymbal Retail's leadership has approved retiring the legacy file-based ETL and SFTP integrations in favor of a modern CI/CD-driven data pipeline. The architecture team must propose changes that reduce manual work and align with the modernization goals. Which TWO actions together best support this transition? (Choose two.)",
+      "options": [
+        "Lift-and-shift the existing SFTP server and ETL scripts into Compute Engine VMs and leave the cron schedule and processing logic unchanged for the foreseeable future",
+        "Keep the existing ETL on-premises and add a one-way Cloud Interconnect-based replica into BigQuery so cloud-side reports and dashboards can read the same data",
+        "Re-implement supplier ingestion as event-driven pipelines using Cloud Storage triggers, Eventarc, and Cloud Run services managed in Git and deployed via Cloud Build",
+        "Adopt Cloud Build to build and test catalog-enrichment containers, with Cloud Deploy promoting them across dev, staging, and production GKE environments"
+      ],
+      "correctAnswers": [2, 3],
+      "explanation": "Option A is wrong because moving SFTP and the legacy ETL logic to VMs preserves the manual error-prone process Cymbal is trying to retire; it is lift-and-shift without modernization. Option B is wrong because keeping the legacy ETL on-premises and just replicating its output postpones the modernization rather than achieving it, and it does not reduce the underlying manual effort. Option C is correct because event-driven ingestion through Cloud Storage triggers, Eventarc, and Cloud Run replaces scheduled SFTP and batch ETL with declarative, source-controlled services and removes manual file handling. Option D is correct because Cloud Build with Cloud Deploy gives Cymbal a managed CI/CD platform with promotion across environments and replaces ad-hoc deployments to GKE, which is exactly what the technical-stack modernization goal calls for.",
+      "category": "Analyzing and optimizing technical and business processes",
+      "difficulty": "hard",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-012",
+      "question": "Cymbal Retail is preparing a business case to justify retiring on-premises database hosting in favor of managed Google Cloud services. The CFO wants the analysis to include both direct cost savings and the operational impact on staff. Which framing best represents the total economic case the architect should present?",
+      "options": [
+        "Compare only the monthly compute price between on-prem hardware depreciation and the equivalent Cloud SQL instance type, ignoring storage, networking, and labor costs across the entire three-year horizon",
+        "Compare only the rack and power costs of the existing data center against Cloud SQL list price, since labor will not change after migration in this team's experience",
+        "Compare full TCO (hardware refresh, facilities, licensing, backup and DR labor, headcount) against managed-service pricing with sustained-use and committed-use discounts, and quantify staff time freed",
+        "Compare the headline list price of Cloud SQL against a vendor-quoted price for an on-prem appliance refresh, assuming both run at 100% utilization for three years across all environments"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because comparing only monthly compute price ignores the dominant costs of running databases on-prem (storage, networking, backup, and most importantly labor) and the cloud discounts available for steady-state workloads. Option B is wrong because labor does change after migration: managed services remove patching, HA configuration, and backup tooling work, and any analysis that asserts labor stays constant is wrong. Option C is correct because a proper TCO comparison covers hardware refresh, facilities, licensing, backup and DR labor, and headcount versus managed-service pricing including sustained-use and committed-use discounts, and it quantifies the operational hours freed for higher-value work, which matches the case's cost-reduction business requirement. Option D is wrong because comparing list price to an idealized on-prem quote at 100% utilization for three years overstates on-prem efficiency and ignores discount programs and elasticity that change the comparison materially.",
+      "category": "Analyzing and optimizing technical and business processes",
+      "difficulty": "medium",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-013",
+      "question": "Cymbal Retail wants to expose the modernized product catalog through a managed API to internal mobile, web, and partner channels. Requirements include consistent authentication, per-consumer quota and rate limiting, API versioning, and developer-portal documentation. Which Google Cloud service should they adopt?",
+      "options": [
+        "Apigee, publishing the catalog API with API key and OAuth auth, per-consumer quotas, versioning, and a developer portal",
+        "An external Application Load Balancer with Cloud Armor rules manually maintained per consumer to enforce quotas and per-route rate limits across the catalog endpoints",
+        "Cloud Endpoints with ESPv2 sidecars on each catalog service plus bespoke developer documentation hosted on a separate Cloud Run static site for partners",
+        "Direct exposure of the catalog GKE Service through a public Ingress with quota and rate-limit enforcement implemented separately inside each catalog microservice"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Apigee is Google Cloud's full API management platform: it provides authentication policies (API key, OAuth), per-consumer quota and rate limiting, versioning, traffic management, and a developer portal out of the box, which is exactly the surface area Cymbal needs to expose the catalog API to internal and partner channels. Option B is wrong because an Application Load Balancer with Cloud Armor handles traffic and security policies but is not an API management product; it does not deliver consumer-level quotas, developer portals, or versioning workflows. Option C is wrong because Cloud Endpoints with ESPv2 is a lighter-weight API gateway and does not include the developer-portal, monetization, and lifecycle features Apigee provides; building those features on the side recreates Apigee badly. Option D is wrong because pushing rate-limit and quota logic into each microservice makes them inconsistent and harder to govern, and it provides no developer-facing surface.",
+      "category": "Managing implementation",
+      "difficulty": "easy",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-014",
+      "question": "Cymbal Retail must migrate its on-premises MySQL, Microsoft SQL Server, and MongoDB databases to managed services on Google Cloud with minimum downtime. The team wants a single Google-managed migration tool that supports the relational sources and uses continuous change-data-capture to keep source and target in sync until cutover. Which approach should they take?",
+      "options": [
+        "Use Datastream to stream change events into BigQuery and treat BigQuery as the new operational target for both the catalog and customer-order workloads going forward",
+        "Use Storage Transfer Service to copy nightly database dump files into Cloud Storage and import them into Cloud SQL during a long maintenance window for each engine",
+        "Use Database Migration Service with CDC for MySQL and SQL Server into Cloud SQL, and use MongoDB-native tools or a partner service for MongoDB",
+        "Use BigQuery Data Transfer Service to migrate all three database engines because it is presented as the single Google-managed transfer service for relational and document data"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because Datastream replicates change events for analytics and integration use cases; BigQuery is not an operational store for Cymbal's transactional catalog and customer workloads. Option B is wrong because nightly dump-and-restore is the high-downtime cutover Cymbal is explicitly trying to avoid, and Storage Transfer Service is intended for object data rather than relational migration. Option C is correct because Database Migration Service is Google's managed migration service for relational engines including MySQL and Microsoft SQL Server with continuous CDC into Cloud SQL, while MongoDB requires MongoDB-native tools (or a partner) into Firestore or a managed MongoDB target, which is an honest reflection of the current product landscape. Option D is wrong because BigQuery Data Transfer Service is for loading SaaS and warehouse data into BigQuery, not for migrating operational MySQL, SQL Server, or MongoDB databases to managed cloud equivalents.",
+      "category": "Managing implementation",
+      "difficulty": "medium",
+      "caseStudyId": "cymbal-retail"
+    },
+    {
+      "id": "pca-cs-cymbal-retail-015",
+      "question": "Cymbal Retail is replacing Grafana, Nagios, and Elastic with Google Cloud's native observability stack. The platform team wants to publish a service-level objective (SLO) for the new catalog-update pipeline: 99% of supplier-feed updates must propagate to the storefront within 15 minutes. Which combination of Cloud Monitoring and Cloud Logging features best implements this SLO and gives an early signal when the team is at risk of burning the error budget?",
+      "options": [
+        "Build a Grafana dashboard backed by Cloud Monitoring as a data source and have an on-call associate visually check the latency graph each morning to decide whether propagation looks healthy for the past day",
+        "Configure a single Cloud Monitoring alert that fires when any catalog-update event exceeds 15 minutes in the past 5 minutes, with no SLO, no error budget, and no burn-rate policy attached to the alert",
+        "Set a Cloud Monitoring uptime check on the catalog API endpoint every 60 seconds and treat its success ratio over a 28-day window as the propagation SLO for the catalog-update pipeline",
+        "Define a Cloud Monitoring SLO with a custom SLI from Cloud Logging log-based metrics over a 28-day window, with multi-window multi-burn-rate alerts on the error budget"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because a human visually scanning a Grafana dashboard each morning is not an SLO and provides no error budget, no automated burn-rate signal, and no audit trail of compliance. Option B is wrong because a single static threshold alert is not an SLO; it lacks an error budget, does not differentiate slow burn from fast burn, and will either page constantly or miss sustained degradation. Option C is wrong because an uptime check measures probe-level reachability from monitoring infrastructure, not the end-to-end propagation latency of supplier updates the team committed to in the SLO. Option D is correct because Cloud Monitoring SLOs with custom services and SLIs built on Cloud Logging log-based metrics let the team measure the actual propagation latency they promised, set the 99% target over the recommended 28-day rolling window, and apply multi-window multi-burn-rate alerting to catch both fast and slow burn before the error budget is exhausted, which is Google's recommended SRE pattern.",
+      "category": "Ensuring solution and operations excellence",
+      "difficulty": "hard",
+      "caseStudyId": "cymbal-retail"
+    }
+  ]
+}

@@ -63,7 +63,7 @@ function ModeSelector({ exam, open, onOpenChange }: ModeSelectorProps) {
     setBankError(null)
     try {
       const bank = await loadQuestionBank(examId)
-      const len = bank.length
+      const len = bank.questions.length
       setBankState({ examId, length: len })
       const defaultCount = Math.min(10, len)
       setQuestionCount(defaultCount)

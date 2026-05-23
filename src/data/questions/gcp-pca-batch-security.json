@@ -1,0 +1,592 @@
+{
+  "questions": [
+    {
+      "id": "pca-security-001",
+      "question": "A platform team manages a Google Cloud organization with hundreds of projects organized under environment folders (prod, nonprod, sandbox). They want network administrators to be able to manage firewall rules in every production project without having to grant the role project-by-project as new projects are created. Which approach should the architect recommend?",
+      "options": [
+        "Grant the Compute Security Admin role to the network admins group at the prod folder level so the binding inherits to every current and future project beneath it",
+        "Create a custom role at the organization that includes compute.firewalls.update and assign it directly to each project as projects are provisioned by the central platform team",
+        "Add the network admins group to the Owner role on each production project so they have full administrative authority over firewall configurations and any other resource",
+        "Grant the Compute Security Admin role at the organization node and rely on organization policies to scope the binding to production projects at runtime evaluation"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because IAM bindings on a folder are inherited by all projects under that folder, so granting Compute Security Admin at the prod folder automatically applies to current and future projects without per-project administration. Option B is wrong because requiring a per-project binding defeats the purpose of the resource hierarchy and creates manual toil every time a project is created. Option C is wrong because Owner grants far more than firewall management, violating least privilege and separation of duties for a network team. Option D is wrong because organization policies do not scope IAM bindings to a subset of projects; they constrain resource configuration, not principal-to-role grants.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-security-002",
+      "question": "A security team needs to ensure that no service account key files can be created anywhere in the organization, in order to push teams toward Workload Identity Federation and service account impersonation. Which control should they apply?",
+      "options": [
+        "Add a deny IAM policy at the organization node that denies iam.serviceAccountKeys.create permission for all principals across the resource hierarchy by default",
+        "Enforce the iam.disableServiceAccountKeyCreation organization policy constraint at the organization node so key creation is blocked at every project",
+        "Configure VPC Service Controls to add the IAM API to a service perimeter so calls to create service account keys are blocked at the network edge",
+        "Audit all projects daily with a Cloud Asset Inventory feed and rotate or delete any newly created service account keys older than 24 hours automatically"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because while IAM deny policies are powerful, the canonical and recommended control for this exact scenario is the dedicated organization policy constraint, which is purpose-built and enforced by every project. Option B is correct because iam.disableServiceAccountKeyCreation is the organization policy constraint specifically designed to block creation of user-managed service account keys across the hierarchy. Option C is wrong because VPC Service Controls protect data exfiltration across a perimeter — they do not prevent administrative actions like creating an IAM credential. Option D is wrong because detect-and-delete is reactive and leaves a window of exposure; a preventive policy is the correct posture.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-003",
+      "question": "An external SaaS partner needs to read objects from a single Cloud Storage bucket once per hour. The architect wants to avoid distributing long-lived service account keys to the partner. Which approach best meets the requirement?",
+      "options": [
+        "Configure Workload Identity Federation with the partner's OIDC identity provider and grant the federated principal the Storage Object Viewer role on the target bucket only",
+        "Create a dedicated service account, download a JSON key, encrypt it with a customer-managed key, and email the encrypted key to the partner along with the decryption passphrase",
+        "Grant the partner's personal Google account the Storage Object Viewer role on the project and have them run gsutil with their user credentials during the scheduled hourly job",
+        "Make the bucket public with uniform bucket-level access disabled and rely on object name obfuscation so only the partner who has the URL can retrieve the objects"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Workload Identity Federation lets external workloads exchange their existing OIDC tokens for short-lived Google Cloud credentials without any long-lived service account key being distributed. Option B is wrong because emailing a JSON key — even encrypted — reintroduces the long-lived credential the design is trying to avoid and creates a key-distribution problem. Option C is wrong because using a personal Google account ties access to an individual rather than a workload and breaks when the person leaves the partner organization. Option D is wrong because security through obscurity is not a control; a publicly readable bucket exposes data to anyone who guesses or leaks the URL.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-004",
+      "question": "A regulated bank wants data engineers to be able to submit BigQuery jobs against a sensitive dataset only when connecting from a corporate-managed device that has passed posture checks. Which TWO controls should the architect combine? (Choose two.)",
+      "options": [
+        "Place the BigQuery dataset in a VPC Service Controls perimeter and rely on the perimeter alone to enforce device-based access requirements on every incoming call",
+        "Configure Chrome Enterprise Premium with an access level that requires a managed device with up-to-date OS patches and screen lock enabled before any policy can apply",
+        "Bind the access level to the BigQuery API using Context-Aware Access so unmanaged devices are denied even with valid credentials presented at the API layer",
+        "Grant the data engineers the BigQuery Job User role only on weekdays using a Cloud Function that rotates IAM bindings every Monday morning at the start of business"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Option A is wrong because VPC Service Controls enforce network and identity perimeters but do not by themselves evaluate client device posture, which is what the requirement demands. Option B is correct because Chrome Enterprise Premium provides access levels evaluated from device posture signals such as managed status, OS patch level, and screen lock — the building block for device-aware access. Option C is correct because Context-Aware Access binds those access levels to specific Google Cloud APIs, so the BigQuery API will reject requests from devices that fail the posture check even when the user has valid IAM. Option D is wrong because rotating IAM bindings on a schedule is brittle, has no relation to device posture, and creates outages for legitimate weekend work.",
+      "category": "Network security",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-005",
+      "question": "An architect is designing CMEK protection for a Cloud Storage bucket holding PII. The CISO requires that key material never exists in software form and is generated and stored only inside FIPS 140-2 Level 3 hardware. Which Cloud KMS configuration meets the requirement?",
+      "options": [
+        "Create a Cloud KMS key with protection level SOFTWARE and rotate the key automatically every 30 days to compensate for the lack of hardware backing",
+        "Use Google-managed encryption keys for the bucket and document in the runbook that Google holds the hardware modules on the customer's behalf",
+        "Create a Cloud KMS key with protection level HSM so the key is generated and used inside a FIPS 140-2 Level 3 hardware security module",
+        "Import a customer-supplied encryption key (CSEK) as a raw 256-bit value into the application configuration and supply it on every Cloud Storage request"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because SOFTWARE protection level means the key material exists as a protected blob in software, which fails the CISO's hardware-only requirement regardless of rotation cadence. Option B is wrong because Google-managed keys are not customer-managed at all — the customer cannot prove FIPS 140-2 Level 3 hardware backing, and the requirement is for CMEK. Option C is correct because Cloud KMS HSM protection level guarantees that key generation, storage, and cryptographic operations occur inside a FIPS 140-2 Level 3 validated hardware security module. Option D is wrong because customer-supplied encryption keys are raw values supplied by the customer per request; they are not stored in an HSM and are typically held in software by the customer.",
+      "category": "Data security",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-006",
+      "question": "A platform team wants to make sure that even a project owner cannot delete the production Cloud Storage bucket holding regulatory records. The bucket must remain in place for seven years under a retention policy. Which combination of controls best protects the records?",
+      "options": [
+        "Apply an organization policy denying storage.buckets.delete and trust that future owners will not request an exception during the seven-year window",
+        "Grant the Storage Object Viewer role to project owners and remove all higher-privileged roles from production so deletes simply fail with a permission error",
+        "Move the bucket to a separate folder owned by the security team only and instruct application teams to use signed URLs whenever they need access",
+        "Apply a Bucket Lock with a 7-year retention policy so objects cannot be deleted before the period ends and the policy itself cannot be shortened"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because organization policies can be overridden by a sufficiently privileged administrator at the org node, and 'trust' is not a control. Option B is wrong because stripping owners of their role to enforce a single rule creates massive operational problems and does not protect against re-granting the role. Option C is wrong because moving the bucket changes ownership but does not enforce retention; signed URLs are an access pattern, not an immutability control. Option D is correct because Bucket Lock makes the retention policy immutable and prevents object deletion before the retention period ends, providing WORM-style records protection that even project owners cannot bypass.",
+      "category": "Data security",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-security-007",
+      "question": "A developer needs to run a one-time data migration that requires permissions only the SRE team currently holds. The security team wants to avoid permanently granting elevated roles to the developer. Which Google Cloud capability should the architect recommend?",
+      "options": [
+        "Configure service account impersonation so the developer's user account can mint short-lived tokens for a privileged service account only when explicitly invoking the migration",
+        "Add the developer to the SRE group for the duration of the migration and remove them afterward, relying on the team lead to remember to revoke the access",
+        "Share an SRE engineer's user credentials with the developer so they can run the migration as the SRE engineer and the work is attributed to the engineer's identity",
+        "Grant the developer the Owner role on the project for one week and rely on Cloud Audit Logs to detect any actions outside the scope of the migration"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because service account impersonation lets a user request short-lived credentials for a service account that holds the elevated permissions, providing scoped, auditable, just-in-time access without permanently granting roles to the user. Option B is wrong because manual group membership management is error-prone, depends on humans remembering to revoke, and offers no per-action attribution. Option C is wrong because sharing user credentials breaks attribution, violates Google Cloud terms, and creates an account-takeover risk. Option D is wrong because granting Owner is wildly over-privileged for a single migration and relies on detective rather than preventive controls.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-security-008",
+      "question": "A retailer wants to detect and redact credit card numbers and government IDs from customer chat transcripts before storing them in BigQuery. The pipeline runs on Dataflow. Which managed service should the architect use?",
+      "options": [
+        "Sensitive Data Protection (formerly Cloud DLP) with inspection and de-identification templates invoked from the Dataflow pipeline to redact or tokenize sensitive findings",
+        "Cloud Armor with preconfigured WAF rules that scan request payloads and block any request that contains a credit card number pattern before it reaches the pipeline",
+        "Binary Authorization with custom attestations that prevent the Dataflow worker image from running unless it has been scanned for sensitive data leakage at build time",
+        "Cloud Key Management Service with rotating symmetric keys to encrypt all transcript fields and decrypt them on demand inside BigQuery views"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Sensitive Data Protection is purpose-built for discovering and de-identifying sensitive elements like credit card numbers and government IDs, and integrates with Dataflow via templates and transforms. Option B is wrong because Cloud Armor protects HTTP load balancers from web attacks; it does not inspect or redact PII inside data being processed downstream. Option C is wrong because Binary Authorization controls which container images may be deployed; it does not inspect data content. Option D is wrong because encrypting whole fields blocks downstream analytics and does not selectively redact only the sensitive substrings inside a transcript.",
+      "category": "Data security",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-security-009",
+      "question": "An organization has multiple folders and projects, and the security team wants to ensure that Compute Engine VMs in the entire organization can never be created with public IP addresses, regardless of who provisions them. Which approach is correct?",
+      "options": [
+        "Manually delete any VM that is created with a public IP using a Cloud Function triggered by Cloud Audit Logs and notify the project owner each time it fires",
+        "Add a firewall rule at each VPC that denies all egress traffic from public IPs, indirectly making public IPs useless and discouraging their creation",
+        "Configure Cloud NAT in every VPC so that VMs with public IPs are automatically given private routing, removing the need for external addresses",
+        "Set the constraints/compute.vmExternalIpAccess organization policy at the organization node to deny external IPs on all VMs in the hierarchy"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because reactive deletion leaves an exposure window and does not prevent the creation in the first place; a preventive policy is required. Option B is wrong because egress firewall rules on the VPC do not control whether VMs are assigned external IPs at provisioning time. Option C is wrong because Cloud NAT provides outbound translation for private VMs, but it does not prevent administrators from still creating VMs with external IPs attached. Option D is correct because the compute.vmExternalIpAccess organization policy constraint preventively denies external IP assignment to VMs across the hierarchy and is the canonical control for this requirement.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-010",
+      "question": "A security architect must ensure that data exfiltration from a confidential BigQuery dataset is blocked even when an attacker compromises a project Editor's credentials. The dataset must remain accessible to legitimate workloads running in two specific projects. Which control should be applied?",
+      "options": [
+        "Switch all BigQuery service accounts to use customer-supplied encryption keys (CSEK) so a stolen credential cannot decrypt data outside the original projects",
+        "Apply a Cloud KMS rotation schedule of every 24 hours so any credential that an attacker steals becomes useless within a day of compromise",
+        "Set the BigQuery dataset to use Authorized Views only and require all queries to go through a single approved view in a shared analytics project for monitoring",
+        "Place the BigQuery project in a VPC Service Controls perimeter that allows ingress only from the two specified projects so calls from any other project or network are denied"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because BigQuery does not support CSEK for dataset encryption (only CMEK), and even CMEK does not prevent an authorized credential from reading data — it changes who controls the key. Option B is wrong because Cloud KMS rotation does not invalidate already-issued OAuth tokens an attacker may hold, and short rotation is operationally disruptive. Option C is wrong because Authorized Views are a data-sharing pattern; they do not stop an Editor with the credential from querying the source dataset directly. Option D is correct because VPC Service Controls create a security perimeter that blocks API access from outside the perimeter even with valid credentials, neutralizing stolen-credential exfiltration paths.",
+      "category": "Network security",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-011",
+      "question": "A team uses Cloud Build to ship containers to GKE. Compliance requires that only images that have passed vulnerability scanning AND have been signed by the QA team's attestor can be deployed to the production cluster. Which TWO Google Cloud features together meet this requirement? (Choose two.)",
+      "options": [
+        "Container-Optimized OS for nodes plus a workload identity pool restricted to the QA service account so only QA-built images can authenticate to pull from the registry",
+        "Artifact Analysis vulnerability scanning that produces signed scan results an attestor consumes for each container image built and pushed by the pipeline",
+        "Binary Authorization policies on the production cluster that require attestations from both a vulnerability-scan attestor and the QA attestor before admission",
+        "Cloud KMS image signing with an HSM-backed key combined with VPC Service Controls around the GKE cluster to reject any pull from outside the production perimeter"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Option A is wrong because Container-Optimized OS hardens the node OS but does not enforce image signing or vulnerability gating policies, and identity pool restrictions do not enforce content attestation. Option B is correct because Artifact Analysis produces vulnerability scan results that an attestor can sign, providing the proof that a scan was completed for each image. Option C is correct because Binary Authorization enforces at GKE admission that required attestations (scan + QA) are present before allowing the workload to run. Option D is wrong because Cloud KMS can sign artifacts but VPC Service Controls do not enforce attestation policy on container images at the cluster admission level.",
+      "category": "Supply chain security",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-012",
+      "question": "A startup launching a generative AI assistant on Vertex AI needs to enforce safety policies that block prompt injection attempts and reject responses containing harmful content categories before they reach end users. Which Google Cloud product addresses this?",
+      "options": [
+        "Cloud Armor with adaptive protection rules configured to inspect JSON payloads and drop requests that match known prompt-injection signatures the security team collects",
+        "Model Armor, which provides safety policies that screen prompts for injection attempts and responses for harmful content before they are delivered to end users",
+        "Sensitive Data Protection inspection templates running synchronously on every model response to find and redact unsafe categories before the response is returned",
+        "Cloud IDS configured in passive mode at the regional load balancer so suspicious prompt patterns are detected and forwarded to Chronicle for analyst review"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Cloud Armor protects HTTP(S) load balancers from web attacks like DDoS and SQLi; it is not designed to evaluate LLM prompt safety or response content. Option B is correct because Model Armor is the Google Cloud service designed specifically to apply safety policies to LLM prompts and responses, including prompt-injection screening and harmful-content category enforcement. Option C is wrong because Sensitive Data Protection is excellent at finding regulated data like PII but is not built around the categories of LLM safety (jailbreaks, harmful content classification, prompt injection). Option D is wrong because Cloud IDS is a network intrusion detection product; it is not designed for inspecting LLM application semantics.",
+      "category": "Securing AI",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-013",
+      "question": "A healthcare SaaS company storing electronic health records on Google Cloud must comply with HIPAA. Which combination of controls is most appropriate?",
+      "options": [
+        "Disable Cloud Audit Logs to avoid logging PHI accidentally, encrypt with Google-managed keys, and rely on the BAA to cover the company's processing of records",
+        "Move all PHI to an on-premises data center and use Google Cloud only for non-PHI analytics, since Google Cloud cannot legally process protected health information",
+        "Use Google-managed encryption keys, enable Admin Activity logs only since they cover PHI access, and add VPC Service Controls to block all external traffic",
+        "Execute a Business Associate Agreement (BAA) with Google, use only HIPAA-eligible services, enable Data Access audit logs, and apply CMEK for encryption control"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because disabling audit logs is not how HIPAA compliance works — HIPAA requires logging access to PHI, and Data Access logs are central to that. Option B is wrong because Google Cloud has many HIPAA-eligible services and is widely used by healthcare customers under BAAs. Option C is wrong because Admin Activity logs do not capture PHI read events — Data Access logs do — and Google-managed keys are not customer-controlled. Option D is correct because the canonical HIPAA path on Google Cloud is: execute a BAA, restrict workloads to HIPAA-eligible services, enable Data Access audit logs to track PHI access, and use CMEK so the customer controls the encryption keys protecting PHI.",
+      "category": "Compliance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-014",
+      "question": "An auditor needs to verify exactly who read records from a particular BigQuery dataset over the last 90 days. By default, which Cloud Audit Log type captures this information, and what must the team check?",
+      "options": [
+        "Admin Activity logs are always on and automatically capture every BigQuery query and read; the auditor only needs to filter by dataset name to retrieve the events",
+        "System Event logs include data-plane reads on BigQuery because BigQuery is a system service; no configuration change is required to satisfy the auditor",
+        "Policy Denied logs capture every successful and denied data read; the team should review the Policy Denied stream for the project to find the BigQuery activity",
+        "Data Access logs (specifically the DATA_READ subtype) capture reads; they are disabled by default for most services and must be explicitly enabled for BigQuery before the events exist"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because Admin Activity logs capture administrative writes (create, update, delete) — not the data-plane read events the auditor needs. Option B is wrong because System Event logs record Google-Cloud-initiated administrative actions on resources, not user data reads against BigQuery. Option C is wrong because Policy Denied logs record requests denied by VPC Service Controls or IAM deny policies, not successful read activity. Option D is correct because Data Access logs include DATA_READ events and are off by default for most services; they must be explicitly configured to be captured and retained for an audit to find them.",
+      "category": "Compliance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-015",
+      "question": "A multinational company needs to ensure that customer data from EU users remains stored only in European regions to satisfy GDPR data residency expectations. Which Google Cloud control most directly enforces this?",
+      "options": [
+        "Apply CMEK with key rings in europe-west4 so the encryption itself anchors data to the European region regardless of where storage buckets or BigQuery datasets are created",
+        "Enforce the constraints/gcp.resourceLocations organization policy to allow only European location values when creating storage buckets, BigQuery datasets, and other location-aware resources",
+        "Configure Cloud DNS to resolve storage endpoints only to European IPs so any attempt to create a bucket outside Europe is silently routed back to a European region",
+        "Tag all EU customer projects with a customer:eu label and create a Cloud Function that deletes resources in non-European regions every hour for projects with that label"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because the location of a KMS key does not constrain where the encrypted data is stored — a bucket in us-central1 can still use a key from europe-west4. Option B is correct because the gcp.resourceLocations organization policy constraint preventively limits the regions and multi-regions where location-aware resources may be created, which is the canonical Google Cloud data-residency control. Option C is wrong because Cloud DNS does not influence where resources are provisioned; resource location is a property set at creation time via the API. Option D is wrong because reactive deletion creates exposure windows and operational risk, and it depends on labels being applied correctly.",
+      "category": "Compliance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-016",
+      "question": "An internal admin console runs on Compute Engine and must be reachable only by employees, without exposing it on the public internet or requiring a VPN. The team wants per-user authentication and authorization checks before any request reaches the application. Which approach should the architect choose?",
+      "options": [
+        "Place the admin console behind a public Network Load Balancer and rely on application-layer username/password authentication with rate limiting and bot detection at Cloud Armor in front of it",
+        "Expose the application on a public HTTP(S) load balancer with Cloud Armor IP allowlisting limited to the corporate office's known public egress IP ranges as documented in the corporate network inventory",
+        "Run the application on a private VM with no public IP and have administrators connect via Cloud Shell to reach the application's local 127.0.0.1 listener through Cloud Shell's tunneling integration",
+        "Front the application with HTTP(S) load balancing protected by Identity-Aware Proxy (IAP), grant the IAP-secured Web App User role to the employee group, and remove public ingress firewall rules"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because exposing the application on a public NLB with only application credentials means anyone can attempt to authenticate, which is exactly the surface area Identity-Aware Proxy is designed to remove. Option B is wrong because IP allowlisting alone does not authenticate users and breaks for remote employees on home networks. Option C is wrong because Cloud Shell is a developer tool, not a production access pattern, and does not scale to an admin user base. Option D is correct because IAP authenticates and authorizes each user against IAM before the request reaches the backend, providing zero-trust per-user access without a VPN.",
+      "category": "Network security",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-security-017",
+      "question": "Cloud Audit Logs include four log types. Which statement correctly distinguishes them?",
+      "options": [
+        "Admin Activity logs are off by default and must be enabled per-service for every project in the organization; Data Access logs are always on and immutable for 400 days regardless of how the customer configures the log buckets",
+        "All four log types — Admin Activity, Data Access, System Event, and Policy Denied — are always on by default and cannot be disabled, filtered, redirected, or excluded by any administrator in any project in the organization",
+        "Admin Activity and System Event logs are always on; Data Access logs are off by default for most services and must be configured; Policy Denied logs record requests blocked by VPC Service Controls or IAM deny policies",
+        "Policy Denied logs are simply renamed Admin Activity logs that record failed admin writes against any resource; they capture nothing meaningful that is not already present somewhere in the Admin Activity stream for the project"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because it inverts which log types are always on — Admin Activity is always on, not Data Access. Option B is wrong because Data Access logs are off by default for most services and must be explicitly enabled. Option C is correct because Admin Activity and System Event logs are always on, Data Access logs require explicit configuration, and Policy Denied logs record denials from VPC Service Controls or IAM deny policies. Option D is wrong because Policy Denied logs are a distinct stream specifically for denials from perimeter or deny-policy enforcement, not a rename of Admin Activity.",
+      "category": "Compliance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-018",
+      "question": "A bank needs to separate the duty of creating IAM bindings from the duty of approving them. The security team must approve every binding, but only platform engineers may execute the change. Which TWO controls best implement this separation of duties? (Choose two.)",
+      "options": [
+        "An IAM Condition on the platform engineers' admin binding using request.time predicates that limit IAM admin actions to a four-hour weekly maintenance window for both teams",
+        "Granting setIamPolicy only to platform engineers, and requiring security team approval as a recorded reviewer on the Git pull request before the platform team merges and applies",
+        "A GitOps Terraform pipeline where security approves the IAM change in pull-request review and a separate platform engineer merges and runs apply with their own identity",
+        "A custom role split into halves so the security team holds the resourcemanager.projects.getIamPolicy permission and the platform team holds setIamPolicy on every project"
+      ],
+      "correctAnswers": [2, 1],
+      "explanation": "Option A is wrong because time-bound conditions do not enforce two-party approval — a single privileged user could still both author and apply changes inside the window. Option B is correct because pairing exclusive setIamPolicy on the platform team with a recorded security approval in PR review enforces dual-control on every change. Option C is correct because GitOps with required pull-request reviews implements true separation of duties: security approves in code review, and a different platform engineer executes apply, with both actions audit-logged. Option D is wrong because holding only getIamPolicy gives no ability to approve a change — it is a read permission, not an approval workflow.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-019",
+      "question": "An architect designs a Cloud KMS strategy for envelope encryption of large objects stored in Cloud Storage. Which statement best describes how envelope encryption works in this context?",
+      "options": [
+        "A data encryption key (DEK) is generated per object and used to encrypt the object's bytes; the DEK is then encrypted with a key encryption key (KEK) in Cloud KMS and stored alongside the object",
+        "Cloud KMS encrypts every object directly using the KEK, sending each object's full bytes through the KMS API so that key material never leaves the HSM during the operation",
+        "A single static DEK is shared across all objects in a bucket and rotated annually; the KEK is only used to sign the DEK rather than to encrypt it for storage",
+        "The object is encrypted twice — once with a CSEK supplied by the client and once with a Google-managed key — and the two ciphertexts are concatenated before being stored"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because envelope encryption generates a fresh DEK per object, encrypts the object data with that DEK, encrypts (wraps) the DEK with a KEK in Cloud KMS, and stores the wrapped DEK with the object — limiting expensive KMS calls and bounding the blast radius of any single key. Option B is wrong because sending entire object bodies through KMS is impractical and is not how Cloud KMS performs bulk encryption; KMS encrypts small payloads like DEKs. Option C is wrong because envelope encryption uses per-object DEKs, not a single static shared DEK, and KEKs wrap DEKs rather than sign them. Option D is wrong because double-encrypting with two keys is not envelope encryption; envelope is a hierarchical key-wrapping technique.",
+      "category": "Data security",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-020",
+      "question": "An enterprise uses Active Directory for employee identity and Google Cloud for some workloads. The security team wants AD-authenticated employees to be able to access Google Cloud projects with their existing AD credentials, without provisioning separate Google Cloud passwords. Which design is correct?",
+      "options": [
+        "Disable Active Directory and migrate all employees to Cloud Identity native accounts so authentication is handled directly by Google without any federation overhead",
+        "Export all AD users to a CSV file weekly and import them as Cloud Identity users so the two directories stay in approximate sync without a live federation connection",
+        "Share a single Cloud Identity admin account between all AD-authenticated employees and provide the password through the corporate password manager when access is needed",
+        "Federate Active Directory with Cloud Identity using a SAML 2.0 SSO setup and synchronize user accounts via Google Cloud Directory Sync (GCDS) so AD remains the source of truth for identity"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because abandoning AD is rarely feasible for enterprises with deep AD integration and is far more disruptive than federation. Option B is wrong because weekly CSV imports do not provide SSO and create stale-account and orphaned-credential problems. Option C is wrong because sharing an admin account destroys per-user attribution and audit, and grossly violates least privilege. Option D is correct because SAML SSO federation with Cloud Identity, combined with GCDS for account provisioning, makes AD the source of truth for identity while giving users a seamless SSO experience into Google Cloud.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-021",
+      "question": "An e-commerce platform takes credit card payments and must comply with PCI DSS. Which architectural choice most reduces the company's PCI scope?",
+      "options": [
+        "Store card numbers in BigQuery with Sensitive Data Protection tokenization tags applied at ingest time so analysts can run queries on tokenized values without seeing real PANs",
+        "Encrypt the entire production VPC with CMEK keys backed by an HSM in a separate billing project so the encryption boundary becomes the PCI scope boundary",
+        "Use a PCI-validated third-party payment processor to handle the cardholder data so primary account numbers (PANs) never enter the company's Google Cloud environment",
+        "Enable Cloud Audit Logs Data Access logging on every project and grant only PCI-certified employees access to the logs, treating the logs themselves as the cardholder data store"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because storing card numbers — even tokenized — within the company's environment still drags the storage system into PCI scope; tokenization helps but PCI scope is best reduced by not storing PANs at all. Option B is wrong because CMEK encryption protects data at rest but does not by itself remove cardholder data from PCI scope. Option C is correct because outsourcing cardholder data handling to a PCI-validated processor means PANs never enter the company's environment, dramatically reducing the PCI scope of the company's Google Cloud infrastructure. Option D is wrong because audit logs are not a substitute for cardholder data handling and are not a PCI scope reduction strategy.",
+      "category": "Compliance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-022",
+      "question": "An analytics team in Project A needs to read from a BigQuery dataset in Project B owned by the data engineering team. The data engineering team wants to grant only the minimum permission for the analysts to query the dataset, with no ability to modify it. Which role should be granted?",
+      "options": [
+        "Grant the BigQuery Admin role on Project B so the analytics group can also tune the dataset configuration when query performance is poor for their workloads",
+        "Grant the Editor basic role on Project B because predefined BigQuery roles are too restrictive for cross-project analytics use cases and produce too many permission errors",
+        "Grant the BigQuery Data Viewer predefined role on the specific dataset in Project B so members can read tables and views without write or schema modification capability",
+        "Grant the Owner basic role on Project B, scoped via IAM Conditions to the BigQuery API only, so other services in Project B remain protected from the analysts"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because BigQuery Admin grants modification and deletion permissions on the dataset, far beyond what analysts need. Option B is wrong because Editor is a broad basic role granting modify across nearly all services in the project — a major least-privilege violation. Option C is correct because the BigQuery Data Viewer predefined role grants read on tables and views and is the canonical least-privilege grant for analyst-style consumers; binding at dataset scope further narrows it. Option D is wrong because Owner is the highest basic role and Conditions cannot reliably constrain it to a narrow API surface; predefined roles already exist for this exact need.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-security-023",
+      "question": "A government agency must ensure its workloads on Google Cloud satisfy FedRAMP compliance for moderate-impact systems. Which architectural decision most directly supports this requirement?",
+      "options": [
+        "Restrict workloads to FedRAMP-authorized Google Cloud services and regions, apply CMEK with HSM-backed keys, enable comprehensive audit logging, and follow Google's FedRAMP implementation guidance",
+        "Encrypt all data with customer-supplied encryption keys (CSEK) generated on a laptop and rotate them every 30 days, because FedRAMP forbids any Google-controlled encryption operation",
+        "Disable Cloud Audit Logs to prevent inadvertent leakage of sensitive data into log streams, since FedRAMP auditors strongly prefer no centralized logs to incomplete logs",
+        "Move all workloads to a single sole-tenant node in us-central1 and apply organization policies to prevent any resource creation outside that node, since FedRAMP requires hardware isolation"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because FedRAMP compliance is achieved by using authorized services in authorized regions, controlling encryption with CMEK/HSM where appropriate, enabling thorough audit logging, and following Google's documented FedRAMP guidance for shared-responsibility implementation. Option B is wrong because CSEK is not required for FedRAMP and managing raw keys on a laptop is itself a security problem; CMEK with Cloud KMS is the standard pattern. Option C is wrong because audit logging is a foundational FedRAMP control, not something to disable. Option D is wrong because sole-tenant nodes are about VM tenancy, not a FedRAMP requirement; the program is about controls and process, not single-tenant hardware.",
+      "category": "Compliance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-024",
+      "question": "A company wants to enforce that GKE clusters across the organization cannot pull container images from any registry except Artifact Registry in approved projects. Which control most directly enforces this?",
+      "options": [
+        "Apply a Binary Authorization policy at the cluster level that requires images to be hosted in approved Artifact Registry repositories and rejects admission for any image from other registries",
+        "Configure each VPC firewall to block egress to docker.io and gcr.io public IP ranges so the cluster nodes cannot reach unapproved registries during image pulls",
+        "Set the iam.allowedPolicyMemberDomains organization policy to allow only the company's domain, so external registries that authenticate with other domains are rejected",
+        "Create a Cloud Monitoring alert that fires when image pulls from unapproved sources are observed and have an on-call engineer manually delete the affected pods"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Binary Authorization can enforce image-source policies at GKE admission time, rejecting workloads whose images are not hosted in approved Artifact Registry repositories. Option B is wrong because public registry endpoints share IP space with many services, firewall ranges change frequently, and a determined developer can proxy images; firewall blocking is brittle for this requirement. Option C is wrong because allowedPolicyMemberDomains controls which identities can be granted IAM bindings, not which container registries can be pulled from. Option D is wrong because alerting after the fact is detective, not preventive, and lets unapproved images run.",
+      "category": "Supply chain security",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-025",
+      "question": "An organization wants to detect publicly accessible Cloud Storage buckets, overly permissive IAM bindings, and other misconfigurations across its entire estate. Which Google Cloud service is designed for this posture management?",
+      "options": [
+        "Security Command Center, which surfaces misconfiguration findings (public buckets, overly permissive IAM, etc.) across the organization and integrates with built-in and third-party detectors",
+        "Cloud Logging with a saved log-based metric that counts the number of times the storage.setIamPolicy method is called with 'allUsers' as a member during the past 24 hours",
+        "Recommender's IAM recommendations service, which lists every binding in the organization and flags the ones that have not been used in 90 days for cleanup by owners",
+        "Cloud Asset Inventory feed exports streamed into BigQuery with a daily scheduled query that joins resource state against a hand-maintained list of bad configurations"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Security Command Center is Google Cloud's purpose-built security and risk management platform; its Security Health Analytics detectors flag misconfigurations such as public buckets, overly permissive IAM, and many others across the organization. Option B is wrong because a single log-based metric covers only one narrow signal and does not provide a comprehensive posture view. Option C is wrong because IAM Recommender focuses on least-privilege role-rightsizing, not the full breadth of misconfiguration findings SCC provides. Option D is wrong because Asset Inventory exports are a build-it-yourself approach that duplicates capabilities SCC delivers turnkey.",
+      "category": "Compliance",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-security-026",
+      "question": "A team wants to give a developer the ability to debug a production Cloud Run service for a single one-hour incident, then have access automatically expire without manual revocation. Which Google Cloud feature is most appropriate?",
+      "options": [
+        "Grant the Cloud Run Developer role to the developer and place a calendar reminder for the team lead to manually revoke the role one hour after the incident concludes",
+        "Add the developer to the production-debug group permanently and rely on Cloud Audit Logs to flag any usage outside the incident window for investigation by the security team",
+        "Create a service account with the Cloud Run Developer role and share its JSON key with the developer for the hour, then attempt to find and delete the key from chat afterward",
+        "Use an IAM Condition with request.time < timestamp('...') on the Cloud Run Developer binding so the role grant is valid only until the end of the one-hour window"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because manual revocation relies on humans remembering and is exactly the operational risk the question is trying to remove. Option B is wrong because permanent group membership grants persistent access and shifts compliance to detective controls. Option C is wrong because shared JSON keys cannot be reliably retracted from chat, and key distribution is exactly what Workload Identity Federation and impersonation are designed to eliminate. Option D is correct because IAM Conditions can include a time predicate so the binding stops authorizing requests after the configured timestamp without any human action, providing self-expiring access.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-027",
+      "question": "An organization with strict data sovereignty requirements must retain Cloud Audit Logs for at least seven years in a region within the EU and ensure that no individual administrator can delete logs before that retention period ends. Which approach achieves both requirements?",
+      "options": [
+        "Route audit logs to a Cloud Logging bucket in europe-west4 with a 7-year retention period, restrict the Logs Bucket Writer role and lock the retention policy so it cannot be shortened",
+        "Export audit logs to a Cloud Storage bucket in us-central1 with 7-year lifecycle rules, since storage cost is lower in the US and logs do not contain personal data anyway",
+        "Disable audit log retention controls and instruct administrators to download logs to a local archive every Friday so a copy exists outside Google Cloud for compliance review",
+        "Configure a Pub/Sub sink that forwards logs to a partner SIEM in any region and rely on the SIEM's standard 30-day retention to satisfy the 7-year compliance requirement"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because a Cloud Logging bucket in a European region with a configured retention period and a locked retention policy meets data residency, retains logs for the required duration, and prevents shortening or premature deletion. Option B is wrong because storing EU-sourced audit logs in us-central1 violates the EU data residency requirement. Option C is wrong because manual weekly downloads are unreliable, do not satisfy retention controls, and shift sensitive logs to ungoverned local storage. Option D is wrong because 30-day SIEM retention is far below the 7-year compliance need.",
+      "category": "Compliance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-028",
+      "question": "An architect needs to grant a Cloud Run service in Project A permission to publish messages to a Pub/Sub topic in Project B without using service account keys. Which approach is correct?",
+      "options": [
+        "Create a service account in Project A, download its JSON key, and configure the Cloud Run service to mount the key as a secret-manager-backed environment variable on each deployment",
+        "Allow public unauthenticated publish on the Pub/Sub topic in Project B and have the Cloud Run service post messages without authentication; rely on payload signatures for trust",
+        "Attach a dedicated service account from Project A to the Cloud Run service and grant that service account the Pub/Sub Publisher role on the topic in Project B",
+        "Make the Cloud Run service use the Compute Engine default service account from Project A and grant that default account the Editor role across both projects for simplicity"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because the entire point is to avoid distributing service account keys; Cloud Run can authenticate natively with an attached service account. Option B is wrong because making a Pub/Sub topic public is a major exfiltration and data-poisoning risk and not how cross-project auth is done on GCP. Option C is correct because Cloud Run runs as an attached service account, and granting that service account the Pub/Sub Publisher role on the cross-project topic provides least-privilege, keyless authentication. Option D is wrong because the Compute Engine default service account is overly broad and Editor across two projects grossly violates least privilege.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-029",
+      "question": "A media platform wants to use Sensitive Data Protection to find and de-identify regulated data in a large Cloud Storage bucket of unstructured documents before training models on the data. Which feature combination is best suited?",
+      "options": [
+        "Encrypt the bucket with CMEK and grant the model training pipeline read access only — encryption alone will keep sensitive content out of training data and satisfy regulatory review",
+        "Run a Cloud Function on every new object that calls Vertex AI Gemini with a prompt asking it to remove any personal information from the document before saving the result back to the bucket",
+        "Use Sensitive Data Protection inspection templates with relevant infoTypes (e.g., EMAIL_ADDRESS, US_SSN) and a de-identification template that applies tokenization or redaction transforms to findings",
+        "Configure VPC Service Controls to surround the bucket and rely on the perimeter to ensure that sensitive content cannot leak; no content-level inspection is required"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because encryption protects at rest but does not redact or de-identify sensitive fields inside documents. Option B is wrong because using an LLM as a stand-in for a DLP scanner is unreliable, not auditable, and not a recommended pattern for regulated data handling. Option C is correct because Sensitive Data Protection's inspection templates (with infoTypes for the categories of regulated data) combined with de-identification templates (tokenization, redaction, format-preserving encryption) is the purpose-built pattern for finding and de-identifying sensitive data prior to ML use. Option D is wrong because VPC Service Controls protect against exfiltration; they do not de-identify content for downstream training use.",
+      "category": "Securing AI",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-030",
+      "question": "A regulated retailer must apply children's privacy protections (COPPA) for users under 13 in the United States. Which architectural pattern best supports COPPA compliance?",
+      "options": [
+        "Encrypt all data in the application database with a single CMEK key shared across all customers since uniform encryption is the foundation of every children's privacy regulation",
+        "Identify accounts belonging to users under 13, apply heightened consent and data-minimization controls, restrict targeted advertising features, and use Sensitive Data Protection to limit field collection",
+        "Block any account holder under 18 from creating an account so COPPA does not apply, then revisit the policy in three years once the youngest customers reach majority age",
+        "Forward all child-account data to a third-party PCI-DSS-certified vendor so the retailer's environment is out of scope for COPPA the same way it is for PCI cardholder data"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because uniform encryption is not what COPPA requires; COPPA is about parental consent, data minimization, and limits on data collection from children under 13. Option B is correct because COPPA compliance centers on identifying child accounts, obtaining verifiable parental consent, minimizing data collection, restricting targeted advertising, and managing retention — Sensitive Data Protection helps with field-level minimization. Option C is wrong because COPPA covers children under 13, not 18, and blanket banning under-18 is a business decision unrelated to the actual regulatory boundary. Option D is wrong because PCI scope reduction does not transfer to COPPA, which is about parental consent and data practices, not cardholder data flow.",
+      "category": "Compliance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-031",
+      "question": "Developers in three teams must be able to develop and test against shared development infrastructure, but a recent incident showed they can also delete production resources because of overly permissive bindings. Which TWO actions should the architect take to remediate? (Choose two.)",
+      "options": [
+        "Disable Cloud Audit Logs in production so deletion events do not propagate to monitoring dashboards that triggered confusion during the last incident",
+        "Move the development projects into a separate folder and apply more permissive bindings there, while applying least-privilege predefined roles at the production folder",
+        "Replace the basic Editor role bindings in production with narrowly scoped predefined roles (e.g., Cloud Run Viewer, Logs Viewer) on the production projects only",
+        "Grant the Owner role to every developer in production with an IAM Condition that limits the role to read-only verbs so deletion attempts will quietly fail at the API"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Option A is wrong because disabling audit logs hides incidents rather than preventing them and is a regression in observability. Option B is correct because using the folder hierarchy to separate development from production lets the architect grant looser bindings in dev while keeping production strict, which is the canonical pattern. Option C is correct because replacing basic Editor with narrowly scoped predefined roles enforces least privilege in production and removes the ability to delete resources unnecessary for the developers' jobs. Option D is wrong because IAM Conditions cannot reliably reduce Owner to read-only; Owner is too broad and conditions are not a substitute for choosing a smaller role.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-032",
+      "question": "A team wants to deploy a Vertex AI online prediction endpoint that handles regulated data. The architect must minimize the risk of model exfiltration and unsafe responses. Which TWO controls should the architect combine? (Choose two.)",
+      "options": [
+        "Expose the endpoint publicly with API keys and configure Cloud Armor to block frequent requests from a single IP so internal teams can experiment quickly without IAM friction or perimeter restrictions",
+        "Deploy the endpoint without authentication on a public Vertex AI URL but require a custom HTTP header containing a shared secret rotated weekly by chat message between the involved teams",
+        "Apply Model Armor safety policies that screen prompts for injection attempts and screen responses for harmful content before they are returned, paired with Data Access audit logs",
+        "Expose the endpoint over Private Service Connect to keep it off the public internet, and enforce least-privilege IAM access on the Vertex AI User role so only authorized callers can invoke the model"
+      ],
+      "correctAnswers": [3, 2],
+      "explanation": "Option A is wrong because public exposure with broad role bindings is the opposite of minimizing exfiltration risk, and Cloud Armor IP-based rate limiting is a weak control against credential misuse. Option B is wrong because shared secrets rotated via chat are not an authentication mechanism and undermine attribution and auditability. Option C is correct because Model Armor screens prompts and responses against safety policies (injection, harmful content), addressing the unsafe-response risk directly, and Data Access logs capture usage for audit. Option D is correct because Private Service Connect keeps the endpoint off the public internet and least-privilege IAM controls who can invoke the model, neutralizing the exfiltration vector.",
+      "category": "Securing AI",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-033",
+      "question": "A team using Cloud Build wants to ensure that build dependencies pulled from public open source repositories come from a vetted, signed, and continuously monitored supply chain. Which Google Cloud product addresses this?",
+      "options": [
+        "Artifact Registry remote repositories pointing directly at Maven Central and PyPI with the most recent versions automatically pulled to ensure builds always use up-to-date code",
+        "Cloud Build worker pools placed in a private VPC so dependency downloads happen over private networking and the security team can audit the network logs after each build",
+        "Assured Open Source Software, which provides curated, signed, and vulnerability-tested open source packages built by Google with provenance metadata for use in supply chains",
+        "Binary Authorization with a custom note that records the hash of every downloaded dependency, so any regression to a known-bad version causes the next build to fail at admission"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because pulling whatever is newest from public repos is exactly what compromised-package attacks exploit; this is not a vetting strategy. Option B is wrong because routing dependency downloads over private networking does not vet the packages themselves or sign them. Option C is correct because Assured Open Source Software is the Google service that delivers curated, signed, vulnerability-scanned open source packages with build provenance, designed precisely for supply-chain assurance. Option D is wrong because Binary Authorization is for container image admission control, not for vetting library packages at build time.",
+      "category": "Supply chain security",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-034",
+      "question": "An auditor reviewing a Google Cloud environment asks whether the company holds any third-party attestations of its operational controls. Which type of report is most directly relevant to demonstrating the company's own operational control environment?",
+      "options": [
+        "Google's SOC 2 Type II report, which the company should hand over without modification because it certifies the customer's entire cloud environment end-to-end including application controls",
+        "Google's ISO 27018 certificate, which extends responsibility for application-layer access controls from Google to all of its customers' workloads automatically as a contractual term",
+        "The company's own SOC 2 Type II report covering its applications and operations, supplemented by Google Cloud's SOC 2 Type II report for the shared underlying infrastructure",
+        "A vendor-supplied PCI DSS report from any payment processor used by the company, which serves as a general-purpose attestation of operational maturity across all data domains"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because Google's SOC 2 covers Google's controls, not the customer's application-layer or operational controls — the shared responsibility model means each party attests to its own scope. Option B is wrong because ISO 27018 is for cloud PII protection by the provider and does not shift customer responsibilities to Google. Option C is correct because the customer needs its own SOC 2 covering its own controls and uses Google Cloud's SOC 2 to demonstrate the underlying infrastructure controls; together they describe the full picture. Option D is wrong because PCI DSS is scoped to cardholder data and is not a general-purpose attestation of operational controls.",
+      "category": "Compliance",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-035",
+      "question": "A platform team wants to make sure that even if an application is compromised, the attacker cannot use the workload's identity to call APIs outside of an approved set. Which Google Cloud feature most directly limits which APIs the workload's service account can call?",
+      "options": [
+        "Cloud Armor preconfigured WAF rules in front of every API endpoint to drop calls to APIs that are not on the approved list as defined by the security team's rule set",
+        "Service control policies pushed from a third-party CSPM tool that periodically scan workloads and revert any IAM grants outside the approved API list as a corrective control",
+        "An IAM allow policy that grants only the predefined roles aligned with the approved API surface to the workload's service account, combined with explicit denies via IAM deny policies for sensitive APIs",
+        "A VPC firewall rule applied to the workload's VM that drops egress on all destination ports except those used by approved APIs, since Google APIs each listen on a unique TCP port"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because Cloud Armor protects HTTP(S) load balancers serving the customer's applications; it does not gate calls a workload makes to Google Cloud APIs. Option B is wrong because external corrective tooling that reverts grants is reactive and does not preventively restrict the API surface. Option C is correct because the API surface a workload can call is determined by the IAM permissions on its service account, so granting only the predefined roles needed plus IAM deny policies for sensitive APIs is the precise control. Option D is wrong because most Google Cloud APIs share the standard HTTPS port (443) and reach googleapis.com; port-level firewall rules cannot distinguish between them.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-036",
+      "question": "A new GKE cluster will run workloads that must impersonate Google Cloud service accounts to read from a sensitive bucket. The architect wants to avoid storing service account keys as Kubernetes secrets. Which Google Cloud feature should be used?",
+      "options": [
+        "Mount service account JSON keys into pods as Kubernetes secrets and rely on Kubernetes RBAC plus Secret Manager versioning to track which pods used which key version over time",
+        "Use GKE Workload Identity to bind Kubernetes service accounts to Google Cloud service accounts so pods receive short-lived, automatically rotated credentials with no key files mounted",
+        "Configure each node pool with the Compute Engine default service account that already has Storage Admin on the bucket, since all pods on a node would then share its identity automatically",
+        "Disable Kubernetes service accounts in the cluster entirely and have pods call the metadata server with anonymous requests so they inherit the project default identity at runtime"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because it does exactly what the architect is trying to avoid — storing keys as secrets — and introduces all the operational risks of long-lived credentials in cluster storage. Option B is correct because GKE Workload Identity is the recommended pattern: it binds a Kubernetes service account to a Google Cloud service account, and pods automatically receive short-lived federated credentials without any key file. Option C is wrong because using the Compute Engine default service account across a whole node pool gives every pod on the node the same broad identity, which violates least privilege and is the anti-pattern Workload Identity replaces. Option D is wrong because anonymous metadata server calls are not a credential mechanism and is not how GKE authenticates workloads.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-037",
+      "question": "A bank wants to enforce a single firewall ruleset across all VPCs in the production folder so that team-level VPC admins cannot accidentally open SSH from the internet. Which feature is best suited?",
+      "options": [
+        "Custom VPC firewall rules created in each VPC by the central security team and protected by an IAM Condition that allows only the security team to modify them at runtime",
+        "A single shared VPC across the whole organization so that team-level admins do not have permission to create firewall rules in their own VPCs at all by design",
+        "Cloud Armor security policies applied at every external load balancer to block port 22 traffic, since SSH ingress in production must come through a load balancer in this design",
+        "Hierarchical firewall policies attached at the production folder with rules that deny ingress on port 22 from 0.0.0.0/0 and apply before any VPC-level rule can override them"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because per-VPC custom rules require duplication and an IAM Condition does not prevent a VPC admin with appropriate permissions from creating overriding rules at the VPC scope. Option B is wrong because forcing a single shared VPC for the whole organization is a major architectural choice with many side effects and is not the targeted control for this requirement. Option C is wrong because Cloud Armor protects HTTP(S) load balancers, not arbitrary SSH ingress to VMs. Option D is correct because hierarchical firewall policies attached at folders apply to every VPC in projects beneath the folder and are evaluated before VPC-level rules, providing centralized enforcement the local admins cannot override.",
+      "category": "Network security",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-security-038",
+      "question": "A team is choosing between Google-managed encryption keys, CMEK, and CSEK for a new project's data at rest. Which statement correctly compares them?",
+      "options": [
+        "Google-managed keys give no customer control over rotation or destruction; CMEK lets the customer manage key lifecycle in Cloud KMS; CSEK requires the customer to supply raw key material per request and Google does not store it",
+        "All three options offer identical control to the customer; the difference is purely billing — CMEK and CSEK incur additional KMS charges while Google-managed keys are included in service pricing with no rotation or destruction differences between any of them",
+        "Customer-managed keys (CMEK) are deprecated in favor of CSEK for all new workloads, since CSEK now supports automated rotation and HSM backing through a Cloud KMS integration that handles the entire key lifecycle for the customer in software",
+        "CSEK keys are stored in Cloud KMS under a customer-owned key ring with automated rotation enabled, while CMEK keys are supplied raw on each request to the storage API and never stored by Google or its managed key services"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Google-managed keys are fully managed with no customer control over rotation or destruction, CMEK lets the customer manage key lifecycle (rotation, IAM, destruction) in Cloud KMS, and CSEK requires the customer to send raw key material with each request while Google does not store it. Option B is wrong because the options differ substantially in control, not just in billing. Option C is wrong because CMEK is the modern recommended option and CSEK is the supply-raw-key pattern with limited support and no Cloud KMS integration for storage. Option D is wrong because it inverts the definitions of CMEK and CSEK.",
+      "category": "Data security",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-security-039",
+      "question": "A platform team wants to grant a Cloud Build pipeline permission to deploy to GKE in a specific window each release day, and ensure that the pipeline cannot deploy outside that window even if it is manually triggered. Which IAM feature most directly supports this?",
+      "options": [
+        "A Cloud Function that listens to Cloud Build events and aborts the deploy job by canceling the Cloud Build run if the system time is outside the configured window",
+        "An IAM Condition on the deployer binding that uses request.time predicates to limit when the Container Developer role is effective on the cluster, so deploys outside the window are denied at the API",
+        "A custom role with the container.deployments.create permission added or removed on a daily cron schedule by a script that toggles the role membership of the pipeline service account",
+        "A VPC Service Controls ingress rule that allows the Cloud Build worker pool only during the release window and blocks all other times from reaching the cluster's control plane"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because aborting after the deploy has begun is reactive and depends on a custom function being healthy at the moment a deploy is attempted. Option B is correct because IAM Conditions with request.time predicates make a binding effective only inside the configured window, so the deploy request is denied by IAM if it falls outside — even on manual triggers. Option C is wrong because cron-toggling role memberships is fragile, leaves windows of misconfiguration, and creates audit complexity. Option D is wrong because VPC Service Controls ingress rules cannot be time-windowed in the same first-class way and address the wrong axis of control.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-040",
+      "question": "A pharma company wants to provide external researchers with read-only access to a curated Cloud Storage bucket of anonymized study data while ensuring researchers cannot exfiltrate the data to their own Cloud Storage buckets. Which TWO controls together best meet the requirement? (Choose two.)",
+      "options": [
+        "Make the bucket publicly readable so researchers do not need to authenticate, and use signed URLs that expire after one hour to limit how much data each researcher can download in a session",
+        "Grant the Storage Object Viewer role on the bucket only to the researchers' external Google accounts, so they have read-only access and cannot modify or copy out via write APIs",
+        "Place the bucket inside a VPC Service Controls perimeter that denies copy operations to projects outside the curated dataset's project, preventing cross-perimeter exfiltration",
+        "Grant the Storage Admin role to each researcher so they can copy the data into their own buckets for analysis, then trust their institutional agreements to prevent any redistribution"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Option A is wrong because making the bucket public removes all attribution and access control, and signed URL expiration does not prevent copy-out within the URL's validity. Option B is correct because Storage Object Viewer grants only read access on the bucket; with no write or copy-out permission to external buckets, the researchers cannot exfiltrate via the storage API. Option C is correct because a VPC Service Controls perimeter restricts the API surface so that researchers cannot copy data into resources outside the perimeter, preventing exfiltration to their own buckets. Option D is wrong because Storage Admin grants write permissions and lets researchers copy data wherever they want — the opposite of the exfiltration control desired.",
+      "category": "Network security",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-041",
+      "question": "An analyst at a non-EU subsidiary requests access to a BigQuery dataset that contains EU citizens' personal data. The data protection officer must ensure GDPR-compliant handling of this cross-border access. Which set of measures is most appropriate?",
+      "options": [
+        "Encrypt the dataset with CMEK keys stored in europe-west4 so the encryption boundary stays in the EU, and let the non-EU analyst query freely since the encryption itself satisfies cross-border transfer rules",
+        "Apply a GDPR-aligned legal basis (e.g., standard contractual clauses) for the transfer, use Sensitive Data Protection to minimize PII before export, log the access in Data Access audit logs, and constrain access via least-privilege IAM",
+        "Block any non-EU analyst from accessing the dataset using a project label called eu-only and a Cloud Function that revokes their IAM grants whenever the label is present on the parent project",
+        "Use Google-managed keys for the dataset and rely on Google's overall GDPR compliance certification to handle the cross-border transfer obligation on the customer's behalf"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because the location of CMEK keys does not satisfy the cross-border transfer legal requirement; access by a non-EU controller is still a transfer regardless of where the keys sit. Option B is correct because GDPR cross-border data transfer requires a legal basis such as standard contractual clauses, and good practice combines that with data minimization (Sensitive Data Protection), audit logging (Data Access logs), and least-privilege IAM. Option C is wrong because label-driven Cloud Function revocation is fragile and does not address the GDPR legal-basis question at all. Option D is wrong because Google's certifications do not transfer the customer's controller obligations under GDPR for cross-border access.",
+      "category": "Compliance",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-security-042",
+      "question": "A team needs to deny a specific risky permission (storage.buckets.setIamPolicy) for everyone in the organization, including identities that would otherwise inherit it via an Owner role, except for the security-admins group. Which IAM feature should they use?",
+      "options": [
+        "An IAM deny policy at the organization node that denies storage.buckets.setIamPolicy for all principals except members of the security-admins group, so the deny overrides any allow inherited from Owner roles",
+        "A custom role at the organization level that omits storage.buckets.setIamPolicy and a one-time script that migrates every existing Owner binding to that new custom role across all projects",
+        "An organization policy of type constraints/iam.restrictStorageBucketPolicies that lists the security-admins group and is applied with mode 'enforce' at the organization node by the platform team",
+        "A VPC Service Controls perimeter around every project where the storage.buckets.setIamPolicy API is added to the protected services list to block all non-security-admin callers"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because IAM deny policies explicitly deny specified permissions for specified principals and take precedence over any allow grant (including those inherited from Owner roles), with exception clauses to exempt groups like security-admins. Option B is wrong because migrating away from Owner across the whole organization is disruptive and does not handle future bindings that grant Owner again. Option C is wrong because no such organization policy constraint exists for this purpose; iam.restrictStorageBucketPolicies is not a real constraint, and organization policies do not work on permission-level allow/deny with exception lists. Option D is wrong because VPC Service Controls restrict API access across a perimeter; they do not implement principal-level allow/deny exceptions for a specific permission.",
+      "category": "IAM and resource hierarchy",
+      "difficulty": "hard"
+    }
+  ]
+}

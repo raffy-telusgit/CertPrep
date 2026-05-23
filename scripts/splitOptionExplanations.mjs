@@ -15,6 +15,7 @@ const __dirname = dirname(__filename);
 const BANK_FILES = [
   'gcp-pcde.json',
   'sc-900.json',
+  'gcp-pca.json',
 ];
 
 /**
@@ -163,7 +164,7 @@ function processBank(filename) {
 
     // Reconstruct the question object with fields in required order:
     // id, question, options, correctAnswers, explanation, optionExplanations,
-    // [explanationPreamble if non-empty], category, difficulty
+    // [explanationPreamble if non-empty], [caseStudyId if present], category, difficulty
     const rebuilt = {
       id: q.id,
       question: q.question,
@@ -175,6 +176,10 @@ function processBank(filename) {
 
     if (preamble && preamble.length > 0) {
       rebuilt.explanationPreamble = preamble;
+    }
+
+    if (q.caseStudyId) {
+      rebuilt.caseStudyId = q.caseStudyId;
     }
 
     rebuilt.category = q.category;

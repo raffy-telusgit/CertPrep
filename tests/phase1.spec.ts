@@ -18,6 +18,7 @@ async function startPracticeSession(page: Page) {
   await page.reload()
   await page.locator('[aria-label="Select Azure Fundamentals"]').click()
   await page.locator('[role="dialog"]').locator('text=Practice Mode').click()
+  await page.locator('[role="dialog"]').locator('text=Start Practice').click()
   await expect(page).toHaveURL(new RegExp('/exam/az-900'))
 }
 
@@ -116,6 +117,7 @@ test.describe('Practice mode session start', () => {
     await page.reload()
     await page.locator('[aria-label="Select Azure Fundamentals"]').click()
     await page.locator('[role="dialog"]').locator('text=Practice Mode').click()
+    await page.locator('[role="dialog"]').locator('text=Start Practice').click()
     await expect(page).toHaveURL(new RegExp('/exam/az-900'))
   })
 

@@ -1,0 +1,424 @@
+{
+  "questions": [
+    {
+      "id": "pca-implementation-001",
+      "question": "A development team is launching a new public-facing REST API for partner integrations and asks for a managed service that handles authentication, rate limiting, request transformation, analytics, and partner onboarding. Which Google Cloud product should you recommend?",
+      "options": [
+        "Cloud Endpoints with the ESPv2 proxy deployed alongside the backend services",
+        "Apigee X with API products, developer portal, and policy-based rate limiting",
+        "An external HTTP(S) Load Balancer with Cloud Armor rules and Cloud CDN caching",
+        "API Gateway with OpenAPI spec configs and Cloud Logging-based usage reports"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Cloud Endpoints provides authentication, monitoring, and basic quota enforcement but lacks the developer portal, monetization, and rich partner-onboarding workflow the team needs. Option B is correct because Apigee X is Google's full-lifecycle API management platform: it provides API products, a built-in developer portal for partner onboarding, traffic management policies (quota, spike arrest, rate limit), transformation policies, security policies, and analytics. Option C is wrong because a load balancer plus Cloud Armor handles routing and edge security but does not provide API products, developer portals, or partner onboarding. Option D is wrong because API Gateway is a lightweight gateway suitable for serverless backends; it does not include a developer portal, monetization, or the policy depth required for partner-facing API programs.",
+      "category": "API management",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-implementation-002",
+      "question": "A platform team wants to write infrastructure as code that is declarative, has a strong community ecosystem, and is officially supported for Google Cloud through a set of vetted modules. Which tool should they adopt?",
+      "options": [
+        "Terraform using the terraform-google-modules collection maintained by Google",
+        "Deployment Manager with Jinja2 templates checked into the repository",
+        "A bespoke Python script that calls the Google Cloud client libraries directly",
+        "gcloud command sequences captured in shell scripts and run from a CI job"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Terraform with the terraform-google-modules collection is Google Cloud's recommended IaC approach; it is declarative, has a mature provider, and the module library is maintained by Google engineers. Option B is wrong because Deployment Manager is legacy and Google publicly recommends migrating workloads to Terraform or Config Connector. Option C is wrong because a bespoke imperative script lacks declarative state, drift detection, and the review workflow that an IaC tool provides. Option D is wrong because gcloud shell scripts are imperative, have no state file, and do not detect or reconcile drift, so they do not meet the requirements of infrastructure as code.",
+      "category": "Infrastructure as Code",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-implementation-003",
+      "question": "A developer wants to test a Cloud Function that publishes to Pub/Sub topics during local development, without consuming a real project or incurring egress. Which approach should you recommend?",
+      "options": [
+        "Use the Pub/Sub emulator and point the application at the PUBSUB_EMULATOR_HOST environment variable",
+        "Create a temporary project in the developer's personal billing account and use real Pub/Sub topics",
+        "Mock the Pub/Sub client library calls in unit tests and skip any integration testing locally",
+        "Deploy the function to a sandbox Cloud Run service and inspect logs in Cloud Logging"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because the Pub/Sub emulator is the supported local-development tool; setting PUBSUB_EMULATOR_HOST redirects client libraries to the emulator with zero cost and no network round-trip. Option B is wrong because it incurs cost, requires real credentials, and undermines the goal of local testing. Option C is wrong because while unit mocks are useful, they do not exercise the real client-library wire protocol the way the emulator does, leaving real integration bugs undetected. Option D is wrong because Cloud Run is still a cloud deployment, not local development, and does not address the goal of testing without consuming a real project.",
+      "category": "Programmatic access",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-implementation-004",
+      "question": "A team must migrate a 12 TB on-premises PostgreSQL database to Cloud SQL for PostgreSQL with minimal downtime. The source can stream WAL changes and the network link is reliable at 1 Gbps. Which Google Cloud tool should they use?",
+      "options": [
+        "Storage Transfer Service to copy a SQL dump to Cloud Storage and load it into Cloud SQL",
+        "Database Migration Service with a continuous migration job that streams ongoing changes",
+        "Transfer Appliance to physically ship the database, then restore the dump in Cloud SQL",
+        "Datastream to capture changes and write them into BigQuery before promoting to Cloud SQL"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because a dump-and-load approach requires an outage window proportional to the dump and load time, which conflicts with minimal-downtime goals. Option B is correct because Database Migration Service supports continuous, near-zero-downtime migrations for PostgreSQL by performing an initial load and then streaming WAL changes until cutover. Option C is wrong because Transfer Appliance is intended for very large datasets on slow links and would add weeks of latency; 12 TB over 1 Gbps is feasible online. Option D is wrong because Datastream streams change events to targets like BigQuery, Cloud Storage, or Cloud SQL but it is a CDC pipeline, not a managed homogeneous database migration; DMS is the purpose-built tool for this scenario.",
+      "category": "Data and system migration",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-implementation-005",
+      "question": "A developer wants to write, debug, and deploy Kubernetes manifests for a GKE cluster from their local IDE with built-in skaffold support, YAML schema validation, and one-click deployment. Which tool should you recommend?",
+      "options": [
+        "Cloud Code, the official Google Cloud plugin for VS Code and JetBrains IDEs",
+        "The Google Cloud Console's Kubernetes Engine workloads UI for direct YAML editing",
+        "Cloud Shell Editor in a browser tab with manual kubectl apply commands",
+        "An open-source YAML language server combined with kubectl run-locally scripts"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Cloud Code is the official Google Cloud IDE plugin (VS Code and JetBrains) and provides skaffold-based dev loops, Kubernetes YAML schema validation, one-click deploy, and built-in remote debugging for GKE and Cloud Run. Option B is wrong because the Cloud Console YAML editor is not a local IDE experience and lacks IDE features like debugging, schema linting, and skaffold integration. Option C is wrong because Cloud Shell Editor runs in a browser and, while useful, does not match the local IDE experience the developer asked for. Option D is wrong because a generic YAML language server provides syntax help but not skaffold integration, debug attach, or one-click deploy.",
+      "category": "Programmatic access",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-implementation-006",
+      "question": "An operations engineer asks how Gemini Cloud Assist can help her team reduce time-to-resolution for production incidents in the Google Cloud Console. Which capability best describes Gemini Cloud Assist?",
+      "options": [
+        "It automatically applies recommended fixes to misconfigured resources without operator confirmation",
+        "It provides AI-assisted explanations, troubleshooting guidance, and configuration suggestions inside the Cloud Console",
+        "It replaces Cloud Monitoring and Cloud Logging by providing an alternative observability backend",
+        "It is a billing-optimization service that automatically resizes VMs and storage to reduce spend"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Gemini Cloud Assist offers suggestions and explanations but does not silently apply changes; an operator must review and apply recommendations. Option B is correct because Gemini Cloud Assist is an AI-assisted feature embedded in the Cloud Console that explains resources, summarizes logs and errors, suggests gcloud commands and IaC snippets, and helps troubleshoot misconfigurations. Option C is wrong because Gemini Cloud Assist works alongside, not in place of, Cloud Monitoring and Cloud Logging; it is an AI assistant, not an observability backend. Option D is wrong because Recommender and Active Assist (FinOps) handle right-sizing and cost guidance; Gemini Cloud Assist is a general-purpose AI assistant.",
+      "category": "Gemini Cloud Assist",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-implementation-007",
+      "question": "A blue/green deployment is planned for a stateless service running on Cloud Run. The team wants 100% of traffic to flow to the new revision only after a smoke test passes, with instant rollback if it fails. Which deployment configuration best meets this?",
+      "options": [
+        "Deploy with default traffic-splitting (100% to latest), run the smoke test against the public URL, and roll back by redeploying the old image",
+        "Use Cloud Deploy with a one-stage pipeline that promotes to production immediately and rely on Cloud Monitoring alerts to trigger rollback",
+        "Configure a manual traffic split of 50/50 between revisions for one hour, then move to 100% once monitoring shows no errors",
+        "Deploy the new revision with --no-traffic, run the smoke test against its revision URL, then update traffic to send 100% to the new revision"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because deploying with default traffic immediately serves real users from the untested revision, defeating the safety goal. Option B is wrong because a one-stage immediate promotion does not gate on a smoke test, and waiting for an alert is reactive rather than preventive. Option C is wrong because 50/50 splitting is a canary pattern, not blue/green, and exposes half of users to the new revision before the smoke test result is known. Option D is correct because Cloud Run supports deploying a revision without sending traffic (--no-traffic), giving the team a stable revision URL to smoke-test; once the test passes, gcloud run services update-traffic --to-revisions sends 100% to the new revision. Rollback is a single traffic-update command back to the prior revision.",
+      "category": "Deployment patterns",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-008",
+      "question": "A team wants partner developers to discover, subscribe to, and try API products that they own. They also need to monetize selected APIs with per-call pricing. Which Apigee X capability supports this?",
+      "options": [
+        "The Apigee analytics dashboards exported into Looker Studio for revenue reporting",
+        "The Apigee API products and integrated developer portal, combined with monetization plans",
+        "The Apigee trace tool used by API developers during proxy debugging",
+        "The Apigee debug session UI shared with partners via signed links"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because analytics dashboards report on traffic but do not enable subscription or billing of partners. Option B is correct because Apigee API products bundle proxies into consumable units; the integrated developer portal lets partners self-register, get API keys, and try APIs; and monetization plans support rate plans (free, freemium, fixed-fee, volume-based per-call). Together they cover discovery, subscription, and monetization. Option C is wrong because the trace tool is a development-time debugging feature, not a partner-facing discovery or monetization mechanism. Option D is wrong because debug sessions are diagnostic and not the path for partners to discover or subscribe to APIs.",
+      "category": "API management",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-009",
+      "question": "A platform team uses Terraform to manage Google Cloud infrastructure. They also operate GKE clusters and want application teams to provision Cloud SQL instances and Pub/Sub topics declaratively from within Kubernetes, using kubectl. Which approach should you recommend?",
+      "options": [
+        "Use Helm charts that wrap shell scripts which call gcloud to create the resources at install time",
+        "Have each application team check Terraform code into the platform team's monorepo and request PRs",
+        "Install Config Connector (KCC) on the GKE clusters so Google Cloud resources are managed as Kubernetes custom resources",
+        "Move all resource provisioning to the Cloud Console and grant application teams the relevant IAM roles"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because shell scripts invoked from Helm are imperative, have no reconciliation, and lose Kubernetes-native declarative state. Option B is wrong because routing every change through a centralized monorepo creates a bottleneck and does not give app teams the self-service, kubectl-native workflow they want. Option C is correct because Config Connector exposes Google Cloud resources (Cloud SQL, Pub/Sub, GCS, IAM, and more) as Kubernetes CRDs, so application teams use kubectl and YAML to provision resources, with the controller continuously reconciling state. Option D is wrong because the Console is a UI for humans, not a declarative self-service interface, and bypasses IaC entirely.",
+      "category": "Infrastructure as Code",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-010",
+      "question": "A team must run a sustained load test of 50,000 requests per second against a new GKE-based service for 30 minutes. They want the load generator to scale horizontally, expose Prometheus metrics, and be defined as code. Which approach should you recommend?",
+      "options": [
+        "A handful of curl loops launched from developer laptops with a spreadsheet aggregating response times",
+        "JMeter running on a single n2-standard-32 VM with the GUI enabled for live result viewing",
+        "Apache Bench (ab) executed in parallel from three regional Cloud Shell instances coordinated manually",
+        "Locust deployed on GKE in distributed mode with a master and many workers and a code-defined task file"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because curl loops from laptops will not generate 50,000 RPS and have no centralized metrics. Option B is wrong because a single VM, especially using the GUI, cannot reliably sustain 50,000 RPS and is not horizontally scalable. Option C is wrong because Apache Bench is a single-host tool with no native distributed coordination and cannot easily reach the target rate or expose Prometheus metrics. Option D is correct because Locust runs in distributed master/worker mode on GKE, the workload is defined in a Python tasks file (code), workers scale horizontally to reach the target RPS, and Locust exposes Prometheus-compatible metrics for monitoring.",
+      "category": "Testing frameworks",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-011",
+      "question": "Two teams own services that communicate over HTTP. They want to prevent breaking changes by verifying, in CI, that the provider's API still satisfies the consumer's expectations. Which testing approach should you recommend?",
+      "options": [
+        "Contract testing using a tool such as Pact, with consumer-generated pacts verified against the provider in CI",
+        "End-to-end integration tests run nightly across both services in a shared staging project",
+        "Unit tests on each service that mock the other service's responses based on the current spec",
+        "Load testing weekly to catch regressions through response-time changes during peak hours"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because contract testing (for example with Pact) is purpose-built for this: the consumer generates a contract describing the requests it issues and responses it expects, and the provider verifies that contract in its CI pipeline, catching breaking changes before deploy. Option B is wrong because nightly end-to-end tests catch issues late, are slow, and indicate failure without isolating the contract change. Option C is wrong because mock-based unit tests can drift from the real provider behavior since mocks are not verified against the actual API. Option D is wrong because load tests measure performance, not API correctness, and would not reliably detect a breaking schema change.",
+      "category": "Testing frameworks",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-012",
+      "question": "A team needs to copy 80 TB of files from an on-premises NFS server to Cloud Storage. The site has a 1 Gbps internet uplink that is 60% utilized by business traffic during the day. They want to complete the transfer in under two weeks with minimal disruption. Which solution should you recommend?",
+      "options": [
+        "Storage Transfer Service with an on-premises agent, scheduling transfers to off-peak hours with bandwidth caps",
+        "Run gsutil cp -m from a single workstation continuously and rely on the network team to deprioritize other traffic",
+        "Order a Transfer Appliance, copy data to it locally, and ship it back to Google for ingest",
+        "Mount the NFS share over Cloud VPN and copy files using a single rsync job on a Compute Engine VM"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Storage Transfer Service for on-premises data deploys agents at the source, supports scheduled windows and bandwidth limits, retries on failure, and keeps a manifest of completed objects; 80 TB over 400 Mbps off-peak is comfortably under two weeks. Option B is wrong because gsutil cp from a single workstation lacks parallel agents, bandwidth control, and resumable scheduling, and asking network teams to deprioritize business traffic is disruptive. Option C is wrong because Transfer Appliance is best for very large volumes or poor connectivity; here, online transfer is fast enough and avoids shipping delays. Option D is wrong because a single rsync job over VPN is bandwidth-constrained, single-threaded, and has no scheduled bandwidth controls.",
+      "category": "Data and system migration",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-013",
+      "question": "Which command transfers a 200 GB object to Cloud Storage with the highest throughput on a modern GKE-attached Compute Engine VM that has been authenticated with gcloud?",
+      "options": [
+        "gcloud storage cp ./big.tar gs://bucket/big.tar",
+        "gsutil cp ./big.tar gs://bucket/big.tar",
+        "curl -X POST with a resumable upload session URL produced from the JSON API",
+        "A custom Python script that opens the file and writes chunks one at a time using the storage client"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because gcloud storage is the new, recommended Cloud Storage CLI; it uses parallel composite uploads and CRC32C hardware acceleration by default and is significantly faster than gsutil on the same hardware. Option B is wrong because gsutil still works but is older and slower than gcloud storage; without explicit -o parallel_composite_upload_threshold tuning it underperforms. Option C is wrong because a hand-rolled curl resumable upload is single-stream and lacks the parallelism and integrity-check optimizations baked into gcloud storage. Option D is wrong because a naive single-threaded chunked Python script will be CPU- and latency-bound and cannot match the optimized parallel uploads gcloud storage performs.",
+      "category": "Programmatic access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-014",
+      "question": "An Apigee X proxy fronts a backend service. The product manager requires that one partner be allowed at most 1,000 calls per minute, with bursts of 100 calls per second smoothed out, and excess requests rejected with HTTP 429. Which combination of Apigee policies achieves this?",
+      "options": [
+        "Apply only OAuthV2 token verification on the proxy and rely on the backend service to drop excess traffic at the application layer",
+        "Apply ResponseCache and FlowCallout policies on the proxy to absorb the peak partner traffic in shared in-memory caches",
+        "Apply ExtractVariables and AssignMessage policies to add a custom header used for tracking, while enforcing every actual limit inside the backend code",
+        "Apply a Quota policy keyed on the API key for the per-minute limit, plus SpikeArrest for the per-second burst smoothing"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because OAuthV2 verifies tokens but does not enforce per-partner request limits; pushing rate enforcement to the backend defeats the purpose of API management at the edge. Option B is wrong because ResponseCache returns cached responses and FlowCallout invokes shared flows; neither enforces rate limits. Option C is wrong because tracking headers do not enforce limits, and pushing enforcement to backend code is exactly what API management policies replace. Option D is correct because Quota enforces a count over a time window (here 1,000 per minute, keyed on the API key), and SpikeArrest smooths short-term bursts to a steady allowed rate (here 100 per second); together they meet both requirements and Apigee returns HTTP 429 when limits are exceeded.",
+      "category": "API management",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-015",
+      "question": "A retail company runs Apigee on-prem today and wants to keep some API proxies on customer-managed Kubernetes (for low-latency local calls) while moving the management plane to Google Cloud. Which Apigee deployment model fits this requirement?",
+      "options": [
+        "Apigee Edge for Public Cloud, the legacy SaaS offering Google still actively sells to new customers",
+        "Apigee X with all runtime planes hosted exclusively in Google Cloud regions",
+        "Apigee Edge Microgateway deployed as a sidecar in every application pod with no central plane",
+        "Apigee hybrid, where the management plane runs in Google Cloud and the runtime plane runs in the customer's Kubernetes cluster"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because Apigee Edge for Public Cloud is the legacy product; Google's current offering for new customers is Apigee X (cloud-hosted) or Apigee hybrid. Option B is wrong because Apigee X runs all runtime in Google Cloud regions, which does not meet the requirement to keep some runtime on customer-managed Kubernetes. Option C is wrong because Edge Microgateway is a legacy sidecar gateway and is not the modern model for split runtime/management; it also lacks a central management plane in Google Cloud. Option D is correct because Apigee hybrid is specifically designed for this split: the management plane (analytics, config) is in Google Cloud while the runtime plane (message processors) runs in the customer's Kubernetes cluster.",
+      "category": "API management",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-016",
+      "question": "A team accesses Google Cloud APIs from a backend running on Compute Engine. They want the strongest, most maintainable authentication pattern that requires no key files on disk. Which approach should you recommend?",
+      "options": [
+        "Generate a service-account JSON key, store it on the VM, and set GOOGLE_APPLICATION_CREDENTIALS to its path",
+        "Use a user OAuth client ID flow on first boot and cache the refresh token in /etc",
+        "Attach a service account to the VM and use Application Default Credentials, which obtains tokens from the metadata server",
+        "Embed an API key in the application config and rotate it manually every 90 days"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because service-account JSON keys on disk are a known credential-leakage risk; Google recommends avoiding them when an attached service account works. Option B is wrong because user OAuth flows tie a backend to an individual person's identity and break when that user leaves; refresh tokens on disk are also a leak risk. Option C is correct because attaching a service account to the VM and using Application Default Credentials (ADC) lets client libraries obtain short-lived tokens from the metadata server automatically; no keys land on disk and tokens rotate continuously. Option D is wrong because API keys do not represent an identity, do not grant most IAM permissions, and are appropriate only for unauthenticated quotas on public APIs.",
+      "category": "Programmatic access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-017",
+      "question": "A team is calling a Google Cloud API from a backend service that occasionally observes 503 Service Unavailable responses. They want a robust client-side retry strategy that respects server signals and avoids thundering-herd retries. Which approach should you recommend?",
+      "options": [
+        "Retry every failure immediately up to 10 times so that transient errors and even non-retriable errors are masked entirely from upstream callers",
+        "Retry only 5xx responses on the next fixed 1-second interval across all clients in order to keep retry timing strictly predictable",
+        "Retry retriable status codes (429, 500, 503) with exponential backoff and jitter, honoring Retry-After when set",
+        "Never retry from the client; surface every error to the caller and let the user trigger a manual retry from the UI on every transient failure"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because immediate aggressive retries amplify load on a struggling service and cause thundering-herd behavior; they also retry non-idempotent failures that should not be retried. Option B is wrong because a fixed interval still synchronizes retries across clients and ignores Retry-After hints sent by the server. Option C is correct because Google's API best practices specify retrying only retriable status codes (such as 429, 500, 503) with exponential backoff plus jitter to de-synchronize clients, and honoring the Retry-After header when the server provides one. Option D is wrong because pushing every transient error to the user produces poor UX and ignores legitimate retry semantics for idempotent calls.",
+      "category": "Programmatic access",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-018",
+      "question": "A platform team is choosing between Terraform and Config Connector for managing Google Cloud resources from a GKE-based developer platform. Which statements correctly describe the trade-offs? (Choose two.)",
+      "options": [
+        "Config Connector is the legacy successor to Deployment Manager and is no longer recommended by Google",
+        "Terraform replaces the need for IAM and inherently enforces least-privilege by design",
+        "Terraform stores desired state in a state file (often in Cloud Storage with state locking) and reconciles on plan/apply runs",
+        "Config Connector continuously reconciles Google Cloud resources from Kubernetes custom resources using a controller"
+      ],
+      "correctAnswers": [3, 2],
+      "explanation": "Option A is wrong because Config Connector is an actively supported, recommended Google product, not the legacy successor to Deployment Manager. Option B is wrong because Terraform is an IaC tool; IAM is a separate Google Cloud service that Terraform configures, not replaces. Option C is correct because Terraform's model is a state file (typically a Cloud Storage backend with object versioning and state locking) plus plan/apply runs that reconcile state at execution time. Option D is correct because Config Connector installs a controller in the cluster that continuously reconciles Google Cloud resources from Kubernetes custom resources, just like any operator pattern.",
+      "category": "Infrastructure as Code",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-019",
+      "question": "An engineering manager asks how Gemini Cloud Assist can accelerate writing Terraform for a multi-region web app. Which best describes how Gemini Cloud Assist supports IaC authoring?",
+      "options": [
+        "It rewrites all existing Terraform in the repository overnight to match Google's latest published module conventions, committing changes to the main branch automatically",
+        "It generates Terraform snippets and explains resource configs in the Cloud Console for engineers to review",
+        "It deploys Terraform modules directly into production accounts without requiring any change-management or CI/CD pipeline approval steps",
+        "It is exclusively a code-completion plugin for VS Code and is therefore not available inside the Cloud Console for engineers working in a browser"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Gemini Cloud Assist suggests changes; it does not perform large-scale unattended rewrites of a repository. Option B is correct because Gemini Cloud Assist provides AI-assisted IaC and gcloud snippet generation, plus explanations of resource configuration, directly inside the Cloud Console; engineers review the suggested Terraform and commit it through their normal change process. Option C is wrong because Gemini Cloud Assist does not bypass CI/CD; it accelerates authoring, not deployment. Option D is wrong because Gemini Cloud Assist is integrated into the Cloud Console (and Gemini Code Assist is the IDE-side counterpart); the assistant in question is not exclusive to VS Code.",
+      "category": "Gemini Cloud Assist",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-020",
+      "question": "A retail company replicating its OLTP MySQL database into BigQuery for near-real-time analytics needs a managed change-data-capture pipeline that reads MySQL binlog events and writes them to BigQuery. Which Google Cloud product should they use?",
+      "options": [
+        "Database Migration Service configured to migrate MySQL into BigQuery directly",
+        "Storage Transfer Service to copy nightly mysqldump files to Cloud Storage and load into BigQuery",
+        "Datastream with a MySQL source connector and a BigQuery destination",
+        "Pub/Sub to BigQuery subscriptions, with the application writing every database change to a topic"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because Database Migration Service is for migrating databases between like engines (MySQL to MySQL on Cloud SQL, for example) with minimal downtime; it does not target BigQuery. Option B is wrong because nightly dumps are batch, not near-real-time, and contradict the CDC requirement. Option C is correct because Datastream is Google's managed serverless CDC service: it captures change events from MySQL (and PostgreSQL/Oracle) and writes them to destinations including BigQuery for analytics. Option D is wrong because forcing the application to dual-write to Pub/Sub adds invasive code, risks consistency drift between the database and the topic, and is not the managed CDC approach the team wants.",
+      "category": "Data and system migration",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-021",
+      "question": "A team running Spanner workloads wants to write integration tests in CI that exercise real query plans and transactions without consuming a production Spanner instance. They want fast startup and no billing charges. Which approach should you recommend?",
+      "options": [
+        "Spin up a small Spanner instance in a dedicated test project per CI job and tear it down afterwards",
+        "Mock the Spanner client library in test code and only run real Spanner queries during the nightly E2E suite",
+        "Replicate Spanner queries to a Postgres instance in CI and run tests there, relying on syntactic similarity",
+        "Run the Cloud Spanner emulator (gcloud emulators spanner) in CI and point SPANNER_EMULATOR_HOST at it"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because spinning up real Spanner instances per CI job is slow, expensive, and unnecessary when a free emulator is available. Option B is wrong because mocks do not exercise real Spanner query parsing, transaction semantics, or interleaved tables; bugs found nightly are bugs found late. Option C is wrong because Postgres and Spanner SQL diverge in important ways (especially transactions, interleaving, and STRUCT support), so test results would not be representative. Option D is correct because the Cloud Spanner emulator runs locally (or in a CI container), supports nearly all Spanner SQL and transaction behavior, starts in seconds, and clients connect by setting SPANNER_EMULATOR_HOST to the emulator address.",
+      "category": "Testing frameworks",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-implementation-022",
+      "question": "A platform team is designing a deployment pipeline for a GKE-hosted payment service where any bad rollout must be reversible in seconds. The service handles 5,000 requests per second and has strict latency requirements. Which deployment pattern best fits?",
+      "options": [
+        "Recreate (kubectl set image with maxUnavailable=100%) so the new version replaces the old immediately, accepting brief downtime during the swap",
+        "Rolling update with maxSurge=25% and maxUnavailable=25% applied across multiple Deployment generations to gradually roll over the payment service",
+        "Blue/green via two Kubernetes Services and a Gateway, switching the active backend by selector after smoke tests",
+        "A custom in-pod feature-flag toggle that re-wires traffic to a new code path at runtime, controlled by an external config service and a dashboard"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because Recreate causes downtime as the old version is terminated before the new is healthy, which is incompatible with a 5,000 RPS payment service. Option B is wrong because a rolling update interleaves old and new versions and rolling back from a partially rolled-out state still takes minutes; blue/green rolls back in seconds via a single selector flip. Option C is correct because blue/green with two Services and a Gateway/Ingress allows a smoke test against the new (green) deployment in isolation, then a single selector or routing flip switches traffic. Rollback is the inverse flip, completing in seconds. Option D is wrong because in-pod feature flags help with progressive feature exposure but do not replace deployment topology; a bad binary or library change cannot be flagged off.",
+      "category": "Deployment patterns",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-implementation-023",
+      "question": "A team is rolling out a new recommendation algorithm to a Cloud Run service. They want to send 1% of production traffic to the new revision, watch error rate and latency for 30 minutes, then ramp to 10%, 50%, and 100% if metrics stay green. Which capability supports this with minimal custom plumbing?",
+      "options": [
+        "Deploy as a brand-new Cloud Run service in a separate project and reverse-proxy 1% of traffic via a custom Nginx",
+        "Deploy as a Cloud Functions endpoint and use a Cloud Load Balancing URL map to split traffic between Cloud Run and Cloud Functions",
+        "Use Cloud Run revisions with traffic splitting (gcloud run services update-traffic --to-revisions OLD=99,NEW=1) and progressively shift",
+        "Run both revisions side by side and write a Pub/Sub fan-out so consumers self-select which revision to call"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because spinning up a separate project and reverse proxy adds significant operational overhead and bypasses Cloud Run's native splitting. Option B is wrong because mixing Cloud Run and Cloud Functions for the canary is unnecessary heterogeneity and does not solve traffic splitting on the same service. Option C is correct because Cloud Run natively supports tagged revisions and weighted traffic splits; the team can run gcloud run services update-traffic with weighted percentages to perform a canary at 1/10/50/100 with no custom plumbing. Option D is wrong because Pub/Sub fan-out is an event pattern, not a request-traffic splitting mechanism, and consumer self-selection is not a controlled canary.",
+      "category": "Deployment patterns",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-implementation-024",
+      "question": "A regulated organization requires that all Terraform changes pass a security policy review before being applied to production projects, with policy expressed as code and evaluated automatically. Which combination correctly delivers this? (Choose two.)",
+      "options": [
+        "Grant the CI service account roles/owner on production projects to remove approval bottlenecks",
+        "Use Sentinel or Open Policy Agent (OPA) policies evaluated against the Terraform plan in CI before apply",
+        "Disable the Terraform plan phase and run terraform apply directly to reduce drift",
+        "Enable Organization Policy constraints (for example, restrict public IPs, enforce CMEK) at the Google Cloud organization level"
+      ],
+      "correctAnswers": [3, 1],
+      "explanation": "Option A is wrong because granting roles/owner removes the very controls the requirement asks for and violates least privilege. Option B is correct because Sentinel (Terraform Cloud/Enterprise) and OPA (with conftest or similar) evaluate the Terraform plan against codified policies in CI, blocking risky changes before apply. Option C is wrong because skipping plan removes the artifact policy engines evaluate and increases the chance of unreviewed changes. Option D is correct because Organization Policy constraints enforce guardrails at the platform level (for example, restrict allowed locations, require CMEK, restrict public IP) regardless of how the request was made, complementing the CI-time policy check.",
+      "category": "Infrastructure as Code",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-implementation-025",
+      "question": "An organization is migrating a 600 TB on-premises NAS archive to Cloud Storage. The site has a 100 Mbps link that is saturated by business traffic, and the network team will not increase bandwidth. The data must arrive within 30 days. Which approach should you recommend?",
+      "options": [
+        "Storage Transfer Service with an on-prem agent, scheduled outside business hours on the existing link",
+        "Compress the archive and use gsutil cp -m from a high-CPU VM at the source to maximize throughput",
+        "Order one or more Transfer Appliances, copy data locally at LAN speeds, and ship them to Google for ingest",
+        "Use Datastream to incrementally pick up file changes and replicate to Cloud Storage over the existing link"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because 600 TB over 100 Mbps off-peak (call it 50 Mbps average) is more than 1,100 days at perfect efficiency; the 30-day requirement cannot be met online. Option B is wrong because compression and parallel gsutil do not change the fundamental bandwidth constraint of a saturated 100 Mbps link. Option C is correct because Transfer Appliance is purpose-built for cases where the online link is the bottleneck; data is copied to the appliance at LAN speed and ingested at Google within the required window. Option D is wrong because Datastream is for database CDC, not bulk NAS archive transfer.",
+      "category": "Data and system migration",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-implementation-026",
+      "question": "An Apigee X proxy must authenticate partner requests by validating a JSON Web Token signed by the partner's IdP. The proxy then must look up an internal customer ID from the token's subject claim and add it as an X-Customer-Id header to the backend request. Which combination of policies should you apply? (Choose two.)",
+      "options": [
+        "VerifyJWT policy referencing a JWKS URI to validate the partner-signed JWT",
+        "ServiceCallout to the partner's IdP on every request to ask whether the JWT is valid",
+        "AssignMessage policy to set the X-Customer-Id header on the backend request",
+        "DecodeJWT only, treating the absence of an exception as proof of authenticity"
+      ],
+      "correctAnswers": [0, 2],
+      "explanation": "Option A is correct because VerifyJWT validates a JWT's signature against a configured JWKS URI (typically a well-known partner endpoint) and checks claims such as iss, aud, and exp, which is exactly the right way to authenticate the partner's JWT. Option B is wrong because hitting the IdP on every request adds latency and creates an availability dependency; signature verification with a cached JWKS does not require a per-request callout. Option C is correct because AssignMessage is the standard policy for setting or modifying headers on a request (or response) flow; the customer ID is set as X-Customer-Id before the backend call. Option D is wrong because DecodeJWT only parses the token; it does not verify the signature, so an attacker could craft tokens that DecodeJWT accepts.",
+      "category": "API management",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-implementation-027",
+      "question": "A team uses Terraform for Google Cloud and writes a module that creates a Cloud SQL instance and grants IAM bindings on it. After running terraform apply, a developer modifies the instance in the Cloud Console (changes the machine tier). On the next terraform apply, what should the team expect to happen by default, and how should they handle this kind of drift going forward?",
+      "options": [
+        "Terraform silently adopts the new tier as desired state, recording the console change as the new baseline and proceeding without any diff or warning to the operator",
+        "On the next plan, Terraform reverts the tier to the code value; the team should forbid console edits or run terraform import/code update when intentional",
+        "Terraform deletes and recreates the Cloud SQL instance to align state, which destroys the data; the team must then restore from a backup before continuing",
+        "Terraform refuses to run any further commands until the developer manually edits the state file by hand to match the change made through the console"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Terraform does not silently adopt out-of-band changes; its model is that the .tf files are the source of truth. Option B is correct because terraform refresh (run automatically during plan unless disabled) reads real-world state and produces a plan that reverts the unexpected change back to what the code declares. The right operational practice is to treat console edits as forbidden in IaC-managed projects, or to update code (and run terraform import for new resources) when a change is intentional. Option C is wrong because changing a Cloud SQL machine tier is an in-place update, not a destroy-and-recreate. Option D is wrong because Terraform does not require manual state-file editing; that is an unsafe operation and is not part of the default drift workflow.",
+      "category": "Infrastructure as Code",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-implementation-028",
+      "question": "A FinTech team is migrating an Oracle 19c database with 2 TB of data and complex PL/SQL packages to Cloud SQL for PostgreSQL. They need to convert schema and code, validate behavior, and minimize cutover downtime. Which combination of tools should you recommend? (Choose two.)",
+      "options": [
+        "Datastream to replicate Oracle changes to BigQuery and then export the BigQuery dataset back into Cloud SQL on a nightly schedule via a Dataflow pipeline",
+        "Database Migration Service for heterogeneous Oracle-to-PostgreSQL continuous replication",
+        "Storage Transfer Service to move the Oracle datafiles to Cloud Storage, then directly attach those raw datafiles into the new Cloud SQL for PostgreSQL instance",
+        "An automated schema-conversion tool (Database Migration Assessment or Ora2Pg) to convert schema and PL/SQL before data load"
+      ],
+      "correctAnswers": [1, 3],
+      "explanation": "Option A is wrong because the destination is Cloud SQL, not BigQuery; using BigQuery as an intermediate stop is unnecessary architectural complexity. Option B is correct because Database Migration Service supports Oracle-to-Cloud SQL for PostgreSQL with continuous replication, enabling minimal-downtime cutover. Option C is wrong because Cloud SQL does not accept attaching raw Oracle datafiles; engines differ fundamentally and require logical migration. Option D is correct because Oracle PL/SQL does not run unchanged on PostgreSQL; a schema-conversion tool (Database Migration Assessment, Ora2Pg, or similar) converts schemas, stored procedures, and packages before data load, and gives a report on items needing manual remediation.",
+      "category": "Data and system migration",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-implementation-029",
+      "question": "An SRE team wants to use Gemini Cloud Assist responsibly when triaging production incidents. The team must avoid making unreviewed changes and must keep humans accountable for decisions. Which single practice best embodies this principle?",
+      "options": [
+        "Configure Gemini Cloud Assist to apply remediation gcloud commands automatically whenever an alert fires in production, so that MTTR drops without any human involvement",
+        "Use Gemini Cloud Assist to summarize logs and propose hypotheses that engineers investigate and validate before acting",
+        "Rely on Gemini Cloud Assist outputs as legally binding evidence in customer-facing post-incident reports, without further engineer authorship or review",
+        "Use Gemini Cloud Assist as the sole source of truth for IAM least-privilege decisions in production projects, bypassing security review and policy documentation"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Gemini Cloud Assist is not designed to silently apply changes in production; doing so removes the human-in-the-loop control that the team explicitly wants. Option B is correct because summarizing logs and proposing hypotheses for engineers to investigate is exactly the kind of low-risk, high-leverage assistance Gemini Cloud Assist is designed to provide; engineers retain decision authority. Option C is wrong because AI-generated text is not, on its own, suitable as binding evidence; engineer-authored post-incident reports remain the source of truth. Option D is wrong because IAM and least-privilege decisions must be grounded in policy and security review; the assistant can help draft but is not authoritative.",
+      "category": "Gemini Cloud Assist",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-implementation-030",
+      "question": "A team operates a large Java microservice that needs to handle Google Cloud API errors gracefully. They invoke Cloud Storage and Pub/Sub APIs with the official Google client libraries. Which client-side configuration most directly improves resilience without re-implementing retry logic?",
+      "options": [
+        "Tune the client library's built-in RetrySettings and rely on its idempotency-aware default retry behavior",
+        "Write a wrapper around every Google client call that catches all exceptions and retries them in a tight while loop, treating every error as transient",
+        "Disable the client library's built-in retries and centralize all retry logic inside a homegrown circuit-breaker library shared across every service in the platform",
+        "Switch to direct REST calls using a generic HTTP client so the team explicitly controls every aspect of retries, telemetry, authentication, and pagination by hand"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because the Google Cloud client libraries ship with built-in RetrySettings that already implement exponential backoff with jitter, configurable initial/max delays, max attempts, and a list of retriable status codes; they also know which methods are idempotent and safe to retry. Tuning RetrySettings is the direct, supported path to better resilience. Option B is wrong because a tight while loop with broad catch retries non-retriable errors (such as 400 Bad Request), causing wasted calls and masking bugs. Option C is wrong because disabling the library's retries discards well-tested behavior; a custom circuit breaker can complement retries but should not replace the library's per-method idempotency awareness. Option D is wrong because dropping the official client library forces the team to re-implement auth refresh, retries, telemetry, and pagination, which is the opposite of what the requirement asks.",
+      "category": "Programmatic access",
+      "difficulty": "hard"
+    }
+  ]
+}

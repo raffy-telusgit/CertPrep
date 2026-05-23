@@ -1,0 +1,424 @@
+{
+  "questions": [
+    {
+      "id": "pca-design-plan-B-001",
+      "question": "A SaaS provider hosts an internal analytics API in project-A VPC and wants project-B consumer VPCs to reach it privately without exposing the service publicly or peering the VPCs together. Which Google Cloud feature should they use?",
+      "options": [
+        "Configure VPC Network Peering between the producer VPC and every consumer VPC, then publish the API via an internal passthrough load balancer in the producer project",
+        "Publish the API behind a Private Service Connect service attachment, then create PSC endpoints in each consumer VPC that resolve the service via a private IP address",
+        "Expose the API through a global external Application Load Balancer with Cloud Armor source-range rules so only corporate CIDRs can connect to the public IP for the service",
+        "Deploy the API on Cloud Run with ingress set to internal and reach it from each consumer project via a serverless VPC connector targeting the producer VPC subnet directly"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because peering requires non-overlapping CIDRs and exposes both VPCs to each other, breaking tenant isolation between consumers. Option B is correct because Private Service Connect publishes a producer service via a service attachment and consumers create endpoints in their own VPCs, giving one-way private connectivity without peering. Option C is wrong because the requirement is private connectivity and a global external load balancer remains internet-facing even with Cloud Armor restrictions. Option D is wrong because serverless VPC connectors handle the consumer's own VPC egress and cannot privately reach another project's VPC at scale.",
+      "category": "Designing network resources",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-B-002",
+      "question": "A large enterprise wants centralized network administration where a network team owns subnets and firewall rules in a host project, and dev teams deploy VMs in service projects that consume those subnets. Which design pattern fits this?",
+      "options": [
+        "Configure Shared VPC with the host project owning the VPC and shared subnets, attach service projects, and grant developers Compute Network User on specific subnets they may use",
+        "Use VPC Network Peering between a central VPC and each team's own VPC so subnets are reusable while firewall rules stay in each peered network for autonomy of teams",
+        "Deploy a single project containing one VPC and grant all developers Compute Network Admin so they can self-serve subnet and firewall creation as needed by their workloads",
+        "Use Private Service Connect from a central hub VPC to expose subnets as services to consumer VPCs in each team project for centralized firewall enforcement of all routing"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Shared VPC is the canonical pattern: the host project owns the network and admin role, while service projects consume shared subnets with delegated, scoped IAM. Option B is wrong because peering shares routes but each VPC has its own firewall and subnet ownership, defeating central administration. Option C is wrong because granting Compute Network Admin to all developers removes central control and concentrates everyone in one project, increasing blast radius. Option D is wrong because PSC publishes individual services, not subnets; you cannot share subnets as PSC services to other projects.",
+      "category": "Designing network resources",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-003",
+      "question": "An ecommerce site serves global users from backends in three regions and needs TLS termination, URL path routing to different microservices, and Cloud CDN for static assets. Which load balancer should the architect choose for this requirement?",
+      "options": [
+        "Global external Application Load Balancer with a single anycast IP, multiple backend services per URL path, integrated managed TLS certificates, and Cloud CDN on cacheable backends",
+        "Regional external Application Load Balancers in each region with Cloud DNS geolocation policies steering users to the closest LB, enabling Cloud CDN at each regional endpoint",
+        "Global external proxy Network Load Balancer terminating TLS at the edge with TCP backends in three regions, using path-based routing rules on the backend services for routing",
+        "Internal passthrough Network Load Balancer per region fronted by Cloud DNS round-robin so each user reaches a healthy regional service for TLS termination and CDN caching"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because a global external Application Load Balancer offers anycast IP, URL maps for path-based routing, managed certificates, and native Cloud CDN integration. Option B is wrong because regional external Application Load Balancers do not provide a single global anycast IP, and DNS geolocation is slower and less precise than anycast plus Google front-end selection. Option C is wrong because proxy Network Load Balancers operate at L4 and do not understand HTTP URL paths for routing decisions. Option D is wrong because internal passthrough Network LBs are internal-only and do not terminate TLS or integrate with Cloud CDN.",
+      "category": "Designing network resources",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-004",
+      "question": "An enterprise has a 10 Gbps requirement for sustained low-latency traffic between its on-premises data center and a Google Cloud VPC, with SLA-backed availability of 99.99%. Which connectivity option fits these requirements best?",
+      "options": [
+        "Provision two HA VPN tunnels per region with BGP, terminating on a Cloud Router; configure ECMP across the tunnels to aggregate bandwidth toward the 10 Gbps target sustained",
+        "Provision Dedicated Interconnect with four 10 Gbps links across two metropolitan area edges in a 99.99% topology, terminating on redundant Cloud Routers in two cloud regions",
+        "Order a single 10 Gbps Dedicated Interconnect link in the closest colocation facility and rely on the per-link SLA, accepting the lower availability tier for the cost saving",
+        "Use Cross-Cloud Interconnect to connect from a third-party cloud's edge router into Google Cloud, leveraging the partner's existing fiber to reach Google peering points nearby"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because HA VPN is bandwidth-capped per tunnel and ECMP rarely yields stable 10 Gbps; HA VPN also includes a public internet portion in its service. Option B is correct because the 99.99% Dedicated Interconnect SLA requires four links across two metros with redundant Cloud Routers in two regions. Option C is wrong because a single link does not satisfy 99.99%; that SLA explicitly requires links across two metropolitan edges. Option D is wrong because Cross-Cloud Interconnect connects Google Cloud to other public clouds, not to on-premises data centers; it does not address this requirement.",
+      "category": "Designing network resources",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-005",
+      "question": "A retailer needs a consistent Kubernetes platform across on-premises and Google Cloud so the same workloads and policies run in both environments with central management. Which solution should they adopt to meet this goal?",
+      "options": [
+        "Deploy Google Distributed Cloud for the data center and GKE in Google Cloud, registered to a single Fleet with Config Sync for centralized configuration and policy",
+        "Run GKE in Google Cloud and standalone open-source Kubernetes on-premises, syncing manifests via a CI pipeline so configuration stays roughly aligned across the environments",
+        "Use Cloud Run in Google Cloud for new workloads and migrate on-premises workloads only after refactor is complete, abandoning Kubernetes on-premises to reduce ops complexity",
+        "Build a custom Kubernetes operator that translates between vanilla Kubernetes on-premises and GKE Autopilot in the cloud so the platforms appear identical to deployment pipelines"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Google Distributed Cloud plus GKE registered to a single Fleet with Config Sync delivers the same platform, policies, and management across on-premises and cloud. Option B is wrong because manual CI syncing between disparate Kubernetes distros does not yield a consistent platform; configurations drift and policy enforcement is fragmented. Option C is wrong because abandoning Kubernetes on-premises does not solve consistency during the transition and Cloud Run is not a like-for-like replacement for Kubernetes workloads. Option D is wrong because reinventing platform abstraction with a custom operator is fragile, unsupported, and ignores Google's existing managed offering.",
+      "category": "Designing compute resources",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-B-006",
+      "question": "A media company wants a conversational chatbot that grounds responses on indexed support documentation and provides citations back to source articles. Which Google Cloud service should they primarily use to build this capability?",
+      "options": [
+        "Train a custom Gemini model in Vertex AI by fine-tuning on the full support corpus and serve responses through Cloud Run, building citation rendering logic from scratch in code",
+        "Use Vertex AI Agent Builder with a Vertex AI Search data store indexed over the support documentation, enabling grounded responses with citations to source articles by default",
+        "Deploy Dialogflow CX with static intents covering each FAQ category and connect to BigQuery for ad-hoc citation queries against the support knowledge tables for richer answers",
+        "Use Model Garden to deploy an open-source LLM on GKE and connect it to a self-managed vector database, building retrieval-augmented generation and citation handling manually"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because fine-tuning Gemini for grounded Q&A is unnecessary; retrieval grounding is the recommended approach and citations would still need custom logic. Option B is correct because Vertex AI Agent Builder with Vertex AI Search provides managed grounded retrieval, conversational orchestration, and built-in citation rendering. Option C is wrong because Dialogflow CX with static intents does not provide generative grounded answers, and BigQuery citation hacks are not the intended pattern. Option D is wrong because building RAG, vector search, and citation handling manually on Model Garden is far more work than Agent Builder, which is purpose-built for this.",
+      "category": "Designing compute resources",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-007",
+      "question": "A research lab plans to train a large multimodal foundation model with hundreds of billions of parameters and needs tightly coupled accelerators, high-bandwidth interconnect, and optimized storage. Which Google Cloud offering aligns with this workload?",
+      "options": [
+        "Provision a managed instance group of N2 VMs with attached NVIDIA T4 GPUs and Filestore for shared storage, scaling horizontally based on average GPU utilization during training",
+        "Use Cloud Run with GPU support and a Cloud Storage bucket for checkpoints, tuning concurrency for inference throughput while reusing the same runtime for training jobs nightly",
+        "Use Vertex AI Workbench with a single A2 VM, training jobs scheduled overnight when other lab workloads are quiet, and shared Persistent Disks for the training corpus archive",
+        "Use AI Hypercomputer with TPU v5p or A3 Mega VM clusters, high-bandwidth ICI or RDMA networking, and Cloud Storage with Anywhere Cache for high-throughput training data access"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because T4 GPUs and a generic managed instance group do not scale to hundreds of billions of parameters; horizontal scaling without high-bandwidth interconnect creates bottlenecks. Option B is wrong because Cloud Run is for stateless request-driven workloads, not multi-day distributed training of foundation models. Option C is wrong because a single A2 VM and overnight scheduling cannot train a multi-hundred-billion-parameter model in any practical time. Option D is correct because AI Hypercomputer is the integrated stack of TPU and GPU clusters with high-bandwidth networking and storage optimizations for frontier-scale training.",
+      "category": "Designing compute resources",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-B-008",
+      "question": "A team wants to use Gemini via Vertex AI to summarize customer support tickets but cannot send sensitive customer data outside their data perimeter. Which approach correctly addresses this data residency and isolation requirement?",
+      "options": [
+        "Disable logging on the Vertex AI API endpoint and accept that data leaves the perimeter at request time but does not persist, documenting this as residual risk in the threat model",
+        "Use Vertex AI within a VPC Service Controls perimeter, send Gemini requests over Private Google Access or PSC endpoints, and confirm data-residency configuration in Vertex AI",
+        "Mirror the request to BigQuery for audit, then forward sanitized text to a third-party LLM with a signed BAA, retaining only redacted output in Google Cloud storage buckets",
+        "Self-host an open-source model from Model Garden on a GKE cluster in an isolated subnet so the model never leaves the perimeter, even though Gemini itself would be unavailable"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because disabling logging does not establish a data perimeter; data still traverses to the API and is processed there, and treating this as residual risk ignores VPC Service Controls. Option B is correct because VPC Service Controls plus private network paths to Vertex AI keep Gemini calls inside the perimeter, with data-residency configuration providing the boundary. Option C is wrong because sending data to a third-party service moves it further outside the perimeter, regardless of contract. Option D is wrong because the requirement is to use Gemini; self-hosting a different model from Model Garden abandons the question's premise.",
+      "category": "Designing compute resources",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-009",
+      "question": "An architect is selecting capabilities for a customer-service AI platform that needs (1) a conversational chat experience grounded on internal docs and (2) a flexible way to evaluate open-source LLMs before standardizing. Which TWO capabilities should they choose?",
+      "options": [
+        "Use Recommendations AI to generate dialogue turns with product context and treat each recommendation slot as a conversational reply for the customer service experience overall",
+        "Use Vertex AI Agent Builder to build the grounded conversational assistant over an enterprise search data store linked to the internal documentation corpus for retrieval",
+        "Use Model Garden to deploy and benchmark candidate open-source and Google models (such as Llama, Gemma, and Gemini variants) in Vertex AI for evaluation and comparison",
+        "Use AutoML Vision to train models on screenshots of the internal documentation pages so the chatbot can answer questions by visually scanning the docs at user query time"
+      ],
+      "correctAnswers": [2, 1],
+      "explanation": "Option A is wrong because Recommendations AI is for product recommendations, not conversational dialogue grounded on documents. Option B is correct because Agent Builder is the managed service for building grounded conversational AI agents over enterprise data stores. Option C is correct because Model Garden offers a curated catalog of first-party and open-source models in Vertex AI for evaluation, deployment, and benchmarking. Option D is wrong because AutoML Vision trains image classification or detection models; visually scanning docs is not how grounded Q&A is implemented.",
+      "category": "Designing compute resources",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-B-010",
+      "question": "A logistics company processes a real-time stream of GPS events from delivery trucks and needs aggregation, windowing, and enrichment before loading into BigQuery for analysis. Which service is the best fit for the processing layer of this pipeline?",
+      "options": [
+        "Use Pub/Sub subscriptions with a BigQuery subscription writing events directly to a raw table, then run scheduled queries every minute to compute windowed aggregates downstream",
+        "Use Dataproc with a long-running Spark Streaming cluster reading from Pub/Sub via the connector, applying windowed aggregations with custom Scala code, and writing into BigQuery",
+        "Use Cloud Run functions triggered by each Pub/Sub message, maintaining window state in Memorystore for aggregation, then batch inserting to BigQuery every five minutes via API",
+        "Use Dataflow streaming reading from Pub/Sub, applying Apache Beam windowing and joins for enrichment, and writing aggregated rows to BigQuery via the streaming insert sink"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because BigQuery subscriptions plus scheduled queries cannot do true event-time windowing with watermarks and late data the way streaming pipelines can. Option B is wrong because Dataproc Spark Streaming is viable but requires running and tuning a cluster yourself; Dataflow is the recommended serverless option for streaming on Google Cloud. Option C is wrong because using Cloud Run functions with Memorystore for windowed aggregation reinvents Dataflow's primitives and lacks exactly-once semantics. Option D is correct because Dataflow is the managed Apache Beam service designed for streaming Pub/Sub-to-BigQuery pipelines with windowing.",
+      "category": "Designing data processing solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-011",
+      "question": "A team is lifting a Hadoop and Spark workload from on-premises to Google Cloud with minimal code changes and wants to keep using HDFS-style semantics during the migration window. Which service should they start with for this lift-and-shift workload?",
+      "options": [
+        "Migrate the workload to Dataproc with ephemeral clusters and Cloud Storage as the storage layer via the GCS connector while jobs continue to use HDFS-style paths in scripts",
+        "Migrate to BigQuery by converting Hive and Spark SQL jobs to BigQuery SQL, accepting code rewrites in exchange for fully serverless operation from day one of the migration",
+        "Migrate to Dataflow by porting MapReduce jobs to Apache Beam and rewriting Spark jobs as streaming pipelines, eliminating the need for any cluster-based processing at all",
+        "Run the existing Hadoop cluster on Compute Engine VMs in a managed instance group with attached local SSDs, manually patching and scaling the cluster the same way as before"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Dataproc is the managed Hadoop and Spark service designed for low-friction lift-and-shift, including the GCS connector that lets jobs use HDFS-style paths backed by Cloud Storage. Option B is wrong because a BigQuery rewrite requires extensive code change and abandons HDFS semantics entirely. Option C is wrong because porting to Beam on Dataflow is a refactor, not a lift-and-shift, and Spark code does not translate directly to Beam. Option D is wrong because running raw Hadoop on Compute Engine recreates the operational overhead the migration is supposed to eliminate.",
+      "category": "Designing data processing solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-B-012",
+      "question": "An analytics team has 50 TB of cold transaction archives queried roughly twice a year for compliance audits and never modified. They want the lowest storage cost without permanently sacrificing accessibility. Which Cloud Storage class is the best fit?",
+      "options": [
+        "Archive storage with a region-appropriate bucket and a lifecycle policy keeping the objects in place, providing the lowest per-GB cost while remaining immediately retrievable",
+        "Coldline storage with a 90-day minimum storage duration, balancing per-GB cost with sub-second retrieval since auditors might query unpredictably during the year on demand",
+        "Nearline storage with autoclass enabled so newly written archives start in Standard and transition through Nearline and Coldline as access patterns indicate over the audit period",
+        "Standard storage in a dual-region bucket with lifecycle management deleting objects older than seven years, accepting higher per-GB cost in exchange for ad-hoc query speed"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Archive class offers the lowest per-GB price for objects accessed less than once a year, matches the access pattern, and remains immediately retrievable with no rehydration delay. Option B is wrong because Coldline targets data accessed less than once per quarter and is more expensive than Archive for twice-yearly access. Option C is wrong because Nearline targets monthly access and autoclass adds cost overhead unnecessary for immutable archives. Option D is wrong because Standard dual-region is the most expensive class and unnecessary for cold archives accessed twice a year.",
+      "category": "Designing storage solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-013",
+      "question": "A SaaS application needs a regional relational database with strong consistency, automatic failover, low-latency reads, and the ability to scale to high write throughput for a multi-tenant workload growing 50% year over year. Which Google Cloud database fits best?",
+      "options": [
+        "AlloyDB for PostgreSQL with a regional primary cluster and read pool nodes, leveraging the columnar engine and ML-tuned plans for high write throughput with PG compatibility",
+        "Cloud SQL for PostgreSQL with a high-availability regional instance and read replicas in the same region, accepting that vertical write scaling is bounded by the machine type",
+        "Bigtable with a regional cluster sized for write throughput, using row keys designed to avoid hotspots and accepting eventual consistency for tenant-isolated reads and writes",
+        "Firestore in Native mode with multi-region replication and composite indexes per tenant, accepting per-document size limits and the document data model for relational shapes"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because AlloyDB is PostgreSQL-compatible with disaggregated storage delivering high write throughput, low-latency reads via read pools, and automatic regional HA. Option B is wrong because Cloud SQL's write throughput is bounded by a single primary's machine type; aggressive growth eventually hits a ceiling that AlloyDB addresses with disaggregated storage. Option C is wrong because Bigtable is a wide-column NoSQL store, not a relational database, and the team requires relational semantics. Option D is wrong because Firestore is a document database without relational joins and is not the right model for relational SaaS data.",
+      "category": "Designing storage solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-B-014",
+      "question": "An architect needs a globally distributed relational database with strong external consistency for a financial application serving customers on three continents, with five-nines availability SLA and SQL semantics. Which TWO statements about the right Google Cloud choice are correct?",
+      "options": [
+        "Cloud SQL with cross-region read replicas would meet the requirement because writes can be served from any region via the read replicas during automated failover events",
+        "Firestore in Datastore mode meets the requirement because it is globally distributed, exposes SQL via GoogleSQL, and offers external consistency for transactional workloads",
+        "Spanner pricing scales with provisioned compute capacity (Processing Units or Nodes) and storage, so capacity planning is important to control costs while meeting workload demand",
+        "Spanner is the appropriate choice because it offers external consistency, horizontal scale, and a 99.999% multi-region availability SLA with familiar SQL semantics for the workload"
+      ],
+      "correctAnswers": [3, 2],
+      "explanation": "Option A is wrong because Cloud SQL read replicas cannot serve writes and Cloud SQL does not provide global strong consistency or a five-nines multi-region SLA. Option B is wrong because Firestore is a document store; even in Datastore mode it is not a relational database with external consistency in the Spanner sense. Option C is correct because Spanner is billed on processing units (or nodes) and storage, making capacity planning a real cost lever. Option D is correct because Spanner is Google's globally distributed, externally consistent relational database with a 99.999% multi-region availability SLA and SQL.",
+      "category": "Designing storage solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-B-015",
+      "question": "A render farm of 200 Compute Engine VMs needs a shared POSIX-compliant file system with NFSv3 semantics for asset libraries, frame inputs, and outputs, with throughput that scales with provisioned capacity. Which storage option fits this requirement best?",
+      "options": [
+        "Mount a Cloud Storage bucket using gcsfuse on each VM and stage shared assets into local SSD scratch, accepting that POSIX semantics are partial and rename ops are not atomic",
+        "Attach a Hyperdisk Balanced multi-writer volume to all 200 VMs and format with XFS so render nodes share a POSIX filesystem with per-volume throughput governance for fairness",
+        "Use Cloud Storage Fuse with hierarchical namespace buckets in the same region and rely on the bucket-level concurrency to serve POSIX-style reads and writes to all VMs",
+        "Create a Filestore Enterprise instance in the same region with capacity provisioned for the throughput target, mounted via NFSv3 across all 200 render VMs in the same VPC peer"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because gcsfuse provides partial POSIX semantics and is not optimized for high-fanout shared-write render workloads, despite being useful for read-mostly cases. Option B is wrong because Hyperdisk multi-writer is limited to a small number of concurrent attachments and is not suitable for a 200-node fanout requiring NFS semantics. Option C is wrong because Cloud Storage Fuse on hierarchical buckets still does not match NFSv3 semantics required by render tooling. Option D is correct because Filestore Enterprise provides managed NFSv3 with capacity-scaled throughput and is purpose-built for shared POSIX workloads like render farms.",
+      "category": "Designing storage solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-B-016",
+      "question": "A time-series ingestion service stores billions of IoT sensor readings per day with sub-10 ms read latency for the most recent values and supports range scans by device-id and timestamp. Which Google Cloud database is the best suited for this workload?",
+      "options": [
+        "BigQuery as the operational store using clustering on device_id and partitioning on event_date, since BigQuery handles large ingestion volumes and SQL is convenient for queries",
+        "Cloud SQL for PostgreSQL with TimescaleDB-style table partitioning on event timestamp and a btree index on device_id, scaling vertically as ingestion volume grows over time later",
+        "Bigtable with a row-key design combining device-id (reversed if needed for hotspot avoidance) and a reversed timestamp, scaling clusters horizontally for write and read throughput",
+        "Firestore in Native mode with one document per reading partitioned by device-id and an index over timestamps, leveraging real-time listeners for the most recent value reads"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because BigQuery is an analytics warehouse with query latencies in the hundreds of ms to seconds, not an operational store for sub-10 ms point lookups. Option B is wrong because Cloud SQL does not scale to billions of writes per day; it tops out at a single primary's vertical limits. Option C is correct because Bigtable is purpose-built for high-throughput, low-latency time-series workloads with row-key designs combining device-id and reversed timestamps. Option D is wrong because Firestore at this write volume becomes prohibitively expensive and document-level scaling does not match range-scan time-series patterns.",
+      "category": "Designing storage solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-017",
+      "question": "A platform team is choosing between Cloud Run, Cloud Run functions, and GKE for a new event-driven image thumbnail generator triggered by Cloud Storage notifications. Volume is bursty (0 to 1,000 events per second) with a small codebase. Which option fits best?",
+      "options": [
+        "Deploy on GKE Autopilot with a HorizontalPodAutoscaler watching Pub/Sub subscription depth so capacity follows event volume, gaining the full Kubernetes API for future workloads",
+        "Deploy on Cloud Run as a containerized service triggered by Eventarc from Cloud Storage, scaling from zero to high concurrency without managing infrastructure or pod schedulers",
+        "Deploy as a Cloud Run function written in Python triggered by Cloud Storage events, scaling from zero and reusing the existing thumbnail library without container packaging",
+        "Run on a Compute Engine managed instance group with a Pub/Sub-triggered autoscaler, baking the thumbnail logic into a custom image to avoid cold starts during scale-up events"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because GKE Autopilot is overkill for a small event-driven function and does not scale to zero, increasing baseline cost unnecessarily. Option B is wrong because Cloud Run works, but for a small codebase triggered by a single Cloud Storage event, Cloud Run functions removes container packaging overhead. Option C is correct because Cloud Run functions is the lightest-weight choice: source deploy, scales to zero, and directly triggers from Cloud Storage events. Option D is wrong because managed instance groups do not scale to zero and have minute-scale autoscaling, which is poor for bursty event workloads.",
+      "category": "Designing compute resources",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-018",
+      "question": "A batch ML training job runs nightly for 4 hours, is checkpoint-tolerant, and represents 60% of monthly compute spend. The team wants to cut cost significantly without changing the workload shape. Which compute strategy should the architect propose for this savings?",
+      "options": [
+        "Move the training to Cloud Run with GPU concurrency tuning, accepting that maximum request duration limits will be handled by chunking the training into smaller request-scoped jobs",
+        "Buy 3-year committed use discounts on on-demand A2 VMs sized for peak training and let the VMs idle outside the 4-hour window to amortize the commit across the lab's other tasks",
+        "Use sole-tenant nodes to physically isolate the training workload, enabling per-second billing optimizations and node-affinity scheduling for the four-hour nightly training run",
+        "Run the training on Spot VMs with custom machine types sized to the workload, persisting checkpoints to Cloud Storage so preemption only loses the last incremental training step"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because Cloud Run is not designed for multi-hour training jobs and chunking ML training into request-scoped pieces is impractical. Option B is wrong because committing to on-demand for a workload running only 4 hours/day wastes the commit; commits are best for steady-state usage. Option C is wrong because sole-tenant nodes are about isolation and licensing, not cost reduction; they are typically more expensive than standard VMs. Option D is correct because Spot VMs offer 60-91% discount, fit checkpoint-tolerant batch workloads, and persisting to Cloud Storage limits the cost of preemption events.",
+      "category": "Designing compute resources",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-B-019",
+      "question": "An on-call team needs a quick way to deploy a stateless HTTP API written in Go without managing servers, scaling configuration, or container infrastructure, and wants to scale to zero between requests. Which platform is the simplest fit for this use case?",
+      "options": [
+        "GKE Autopilot with a Deployment, a Service, and an Ingress, configured for autoscaling between zero and N replicas based on average CPU utilization across pods in the cluster",
+        "Cloud Run with a containerized Go service deployed via source-based deploys, scaling from zero to many container instances automatically based on inbound HTTP request concurrency",
+        "Compute Engine managed instance group with a load balancer and an instance template baking in the Go binary, configured for autoscaler scale-to-one for cost-efficient idle periods",
+        "App Engine flexible environment with a custom runtime, providing Go support and load-balanced HTTPS endpoints with autoscaling based on configured QPS thresholds per instance"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because GKE Autopilot does not scale to zero (it keeps minimum infrastructure), and a Deployment/Service/Ingress is heavier than needed for this case. Option B is correct because Cloud Run is the canonical serverless container platform: source deploys, scale-to-zero, HTTP-native, and no infrastructure to manage. Option C is wrong because managed instance groups cannot scale to zero and require maintaining instance templates and load balancers, adding operational overhead. Option D is wrong because App Engine flexible does not scale to zero; v6.1 emphasis is on Cloud Run for new serverless HTTP workloads.",
+      "category": "Designing compute resources",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-B-020",
+      "question": "A government agency is planning a migration to Google Cloud and wants to discover on-premises assets, assess workloads for fit, and generate a recommended TCO and migration plan before lifting any workload. Which tool should they use first to do this?",
+      "options": [
+        "Database Migration Service in assessment mode, pointed at on-premises database engines so a workload inventory is derived from database connections across the data center",
+        "Migrate to Virtual Machines (formerly Migrate for Compute Engine) with discovery enabled on the source environment, generating a workload inventory as part of agent install per VM",
+        "Migration Center to inventory on-premises VMs, applications, and databases, assess fit and dependencies, and produce target architecture recommendations and TCO estimates",
+        "Cloud Asset Inventory configured with a custom feed from the on-premises CMDB, producing a real-time inventory and dependency map for migration planning ahead of any cutover work"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because Database Migration Service moves database engines; it is not for full-fleet discovery, fit assessment, or TCO modeling. Option B is wrong because Migrate to Virtual Machines is a migration execution tool used after assessment, not before. Option C is correct because Migration Center is the integrated discovery, assessment, fit analysis, dependency mapping, and TCO modeling service for Google Cloud migrations. Option D is wrong because Cloud Asset Inventory is for Google Cloud resources, not on-premises assets; it has no native CMDB integration for discovery.",
+      "category": "Creating a migration plan",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-021",
+      "question": "An architect is classifying 50 application workloads using the 6 Rs framework. One legacy custom-CRM has no maintenance team, no business owner, and analytics show it has not been opened by any user in 13 months. Which strategy fits this workload best?",
+      "options": [
+        "Rehost the workload using Migrate to Virtual Machines so it can be re-evaluated in the cloud where it is cheaper to keep running than to decide whether to keep it on-premises",
+        "Refactor the CRM into microservices on GKE so it can re-enter active use; modernization may reveal latent business value that the dormant access logs do not capture by themselves",
+        "Replatform by lifting to a Cloud SQL backend so the legacy code stays mostly intact while the database becomes managed, reducing operating cost during a future planned rebuild",
+        "Retire the workload after confirming with stakeholders that it is no longer in use, removing it from the migration scope and capturing the resulting license and compliance savings"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because rehosting a dormant workload migrates its operational cost without business value; the framework recommends retiring unused workloads. Option B is wrong because refactoring an unused application is expensive guesswork and risks investing in a system with no demand. Option C is wrong because replatforming preserves a workload no one uses, simply at lower cost; it does not eliminate the cost entirely. Option D is correct because Retire is the appropriate R for workloads no longer used, and confirming with stakeholders prevents accidental decommissioning.",
+      "category": "Creating a migration plan",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-022",
+      "question": "During migration planning, an architect must validate that a critical e-commerce workload behaves correctly in Google Cloud before the cutover weekend. Which TWO testing practices best support a low-risk migration for this workload?",
+      "options": [
+        "Skip pre-cutover testing if synthetic monitoring at the app layer reports green status during the four weeks preceding migration, since green synthetics imply no regressions",
+        "Execute a single rehearsal cutover one hour before the production cutover so the team's memory of the steps is fresh, minimizing the documentation needed for the actual cutover",
+        "Perform load testing on the new Google Cloud environment with realistic peak traffic profiles to validate horizontal scaling behavior and capacity planning before the migration",
+        "Run a parallel pre-production environment on Google Cloud that ingests a mirrored copy of production traffic so functional and performance regressions are caught before the cutover"
+      ],
+      "correctAnswers": [2, 3],
+      "explanation": "Option A is wrong because synthetic monitoring of the on-premises system tells you nothing about how the cloud target will behave under load or at the cutover. Option B is wrong because a single rehearsal an hour before cutover is reckless; multiple rehearsals well in advance with documented runbooks are the standard. Option C is correct because load testing validates the new environment's scaling and capacity assumptions before cutover, surfacing tuning needs early. Option D is correct because traffic mirroring (shadow traffic) into a pre-production replica catches regressions against real production behavior without affecting users.",
+      "category": "Creating a migration plan",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-B-023",
+      "question": "An enterprise plans to use Active Directory on-premises as its identity source but wants Google Cloud workloads to authenticate using Google identities mapped from AD users, without sending AD passwords to Google. Which solution fits this requirement?",
+      "options": [
+        "Replicate the on-premises AD to a managed Microsoft AD in Google Cloud, then redirect Google sign-in to authenticate users against the managed AD via LDAPS over a VPN tunnel",
+        "Install Cloud Identity-Aware Proxy on the on-premises AD domain controller and proxy Google sign-in requests through it so every login is validated by the existing AD auth",
+        "Configure Cloud Identity with Google Cloud Directory Sync (GCDS) for user and group provisioning, and use SAML-based SSO from on-premises AD FS as the IdP for Google sign-in flows",
+        "Use Workload Identity Federation between AD and Google Cloud, authenticating each interactive end user via external identity token exchange instead of a Google Account at sign-in"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because authenticating Google sign-in against a managed AD via LDAPS is not how Google identity federation works; Google sign-in uses SAML or OIDC. Option B is wrong because IAP is for application access control, not federated user authentication for Google sign-in. Option C is correct because GCDS provisions users and groups from AD into Cloud Identity, and SAML SSO via AD FS authenticates against the on-premises AD without exposing passwords to Google. Option D is wrong because Workload Identity Federation is for non-human workload identities, not interactive end-user sign-in.",
+      "category": "Creating a migration plan",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-024",
+      "question": "A company is migrating Windows Server VMs with Microsoft SQL Server, currently covered by perpetual licenses with active Software Assurance. They want to minimize Google Cloud licensing costs without losing support. Which approach is the most appropriate?",
+      "options": [
+        "Migrate to Compute Engine standard VMs with license-included Windows Server images and Cloud SQL for SQL Server, abandoning the existing perpetual licenses to simplify procurement",
+        "Run the Windows workloads on GKE Windows node pools with BYOL applied at the pod level, avoiding sole-tenant requirements while still benefiting from Software Assurance discounts",
+        "Use Migrate to Containers to convert Windows VMs into Linux containers on Cloud Run, eliminating Windows licensing entirely since Cloud Run runs on Linux at the platform layer",
+        "Use Google Cloud sole-tenant nodes with Bring Your Own License (BYOL) for Windows Server and SQL Server, leveraging existing Software Assurance via License Mobility where eligible"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because abandoning perpetual licenses with active SA discards an existing investment and increases ongoing costs via license-included pricing. Option B is wrong because GKE Windows node pools do not relax the sole-tenant requirements for BYOL, and per-pod BYOL is not how Windows licensing works. Option C is wrong because Migrate to Containers does not convert Windows VMs into Linux containers; the runtime constraints of the application matter. Option D is correct because BYOL for Windows Server and SQL Server on Google Cloud generally requires sole-tenant nodes, with License Mobility under SA preserving support and minimizing new license spend.",
+      "category": "Creating a migration plan",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-B-025",
+      "question": "A team is mapping dependencies before migrating a complex 3-tier application to Google Cloud. They need to discover network connections between hosts so they don't break integrations at cutover. Which Migration Center capability supports this dependency mapping?",
+      "options": [
+        "Migration Center asset assessment computes TCO for each VM in isolation, and the team can infer dependencies from cost rankings since high-cost VMs typically integrate widely",
+        "Migration Center fit assessment maps each VM to a recommended Google Cloud target service and includes a dependency map only for VMs that match a known reference architecture",
+        "Migration Center discovery with the discovery client agent or APM imports, which captures process-level dependencies between hosts to inform move groups during planning",
+        "Migration Center cost report compares on-premises run cost against estimated cloud cost; dependency mapping is provided by a separate Network Topology API post-cutover"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because TCO rankings do not reveal dependencies; high-cost VMs are not necessarily the most connected ones. Option B is wrong because fit assessment recommends targets but does not gate dependency mapping on matching a reference architecture. Option C is correct because the Migration Center discovery client agent and APM imports collect process-and-connection-level data that powers dependency maps used for grouping move groups. Option D is wrong because Network Topology in Google Cloud is a runtime visualization of cloud network state, not a planning tool for on-premises dependencies.",
+      "category": "Creating a migration plan",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-026",
+      "question": "An architect is reviewing a finished migration. The original design used Cloud SQL for PostgreSQL, but newer requirements demand massive horizontal scale for reads and AI-aware query plans. What is the appropriate posture toward this architectural evolution?",
+      "options": [
+        "Anticipate that cloud services and needs evolve, plan a future improvement to AlloyDB for PostgreSQL to gain scale and vector search, and define a measured migration path",
+        "Refuse to revisit the architecture because the migration is complete; introducing change post-migration violates change-management policy and invalidates the original review",
+        "Treat all change as risk and adopt a five-year freeze on architecture changes so the team can focus on operating the existing system without distraction from new product launches",
+        "Wait for AlloyDB to be rebranded under a different name before considering a move, since major Google Cloud services often change names and waiting avoids needless re-platforming"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because envisioning future improvements means recognizing when a newer service (AlloyDB) better matches evolving requirements and planning a measured migration. Option B is wrong because part of the architect's role is envisioning future improvements; cloud services evolve and business needs change, and a freeze ignores that. Option C is wrong because a five-year freeze ignores the reality that cloud-first design is iterative; freezes accumulate technical debt. Option D is wrong because waiting for branding changes is not a strategy; product evolution is normal and decisions should be on merits.",
+      "category": "Future solution improvements",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-B-027",
+      "question": "An organization is establishing principles for a cloud-first design approach to new applications. Which TWO principles best reflect cloud-first design on Google Cloud as expressed in the Well-Architected Framework guidance for new builds?",
+      "options": [
+        "Always start with virtual machines because they are the most familiar abstraction, and refactor to managed services only after the application has been in production for two years",
+        "Prefer managed services over self-managed infrastructure where the managed service meets requirements, accepting some vendor opinionation in exchange for reduced operational toil",
+        "Design for elasticity from the start so workloads scale with demand, leveraging autoscaling, serverless, and managed offerings rather than statically provisioned capacity overall",
+        "Replicate the on-premises architecture as closely as possible so familiar runbooks continue to apply, deferring any cloud-native pattern adoption to a later major rewrite"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Option A is wrong because defaulting to VMs and deferring managed adoption for two years is anti-cloud-first; it accumulates debt and delays value. Option B is correct because preferring managed services (Cloud Run, BigQuery, Spanner, etc.) over self-managed infrastructure is a core cloud-first principle that reduces toil. Option C is correct because designing for elasticity (autoscaling, serverless, managed services) is fundamental to cloud-first, avoiding statically provisioned capacity. Option D is wrong because replicating on-premises architecture (lift-and-shift) is sometimes necessary but is not cloud-first by default; it perpetuates old patterns.",
+      "category": "Future solution improvements",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-028",
+      "question": "A business unit's requirements have shifted: data residency for EU customer data must be enforced strictly across all storage and processing, and the existing architecture stores data in us-central1. Which evolution best fits the new residency requirement on Google Cloud?",
+      "options": [
+        "Encrypt EU customer data with customer-managed keys stored in EU regions while leaving the data itself in us-central1, arguing that key residency satisfies the requirement",
+        "Plan a phased re-architecture to move EU customer data to EU-resident regions (e.g., europe-west1) for storage and processing, with VPC Service Controls enforcing the boundary",
+        "Add a CDN in front of the us-central1 storage so EU users experience lower latency, treating perceived locality as functionally equivalent to data residency for regulatory purposes",
+        "Use BigQuery cross-region replication to maintain a read-only copy in europe-west1 while keeping writes in us-central1, since residency rules only apply to where data is queried"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because residency requires data location, not just key location; CMEK in EU does not change where data is stored or processed. Option B is correct because true residency requires moving storage and processing to EU regions and enforcing the boundary with VPC Service Controls. Option C is wrong because CDN caching is not residency; the underlying data location still violates the requirement. Option D is wrong because residency applies to where the canonical data lives and is processed, not only where queries originate.",
+      "category": "Future solution improvements",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-B-029",
+      "question": "An architect is evaluating Gemini Cloud Assist for an engineering organization. Which use case best matches what Gemini Cloud Assist is designed to do for cloud architects, developers, and operations teams working in the Google Cloud platform on a daily basis?",
+      "options": [
+        "Replace human SREs by autonomously creating and applying fixes to production incidents without engineer review, freeing the team from incident response responsibility entirely",
+        "Assist engineers with cloud design, deployment, optimization, and troubleshooting via natural-language interaction across Google Cloud services in the console and CLI surfaces",
+        "Train custom large language models on the organization's source code repositories, exposing them as an internal completion API for use by developer IDEs and CI pipelines",
+        "Provide a marketplace of pre-built ML solutions for verticals like healthcare and finance, offering one-click deployment of compliant reference architectures across cloud regions"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Gemini Cloud Assist is an AI assistant for engineers, not an autonomous remediator that replaces SREs in production. Option B is correct because Gemini Cloud Assist helps engineers design, deploy, optimize, and troubleshoot Google Cloud workloads through natural language across console and CLI surfaces. Option C is wrong because Gemini Cloud Assist is not for training custom code models on private repos; that resembles Gemini Code Assist customization features. Option D is wrong because a vertical marketplace of one-click deployments is not Cloud Assist's purpose; that resembles Solutions or Quickstarts.",
+      "category": "Future solution improvements",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-B-030",
+      "question": "A multi-cloud architecture must connect a Google Cloud VPC directly to a workload running in another major public cloud with private, high-bandwidth, low-latency connectivity that avoids the public internet entirely. Which Google Cloud product matches this requirement?",
+      "options": [
+        "Cross-Cloud Interconnect to establish a dedicated, Google-provided private link between the Google Cloud VPC and the other public cloud's environment with SLA-backed performance",
+        "HA VPN with two tunnels and BGP across regions to the other cloud's VPN gateway, leveraging the public internet path while encrypting traffic for confidentiality during transit",
+        "Network Connectivity Center hub with VPC spokes only, treating the other cloud's environment as a logical spoke through transitive routing across Google's backbone for connectivity",
+        "Private Service Connect with a service attachment in Google Cloud and a consumer endpoint in the other cloud's VPC, achieving a private cross-cloud connection via PSC publishing"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Cross-Cloud Interconnect is the purpose-built Google service to privately connect Google Cloud to other public clouds with high bandwidth and SLA-backed performance, bypassing the public internet. Option B is wrong because HA VPN traverses the public internet (encrypted), which does not meet the requirement to avoid the public internet entirely. Option C is wrong because Network Connectivity Center spokes are within Google's network; it does not natively spoke into another public cloud directly. Option D is wrong because Private Service Connect endpoints are not consumable from another public cloud's VPC directly; PSC is intra-Google-Cloud.",
+      "category": "Designing network resources",
+      "difficulty": "hard"
+    }
+  ]
+}

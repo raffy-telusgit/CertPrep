@@ -1,5 +1,4 @@
-import { getExamById } from '@/data/exams'
-import type { Question } from '@/types'
+import type { CaseStudy, Question } from '@/types'
 
 const SEEN_KEY = (examId: string) => `certprep:seen:${examId}`
 
@@ -11,15 +10,19 @@ export interface PreparedSession {
 /**
  * Pulls N questions from the pool, prioritizing unseen questions.
  * Once unseen pool is too small to fill a session, the seen tracker resets.
- * Shuffles answer options per question and tracks the index mapping
- * so we can score correctly later.
+ * Question order is randomized; option order within each question is fixed
+ * so that A/B/C/D labels in explanations remain accurate.
+ *
+ * When the bank has case studies, forces inclusion of 2 random case studies
+ * with 4–6 questions each. Same-caseStudyId questions are clustered contiguously.
  */
 export function selectQuestions(
   pool: Question[],
   count: number,
   examId: string,
+  caseStudies: CaseStudy[] = [],
 ): PreparedSession {
-  // Cap count to pool size for placeholder banks (plan: risks & open questions)
+  // Cap count to pool size for placeholder banks
   const effectiveCount = Math.min(count, pool.length)
 
   if (import.meta.env.DEV && pool.length < count) {
@@ -30,6 +33,12 @@ export function selectQuestions(
     )
   }
 
+  // --- Case-study forced inclusion ---
+  if (caseStudies.length > 0) {
+    return selectWithCaseStudies(pool, effectiveCount, examId)
+  }
+
+  // --- Standard path (no case studies) ---
   const seenIds = new Set<string>(loadSeenIds(examId))
   let unseen = pool.filter((q) => !seenIds.has(q.id))
 
@@ -43,24 +52,101 @@ export function selectQuestions(
   const newSeen = [...seenIds, ...selected.map((q) => q.id)]
   saveSeenIds(examId, newSeen)
 
-  const exam = getExamById(examId)
-  const shouldShuffleOptions = !(exam?.disableOptionShuffle ?? false)
+  return { questions: selected, optionMappings: {} }
+}
 
-  const optionMappings: Record<string, number[]> = {}
-  const preparedQuestions = selected.map((q) => {
-    const indices = q.options.map((_, i) => i)
-    const shuffledIndices = shouldShuffleOptions ? shuffle(indices) : indices
-    optionMappings[q.id] = shuffledIndices
-    return {
-      ...q,
-      options: shuffledIndices.map((i) => q.options[i]),
-      correctAnswers: q.correctAnswers
-        .map((orig) => shuffledIndices.indexOf(orig))
-        .sort((a, b) => a - b),
+/**
+ * Selection logic for banks with case studies.
+ * Picks 2 random case studies, takes 4–6 questions from each,
+ * fills the remainder from non-case-study pool (using seen-tracking),
+ * then clusters same-caseStudyId questions contiguously.
+ */
+function selectWithCaseStudies(
+  pool: Question[],
+  count: number,
+  examId: string,
+): PreparedSession {
+  // Separate case-study questions from regular questions
+  const csQuestions: Map<string, Question[]> = new Map()
+  const regularQuestions: Question[] = []
+
+  for (const q of pool) {
+    if (q.caseStudyId) {
+      const existing = csQuestions.get(q.caseStudyId) ?? []
+      existing.push(q)
+      csQuestions.set(q.caseStudyId, existing)
+    } else {
+      regularQuestions.push(q)
     }
-  })
+  }
 
-  return { questions: preparedQuestions, optionMappings }
+  // Pick 2 case studies at random from those with questions in the pool
+  const availableCaseStudyIds = [...csQuestions.keys()]
+  const pickedCsIds = shuffle(availableCaseStudyIds).slice(0, Math.min(2, availableCaseStudyIds.length))
+
+  // Pick 4–6 questions per selected case study
+  const csSelected: Question[] = []
+  for (const csId of pickedCsIds) {
+    const csPool = csQuestions.get(csId) ?? []
+    const perCsCount = Math.min(csPool.length, 4 + Math.floor(Math.random() * 3)) // 4, 5, or 6
+    csSelected.push(...shuffle(csPool).slice(0, perCsCount))
+  }
+
+  // Fill the rest from the non-case-study pool using seen-tracking
+  const remainingSlots = Math.max(0, count - csSelected.length)
+
+  const seenIds = new Set<string>(loadSeenIds(examId))
+  let unseenRegular = regularQuestions.filter((q) => !seenIds.has(q.id))
+
+  if (unseenRegular.length < remainingSlots) {
+    // Reseed: clear only regular-question seen IDs and use full regular pool
+    saveSeenIds(examId, [])
+    unseenRegular = regularQuestions
+  }
+
+  const regularSelected = shuffle(unseenRegular).slice(0, remainingSlots)
+
+  // Update seen tracker with the regular questions selected
+  const newSeen = [...seenIds, ...regularSelected.map((q) => q.id)]
+  saveSeenIds(examId, newSeen)
+
+  // Cluster: group case-study questions contiguously, interleave regular questions
+  const clustered = clusterByCaseStudyId(regularSelected, csSelected, pickedCsIds)
+
+  return { questions: clustered, optionMappings: {} }
+}
+
+/**
+ * Returns a list where:
+ * - Non-case-study questions maintain their relative shuffle order.
+ * - Case-study questions are injected as contiguous groups, in pickedCsIds order.
+ *   Groups are inserted at their natural first-appearance position among the shuffled regular pool,
+ *   but since we want deterministic clustering the simplest correct approach is to
+ *   prepend all case-study clusters then append regular questions.
+ *   The real exam structure has case studies as a dedicated section, so leading clusters are faithful.
+ */
+function clusterByCaseStudyId(
+  regular: Question[],
+  caseStudyQs: Question[],
+  orderedCsIds: string[],
+): Question[] {
+  const grouped: Map<string, Question[]> = new Map()
+  for (const csId of orderedCsIds) {
+    grouped.set(csId, [])
+  }
+  for (const q of caseStudyQs) {
+    if (q.caseStudyId && grouped.has(q.caseStudyId)) {
+      grouped.get(q.caseStudyId)!.push(q)
+    }
+  }
+
+  const result: Question[] = []
+  for (const csId of orderedCsIds) {
+    result.push(...(grouped.get(csId) ?? []))
+  }
+  result.push(...regular)
+
+  return result
 }
 
 export function loadSeenIds(examId: string): string[] {

@@ -1,0 +1,424 @@
+{
+  "questions": [
+    {
+      "id": "pca-design-plan-A-001",
+      "question": "A retail company is migrating its e-commerce platform to Google Cloud. The product manager wants measurable business outcomes captured before any technical design begins. Which artifact should the architecture team produce first?",
+      "options": [
+        "A Terraform module catalog enumerating Compute Engine, Cloud SQL, and Memorystore SKUs so engineers can immediately provision landing zones during discovery",
+        "A business case with explicit KPIs (conversion rate, p95 page latency, abandoned-cart rate) and a target ROI window tying cloud investment to customer outcomes",
+        "A network topology diagram showing Shared VPC, Private Service Connect, and Cloud Interconnect attachments so connectivity is locked in before any workload migrates",
+        "A Cloud Monitoring dashboard scaffolded with default SRE metrics so operations has a baseline view of every service the moment the first deployment lands"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because a Terraform SKU catalog is an implementation artifact with no link to business outcomes. Option B is correct because KPIs plus ROI form the success measurement framework the v6.1 guide expects before technical choices. Option C is wrong because network topology follows business framing. Option D is wrong because operational dashboards measure system behavior, not business value, and cannot be defined without KPIs.",
+      "category": "Designing for business requirements",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-A-002",
+      "question": "Your company is moving 80 legacy applications from on-premises VMware to Google Cloud over 18 months. Leadership wants each application classified using the industry-standard workload disposition framework. Which framework should the team apply?",
+      "options": [
+        "The 6 Rs workload disposition model (Rehost, Replatform, Refactor, Repurchase, Retire, Retain) which classifies each application by its target migration treatment",
+        "The Google Cloud Adoption Framework maturity scale (Tactical, Strategic, Transformational) which scores enterprise readiness rather than per-workload disposition",
+        "The SRE hierarchy of reliability needs (Monitoring, Incident response, Postmortems, Testing, Capacity) which prioritizes operational practices instead of migration",
+        "The CAP theorem trade-off model (Consistency, Availability, Partition tolerance) which describes data-store guarantees and does not address per-application disposition"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because the 6 Rs are the canonical workload disposition framework that drives per-application migration decisions and aligns with the v6.1 guide. Option B is wrong because the Cloud Adoption Framework rates enterprise maturity, not per-workload disposition. Option C is wrong because the SRE hierarchy guides operational practice. Option D is wrong because CAP describes distributed-data trade-offs, not migration treatments.",
+      "category": "Designing for business requirements",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-A-003",
+      "question": "A bank's online banking platform requires RTO of 1 hour and RPO of 5 minutes for its transactional database. The architect is choosing a regional design. Which Google Cloud option best meets BOTH targets with minimal operational effort?",
+      "options": [
+        "Cloud SQL for PostgreSQL configured with high availability using regional persistent disk synchronous replication plus automated daily backups for the workload",
+        "Cloud SQL for PostgreSQL with cross-region read replicas promoted manually during a regional outage, accepting async replication lag that may exceed several minutes",
+        "AlloyDB for PostgreSQL primary with continuous backup and point-in-time recovery enabled, but without HA failover replicas configured between zones in the region",
+        "Bigtable single-cluster instance backed by hourly Cloud Storage exports with versioning enabled, recovered by re-importing the latest export into a fresh cluster"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Cloud SQL HA uses synchronous replication across zones, providing RPO near zero and RTO well under one hour with automatic failover. Option B is wrong because async cross-region replicas introduce replication lag that breaks a 5-minute RPO. Option C is wrong because PITR alone without HA failover does not meet RTO with minimal effort. Option D is wrong because hourly exports yield RPO up to 60 minutes, exceeding 5 minutes.",
+      "category": "Business continuity planning",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-004",
+      "question": "An insurance company is designing a claims-processing platform. The CFO mandates that cost projections accompany the architecture submission with a clear strategy to optimize spend at design time rather than after deployment. Which approach best satisfies this?",
+      "options": [
+        "Defer cost modeling until after a 90-day pilot because real workload telemetry is the only reliable source for projections, making design-time estimates too speculative",
+        "Use the Pricing Calculator to model each component, choose committed use and sustained use discounts for predictable workloads, and apply rightsizing recommendations",
+        "Provision the production environment at the largest expected scale so the team can negotiate enterprise discounts with Google based on actual peak consumption observed",
+        "Restrict the design to Always Free tier resources only so the platform incurs no cost regardless of traffic, accepting any feature or performance limits that result"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because deferring cost modeling violates the v6.1 guide's design-time cost optimization principle. Option B is correct because the Pricing Calculator plus CUDs, sustained use discounts, and rightsizing are the standard design-time cost levers. Option C is wrong because over-provisioning to negotiate discounts undermines cost optimization. Option D is wrong because Always Free is inadequate for a claims-processing platform.",
+      "category": "Cost optimization",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-005",
+      "question": "Your architecture team is gathering requirements for a customer-facing video streaming service. The product owner lists 'support 4 million concurrent viewers' and '99.95% monthly availability' as needs. How should the architect classify these two requirements?",
+      "options": [
+        "Both are non-functional requirements because they describe quality attributes (scale and reliability) of the system rather than specific behaviors the system must perform",
+        "Both are functional requirements because they describe what the system must do, namely deliver video to many concurrent users at a stable reliability level monthly",
+        "Concurrent viewer count is functional (a behavior) while availability is non-functional (a quality attribute), forming a hybrid set with separate documentation tracks",
+        "Both are business constraints rather than requirements because they are imposed by the market, so they should be captured outside the requirements document entirely"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because scale targets and availability targets are quality attributes of the system and are the textbook definition of non-functional requirements in the v6.1 guide. Option B is wrong because functional requirements describe behaviors, not quality attributes. Option C is wrong because concurrent viewer count is a capacity attribute. Option D is wrong because non-functional requirements ARE requirements.",
+      "category": "Designing for business requirements",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-006",
+      "question": "A logistics firm is designing a hybrid integration between its on-premises ERP and a Google Cloud analytics platform. The integration must support both bulk nightly batch loads and continuous low-latency event streams. Choose 2. Which services address both patterns?",
+      "options": [
+        "Storage Transfer Service for scheduled nightly batch transfers of ERP exports from on-premises NFS into Cloud Storage with retry and integrity verification",
+        "Pub/Sub combined with Dataflow streaming pipelines for low-latency event ingestion of ERP change events, providing at-least-once delivery and exactly-once processing",
+        "Cloud Composer DAGs invoking individual Cloud Functions per record to stream events one at a time, providing real-time ingest with no message broker",
+        "Cloud Storage signed URLs handed to the ERP for direct uploads of streaming change events, treating each event as a separate object for single-digit ms latency"
+      ],
+      "correctAnswers": [1, 0],
+      "explanation": "Option A is correct because Storage Transfer Service is purpose-built for scheduled bulk batch transfers from on-premises sources with retry and integrity verification. Option B is correct because Pub/Sub plus Dataflow is the canonical streaming pipeline with strong delivery semantics. Option C is wrong because Composer is a workflow orchestrator, not a streaming platform. Option D is wrong because Cloud Storage object creation per event has high latency.",
+      "category": "Movement of data",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-007",
+      "question": "A multinational retailer wants its global checkout service to remain available even if an entire Google Cloud region becomes unavailable. The product team accepts higher cost in exchange for the strongest availability posture. Which design pattern meets this goal?",
+      "options": [
+        "Deploy in a single region with managed instance groups spread across three zones and use regional persistent disks so a zonal outage does not impact users globally",
+        "Deploy to one region with a passive standby region provisioned only when the primary fails, relying on Cloud DNS health checks to redirect traffic after warm-up",
+        "Deploy to two zones within one region behind an internal HTTP(S) Load Balancer relying on Google's automatic zone redistribution to absorb regional issues",
+        "Deploy active-active to multiple regions behind a global external Application Load Balancer with Cloud Spanner multi-region so writes survive a full regional loss"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because a single region cannot survive a full regional outage regardless of zonal redundancy. Option B is wrong because cold standby with provisioning-on-failure introduces long RTO and DNS TTL delays. Option C is wrong because zonal redundancy does not survive a regional outage. Option D is correct because active-active multi-region behind a global ALB with multi-region Spanner is the canonical pattern.",
+      "category": "Business continuity planning",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-008",
+      "question": "Your team is evaluating Google Cloud's Well-Architected Framework as a design checklist for a new SaaS platform. A junior architect lists the pillars as: operational excellence, security, reliability, performance, and cost optimization. Which pillar are they missing?",
+      "options": [
+        "Scalability, because the framework separates scalability from performance optimization to call out elastic growth as a first-class design concern across workloads",
+        "Sustainability, which v6.1 adds as a sixth pillar covering carbon-aware region selection, efficient resource utilization, and environmental impact reporting",
+        "Compliance, because regulatory adherence is treated as an independent pillar separate from security so auditors have a dedicated review section in the report",
+        "Manageability, which covers IaC practices, GitOps workflows, and Config Connector adoption as a standalone pillar distinct from operational excellence"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because scalability is part of performance optimization, not a separate pillar. Option B is correct because Google Cloud's Well-Architected Framework defines six pillars: operational excellence, security, reliability, performance optimization, cost optimization, and sustainability. Option C is wrong because compliance is included under security. Option D is wrong because manageability is part of operational excellence.",
+      "category": "Well-Architected Framework",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-A-009",
+      "question": "A financial services firm needs to design a transaction recording service. The team must choose between strong consistency at higher latency or eventual consistency at lower latency. Which database best supports a strongly consistent, globally distributed transactional workload?",
+      "options": [
+        "Bigtable in a multi-cluster routing configuration because it offers single-digit ms latency at petabyte scale, accepting eventual consistency across clusters",
+        "Firestore in Datastore mode with multi-region replication because Datastore mode provides higher write throughput at the cost of weaker cross-group consistency",
+        "Cloud Spanner multi-region instance because Spanner provides external (strong) consistency with global ACID transactions across regions, designed for this trade-off",
+        "Cloud SQL for PostgreSQL with cross-region read replicas because PostgreSQL guarantees serializable isolation on the primary and async replicas suffice globally"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because Bigtable multi-cluster routing offers eventual consistency and is a wide-column store, not transactional. Option B is wrong because Firestore in Datastore mode provides strong consistency only within entity groups. Option C is correct because Spanner is purpose-built for global, externally consistent ACID transactions. Option D is wrong because Cloud SQL is regional and async replicas are not strongly consistent.",
+      "category": "Designing for technical requirements",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-010",
+      "question": "Your organization runs a large analytics platform on BigQuery. The CFO asks for Gemini Cloud Assist features that reduce analyst time authoring and tuning SQL while keeping spend predictable. Which Gemini Cloud Assist capability best addresses both concerns?",
+      "options": [
+        "Use Gemini Cloud Assist to automatically provision new BigQuery slot reservations from natural language requests, removing capacity planning meetings entirely",
+        "Disable Gemini Cloud Assist on BigQuery and route analysts through a centralized SQL guild that manually reviews every query for cost and correctness pre-run",
+        "Use Gemini Cloud Assist only for IAM policy authoring because IAM is the highest-risk surface, leaving SQL authoring untouched to preserve analyst judgment",
+        "Use Gemini Cloud Assist to generate, explain, and optimize BigQuery SQL in the console, surfacing rewrite suggestions and partition/cluster recommendations"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because Gemini Cloud Assist does not autonomously provision capacity from natural language; reservations remain an explicit decision. Option B is wrong because removing AI assistance defeats the goal. Option C is wrong because the question targets SQL authoring and cost, Gemini's strongest BigQuery use case. Option D is correct because Gemini provides SQL generation, explanation, and optimization with partitioning suggestions to reduce bytes scanned.",
+      "category": "Designing for technical requirements",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-A-011",
+      "question": "An architect is documenting non-functional requirements for a mobile banking app. The compliance officer states 'all customer PII must be encrypted at rest with a customer-managed encryption key.' Where in the design lifecycle should this requirement be captured?",
+      "options": [
+        "As a security and compliance input during requirements gathering so downstream decisions (storage, KMS configuration, IAM scope) inherit the CMEK constraint",
+        "As a runtime alert in Cloud Monitoring that fires whenever a storage resource is created without CMEK, allowing engineers to react and remediate after the fact",
+        "As a Terraform variable default applied only in production because lower environments can run with Google-managed encryption keys to reduce Cloud KMS costs",
+        "As a post-deployment audit item performed quarterly by the internal audit team using Security Command Center inventory rather than as an input to design decisions"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because security and compliance constraints must be captured as design-time requirements so the architecture aligns with them, per the v6.1 guide. Option B is wrong because reactive alerts are insufficient. Option C is wrong because compliance constraints typically apply across all environments holding real data. Option D is wrong because audits verify compliance, they do not substitute for designing for it.",
+      "category": "Designing for business requirements",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-A-012",
+      "question": "A media company is choosing storage class for its master video archive. Files are 50 GB to 5 TB, accessed less than once per year, and must be retained for 7 years for compliance. Cost per GB-month is the primary driver. Which Cloud Storage class fits best?",
+      "options": [
+        "Cloud Storage Archive class because it has the lowest at-rest cost, supports 7-year retention via Object Lifecycle Management and Object Retention Lock",
+        "Cloud Storage Standard class because it has no minimum storage duration penalties and offers the lowest retrieval latency, justifying the higher per-GB cost",
+        "Cloud Storage Nearline class because it is optimized for monthly access, providing safer headroom if access frequency increases to once per quarter later on",
+        "Persistent Disk extreme snapshots stored in a separate region because snapshots offer the cheapest archival storage and integrate with Compute Engine workflows"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because Archive class has the lowest GB-month cost and is designed for access less than once per year; Object Retention Lock supports 7-year retention. Option B is wrong because Standard's per-GB cost is much higher. Option C is wrong because Nearline targets monthly access and is more expensive than Archive. Option D is wrong because PD snapshots are not an object archive solution and are far more expensive.",
+      "category": "Cost optimization",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-013",
+      "question": "Engineering presents two options for a global gaming leaderboard: Cloud Spanner multi-region with strong consistency, or Firestore Native with eventual cross-region consistency at one-third the cost. Score correctness is core to the product. Which trade-off analysis is correct?",
+      "options": [
+        "Choose Spanner because eventual consistency creates rank inversions and violates the system's purpose; the cost is justified when correctness is core to the product",
+        "Choose neither and use Memorystore for Redis behind a global load balancer because in-memory data structures are the only acceptable backing store for leaderboards",
+        "Choose Firestore because the cost saving is 3x; document the eventual consistency model so support teams can explain transient anomalies to players who notice lag",
+        "Choose Spanner for the top 100 leaderboard and Firestore below it because a hybrid split provides strong consistency where it matters most while saving on the long tail"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because the scenario states score correctness is core to the product; when correctness is critical the architect chooses strong consistency. Eventual consistency creates perceived rank inversions. Option B is wrong because Memorystore is not durable and single-region. Option C is wrong because choosing cost over correctness in a primary use case is wrong. Option D is wrong because hybrid splits add complexity without fixing rank inversion.",
+      "category": "Designing for business requirements",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-A-014",
+      "question": "An enterprise is designing a platform that integrates with three external SaaS partners over the public internet. The security team requires that all external integration traffic be observable and that each partner's traffic be isolated. Choose 2. Which capabilities support these?",
+      "options": [
+        "Trust the partner's public API endpoints and rely solely on outbound firewall rules from the workload VPC since outbound rules are sufficient to log and isolate flows",
+        "Place each partner integration behind a dedicated external HTTP(S) Load Balancer URL map with its own Cloud Armor policy for per-partner rate limiting and WAF rules",
+        "Disable Cloud Logging on the integration project to reduce audit surface and rely on each SaaS partner's own logging since partners are contractually obligated to retain logs",
+        "Use VPC Service Controls perimeters around the integration project and enable VPC Flow Logs plus Cloud Logging sinks so traffic is observable per partner and isolated"
+      ],
+      "correctAnswers": [3, 1],
+      "explanation": "Option A is wrong because outbound firewall rules alone do not isolate or observe inbound integration traffic per partner. Option B is correct because per-partner external load balancers with Cloud Armor policies provide isolation and observability. Option C is wrong because disabling Cloud Logging removes observability, opposite of the requirement. Option D is correct because VPC Service Controls plus Flow Logs and Cloud Logging give observability and prevent exfiltration.",
+      "category": "Integration patterns",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-015",
+      "question": "Your team is designing an analytics platform that ingests 2 GB/second from IoT devices. The platform must scale automatically with growth from 2 to 20 GB/second over 24 months without re-architecture. Which combination scales horizontally with minimal operational effort?",
+      "options": [
+        "Self-managed Kafka on n2-standard-32 Compute Engine VMs sized for peak 20 GB/second from day one, fronted by an internal TCP load balancer for producer traffic",
+        "Cloud SQL for PostgreSQL configured with the largest machine type and high availability, accepting that vertical scaling will be sufficient for transactional workloads",
+        "App Engine standard with default autoscaling receiving HTTPS POSTs from each device, writing each event directly to Firestore Native for downstream analytics queries",
+        "Pub/Sub for ingestion with no pre-provisioned capacity, Dataflow streaming jobs that autoscale workers, and BigQuery as the warehouse with autoscaling slots enabled"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because self-managed Kafka requires significant operational effort and pre-provisioning to peak negates elastic scaling. Option B is wrong because Cloud SQL is transactional, vertical-only, and not designed for high-throughput analytics. Option C is wrong because Firestore per-event writes have cost and throughput limits unsuitable for IoT analytics. Option D is correct because Pub/Sub plus Dataflow plus BigQuery is the canonical fully managed stack.",
+      "category": "Designing for technical requirements",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-A-016",
+      "question": "An architect is choosing a region pairing for a workload that requires low user latency in Europe and disaster recovery for a regional outage. Users are primarily in the EU. Which Google Cloud region pair best balances latency and DR for European users?",
+      "options": [
+        "us-central1 (Iowa) primary and us-east1 (South Carolina) DR because US regions provide mature service availability and EU users can tolerate transatlantic latency",
+        "asia-southeast1 (Singapore) primary and asia-northeast1 (Tokyo) DR, accepting that EU users route through long Asia-Pacific paths in exchange for low replication latency",
+        "europe-west1 (Belgium) primary and europe-west4 (Netherlands) DR, providing low latency to EU users and short inter-region distance supporting synchronous replication",
+        "europe-west1 (Belgium) primary and us-east1 (South Carolina) DR on the theory that geographic separation across continents always produces the strongest DR posture"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because US-only regions add transatlantic latency for EU users, violating the latency requirement. Option B is wrong because Asia-Pacific is the wrong continent for EU users. Option C is correct because two EU regions provide low user latency and minimize inter-region replication latency for DR. Option D is wrong because while continent separation improves DR isolation, it sacrifices user latency.",
+      "category": "Designing for technical requirements",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-017",
+      "question": "A government agency is evaluating Gemini Cloud Assist. The CISO requires that any AI-suggested change be reviewed before execution and that no sensitive data leave the agency's tenancy. Which Gemini Cloud Assist usage pattern matches these constraints?",
+      "options": [
+        "Allow Gemini Cloud Assist to auto-apply suggested changes through the agency's CI pipeline because automation removes human bottlenecks and AI suggestions are more accurate",
+        "Block all Gemini Cloud Assist usage because any large-language-model interaction inherently leaks data even when the model is hosted within Google Cloud's tenancy",
+        "Use Gemini Cloud Assist in the console for suggestions, troubleshooting, and explanations while requiring human approval for any IAM or resource change before it applies",
+        "Use Gemini Cloud Assist only via personal Google accounts on engineer laptops, sending screenshots of agency resources so the model never receives raw agency data"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because auto-applying AI-suggested changes contradicts the CISO's review requirement. Option B is wrong because Gemini Cloud Assist runs within Google Cloud's tenancy and is designed for enterprise use. Option C is correct because Gemini Cloud Assist in the console keeps prompts within tenancy and pairs with human-in-the-loop approval. Option D is wrong because personal accounts and screenshots bypass agency controls.",
+      "category": "Designing for technical requirements",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-018",
+      "question": "A new SaaS platform must meet design goals of low cost, low latency, strong consistency, multi-region availability, and operational simplicity. The architect recognizes not all goals can be maximized. Choose 2. Which goal pairs force explicit trade-offs that must be surfaced?",
+      "options": [
+        "Operational simplicity vs. strong consistency because the simplest managed options (Firestore Native, Memorystore) generally offer weaker consistency than Spanner",
+        "Low latency vs. operational simplicity because every fully managed Google Cloud service is intrinsically high-latency regardless of region, network tier, or compute",
+        "Cost vs. multi-region availability because running active-active across multiple regions multiplies compute, storage, and egress costs vs. single-region zonal designs",
+        "Strong consistency vs. low latency in a multi-region deployment because cross-region quorum writes (Spanner multi-region) add latency that single-region stores avoid"
+      ],
+      "correctAnswers": [3, 2],
+      "explanation": "Option A is plausible but operational simplicity vs. consistency is not the canonical PCA trade-off here. Option B is wrong because fully managed services are not intrinsically high-latency; the claim is factually incorrect. Option C is correct because multi-region active-active multiplies infrastructure cost; the canonical cost vs. availability trade-off. Option D is correct because cross-region quorum writes add latency vs. eventually consistent single-region designs.",
+      "category": "Designing for technical requirements",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-A-019",
+      "question": "Your platform team needs to track the success of a cloud migration program. Leadership wants a small set of measurable KPIs that show whether the program is delivering value. Which set of KPIs best captures cloud migration program success per the v6.1 guide?",
+      "options": [
+        "Number of Terraform modules merged per sprint, count of Slack messages exchanged among the platform team, and design documents approved in Confluence",
+        "Deployment frequency, change failure rate, mean time to restore, and unit cost per business transaction because these tie to delivery, reliability, and economics",
+        "Number of Compute Engine VMs provisioned, gigabytes stored in Cloud Storage, and bytes scanned in BigQuery monthly since raw consumption tracks cloud progress",
+        "Number of Google Cloud certifications earned by the platform team, count of vendor demos attended, and staff who completed the introductory Skills Boost path"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because activity metrics (PRs, Slack, docs) do not measure outcomes. Option B is correct because DORA metrics (deployment frequency, CFR, MTTR) plus unit economics (cost per transaction) are the canonical migration success KPIs per the v6.1 guide. Option C is wrong because raw consumption is an input, not an outcome. Option D is wrong because training metrics measure team capability, not program success.",
+      "category": "Designing for business requirements",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-020",
+      "question": "A team is designing a financial reporting application. Each month it must export 10 TB from BigQuery to a partner's SFTP endpoint within a 4-hour window. The partner cannot accept streaming. Which design pattern best matches this batch movement requirement?",
+      "options": [
+        "Pub/Sub topic fan-out with subscribers writing directly to the partner SFTP endpoint as each row arrives because Pub/Sub is the universal data movement primitive",
+        "Cloud Functions triggered on every BigQuery row insert forwarding the row to SFTP one record at a time so the partner receives data continuously throughout the month",
+        "Scheduled BigQuery EXPORT DATA queries to Cloud Storage on the last day of the month, followed by a Cloud Composer DAG that batches and uploads files to SFTP",
+        "Cloud Data Fusion streaming pipeline reading BigQuery in real time and writing to SFTP continuously, converting the monthly batch requirement into a streaming pattern"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because Pub/Sub is a streaming primitive and the partner cannot accept streaming. Option B is wrong because per-row Cloud Functions create a streaming pattern, contradicting the constraint. Option C is correct because scheduled EXPORT DATA plus a Composer DAG matches the batch movement pattern with a clear window. Option D is wrong because the partner cannot accept streaming, so a streaming pipeline is invalid.",
+      "category": "Movement of data",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-A-021",
+      "question": "An architect is designing a global API platform. Initial traffic is 500 RPS but the business plans to scale to 50,000 RPS over 18 months. The team wants to avoid re-platforming. Which design choice provides the best scalability headroom while minimizing day-one cost?",
+      "options": [
+        "Deploy on a single n2-highcpu-96 Compute Engine VM behind an external TCP/UDP load balancer, scaling vertically by resizing the VM as RPS grows over time",
+        "Provision an active-active multi-region GKE Standard cluster pre-sized for 50,000 RPS from day one with reserved capacity so capacity planning never recurs",
+        "Run the API on App Engine flexible environment in a single zone, accepting the zonal constraint as a cost saver and adding multi-zone redundancy later if needed",
+        "Deploy on Cloud Run behind a global external Application Load Balancer with min-instances tuned to current traffic because Cloud Run scales horizontally on demand"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because vertical scaling on a single VM has a ceiling and offers no zonal redundancy. Option B is wrong because pre-sizing to peak from day one wastes day-one cost. Option C is wrong because single-zone is fragile and App Engine flexible is not the recommended scale path for global APIs. Option D is correct because Cloud Run scales horizontally to high RPS automatically, day-one cost is low via min-instances.",
+      "category": "Designing for technical requirements",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-A-022",
+      "question": "A startup is designing its backup and recovery strategy at design time. Engineering wants to delay backup configuration until production launch because everything is automated. The architect pushes back. Which reason best justifies addressing backup at design time?",
+      "options": [
+        "Backup costs zero on Google Cloud because automated daily backups are included free for all Cloud SQL and Filestore tiers, so design-time consideration is unnecessary",
+        "Backup tooling can be retrofitted in any architecture without rework because gcloud backup commands are uniform across products and have no architectural dependencies",
+        "RPO and RTO targets drive primary architectural choices (sync vs async replication, regional vs multi-regional storage, snapshot frequency), so deferring risks rework",
+        "Backup is purely an operational concern owned by SRE after launch, not architectural; including it in design adds scope and slows time-to-market without changing the design"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because backup is not universally free and free defaults often do not meet enterprise RPO/RTO. Option B is wrong because backup strategy has deep architectural implications across replication topology. Option C is correct because RPO/RTO determine primary architectural choices; the v6.1 guide calls out backup as a design-time concern. Option D is wrong because backup is architectural, not purely operational.",
+      "category": "Business continuity planning",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-023",
+      "question": "Your team is migrating a SaaS application currently deployed across 12 legacy Linux VMs on-premises. The application has a known scaling bottleneck in its single-process queue worker. The team has time and skills to redesign. Choose 2. Which 6 Rs dispositions best fit?",
+      "options": [
+        "Rehost (lift-and-shift) onto Compute Engine VMs of equivalent shape because preserving the existing architecture minimizes migration risk and is always the right first step",
+        "Retire the entire application because any application with a known scaling bottleneck is not worth migrating; the team should rebuild from scratch on a different stack",
+        "Refactor (re-architect) the bottlenecked worker into a Pub/Sub-driven Cloud Run service because the team has time and skills to address the issue with cloud-native primitives",
+        "Replatform the remaining stateless web tier from Linux VMs onto a managed instance group with autoscaling, gaining elasticity and managed patching without code rewrite"
+      ],
+      "correctAnswers": [2, 3],
+      "explanation": "Option A is wrong because rehost preserves the known bottleneck, conflicting with the scenario where the team has skills to fix it. Option B is wrong because retire is for applications no longer needed, not those with bottlenecks. Option C is correct because Refactor addresses the architectural issue using cloud-native primitives like Pub/Sub plus Cloud Run. Option D is correct because Replatform onto a managed instance group gains elasticity without code rewrite.",
+      "category": "Designing for business requirements",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-A-024",
+      "question": "An e-commerce platform stores order data and must guarantee zero data loss (RPO = 0) for any committed transaction even if a single zone fails. The architect must choose a Compute Engine storage configuration. Which option meets RPO = 0 for a zonal outage?",
+      "options": [
+        "Standard zonal persistent disk with daily snapshots scheduled via Resource Policies, accepting that snapshot frequency bounds RPO to roughly 24 hours for batch orders",
+        "Local SSD attached to a single VM in a single zone for maximum I/O performance paired with hourly copies to Cloud Storage Nearline so recoverable data exists locally",
+        "Zonal SSD persistent disk with snapshots every 15 minutes recognizing that snapshot-based recovery yields a small RPO that is acceptable for low write rates per minute",
+        "Regional persistent disk which synchronously replicates writes to a second zone in the same region so a zonal outage costs no committed write and supports force-attach"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because zonal PD with daily snapshots yields RPO up to 24 hours, not zero. Option B is wrong because Local SSD is ephemeral and does not survive VM stops. Option C is wrong because 15-minute snapshots yield RPO up to 15 minutes, not zero. Option D is correct because Regional persistent disk performs synchronous cross-zone replication, providing RPO = 0 for a zonal outage with force-attach support.",
+      "category": "Business continuity planning",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-A-025",
+      "question": "Your organization is designing observability as a first-class design requirement for a Cloud Run microservices platform. Which set of practices best operationalizes observability at design time per the Well-Architected Framework operational excellence pillar?",
+      "options": [
+        "Capture only error logs at INFO level or above and disable distributed tracing in production because tracing adds CPU overhead and uptime checks suffice for triage",
+        "Defer all observability decisions to the SRE team after launch because designers should focus on functionality first and operability is a post-launch concern owned later",
+        "Instrument structured logs with OpenTelemetry, emit RED metrics (rate, errors, duration) and traces by default, set SLOs with error budgets, and tie alerts to burn rates",
+        "Use only Cloud Logging default text logs because OpenTelemetry adds complexity and structured logging or tracing can always be retrofitted after the platform is GA"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because disabling tracing and capping logs removes signals needed for diagnosing distributed microservices. Option B is wrong because observability is a design-time concern per operational excellence. Option C is correct because OpenTelemetry, RED metrics, SLOs with error budgets, and burn-rate alerts form the canonical observability design. Option D is wrong because text logs without trace context make troubleshooting expensive.",
+      "category": "Well-Architected Framework",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-design-plan-A-026",
+      "question": "An architect is presenting the Well-Architected Framework's reliability pillar to stakeholders. A stakeholder asks for the single most foundational reliability practice the team should adopt early. Which practice best fits the question and the published framework guidance?",
+      "options": [
+        "Define Service Level Objectives (SLOs) for each critical service and use error budgets to govern release velocity vs. reliability because SLOs are the pillar's foundation",
+        "Buy the largest available Compute Engine machine shape for every workload because over-provisioning compute is the simplest way to ensure reliability under all failures",
+        "Run weekly synthetic load tests at 10x peak traffic against production to verify reliability headroom, accepting any customer impact during the test as the cost of confirming",
+        "Disable autoscaling for all production services because autoscaling decisions during incidents are unpredictable and a fixed capacity floor provides more reliable experience"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because SLOs and error budgets are the foundation of Google's reliability pillar per the Well-Architected Framework and the SRE workbook. Option B is wrong because over-provisioning does not address reliability holistically and is wasteful. Option C is wrong because running 10x load against production is reckless. Option D is wrong because disabling autoscaling reduces resilience under unexpected traffic.",
+      "category": "Well-Architected Framework",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-design-plan-A-027",
+      "question": "A retailer is designing a new checkout system. Leadership says the system must support 10x peak traffic during Black Friday without manual intervention. Choose 2. Which design patterns directly support this elastic scalability requirement on Google Cloud services?",
+      "options": [
+        "Run the checkout system on a fixed Cloud SQL instance sized for normal load and rely on connection pooling alone to absorb the 10x spike without provisioning more resources",
+        "Adopt managed instance groups with autoscaling on a representative custom metric (queue depth or per-request CPU) so capacity grows ahead of demand rather than after",
+        "Use Cloud Run or App Engine standard for the front end, which autoscale to zero between events and elastically up during traffic spikes without operator intervention",
+        "Pre-purchase 10x committed use discount capacity for all of November so the workload has reserved headroom for Black Friday and pays the same fixed price each month"
+      ],
+      "correctAnswers": [1, 2],
+      "explanation": "Option A is wrong because connection pooling cannot absorb a 10x compute spike and a fixed Cloud SQL instance is a bottleneck. Option B is correct because MIG autoscaling on representative metrics is the canonical horizontal scaling pattern. Option C is correct because Cloud Run and App Engine standard autoscale to handle bursts without operator intervention. Option D is wrong because CUDs reserve fixed capacity and committing 10x wastes spend most of the month.",
+      "category": "Designing for technical requirements",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-028",
+      "question": "Your team is balancing security and operational excellence pillars while designing a regulated workload. The CISO wants every change reviewed; the platform team wants daily deploys. How should the architect resolve this tension using the Well-Architected Framework?",
+      "options": [
+        "Pick one pillar to optimize for and treat the other as secondary because the Well-Architected Framework ranks security above operational excellence whenever pillars conflict",
+        "Adopt policy-as-code (Org Policy + OPA/Gatekeeper) and automated review pipelines so every change is policy-checked at PR time, satisfying CISO and preserving cadence",
+        "Require manual CISO review of every Terraform PR before any merge, accepting that daily deploys are unrealistic for regulated workloads so weekly batched releases are it",
+        "Move only non-regulated workloads to Google Cloud and keep regulated ones on-premises because public cloud cannot meet security review and deployment velocity together"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because the Well-Architected Framework does not rank pillars; it requires balancing them. Option B is correct because policy-as-code plus automated review pipelines (Org Policy, OPA/Gatekeeper, Cloud Build approvals) satisfy CISO controls without throttling deploy velocity. Option C is wrong because manual review per PR creates a bottleneck. Option D is wrong because regulated workloads run on Google Cloud with proper controls.",
+      "category": "Well-Architected Framework",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-029",
+      "question": "A team is evaluating the sustainability pillar for a new analytics platform. Which design choice most directly reduces the platform's carbon footprint while still meeting functional requirements set by the product organization for the workload it serves?",
+      "options": [
+        "Run all workloads in us-central1 regardless of carbon intensity because that region offers the broadest service catalog and sustainability gains are negligible vs. velocity",
+        "Choose a Google Cloud region with high carbon-free energy, use BigQuery on-demand or autoscaling reservations to avoid idle slots, and schedule batch jobs at low-carbon times",
+        "Provision the largest available VM shapes regardless of utilization because higher utilization per VM reduces fleet count and Google credits spare CPU as zero-emission",
+        "Disable autoscaling entirely so workloads run at fixed capacity since varying utilization makes per-workload carbon accounting impossible and steady-state is preferred"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because region carbon intensity varies and the sustainability pillar recommends choosing low-carbon regions. Option B is correct because the sustainability pillar covers carbon-aware region selection, eliminating idle reservations, and time-shifting batch work. Option C is wrong because over-provisioning increases footprint, not reduces it. Option D is wrong because disabling autoscaling locks in waste.",
+      "category": "Well-Architected Framework",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-design-plan-A-030",
+      "question": "Leadership at a healthcare provider asks the architecture team to design a patient portal that 'must scale to whatever the business needs.' Before any design work begins, what should the architect do first to convert this vague brief into a workable plan?",
+      "options": [
+        "Clarify functional and non-functional requirements with stakeholders (users, concurrent sessions, latency budgets, compliance, growth horizon) so the brief becomes measurable",
+        "Begin a Terraform proof-of-concept in a sandbox project to demonstrate elasticity using GKE Autopilot on the assumption that auto-scaling will satisfy unspecified needs",
+        "Pre-purchase committed use discounts for Compute Engine in multiple regions so cost is locked in early; the team can map workloads to reserved capacity later on as needed",
+        "Convene the SRE team to draft SLOs and error budgets immediately because reliability targets are the most important design input and other requirements can be inferred"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because the v6.1 guide is explicit: identifying functional and non-functional requirements is the first design activity. Option B is wrong because building a POC before requirements wastes effort. Option C is wrong because committing spend before requirements is irresponsible cost management. Option D is wrong because SLOs depend on user needs and compliance scope being defined first.",
+      "category": "Designing for business requirements",
+      "difficulty": "easy"
+    }
+  ]
+}

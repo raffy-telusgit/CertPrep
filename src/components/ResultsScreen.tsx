@@ -184,6 +184,11 @@ function ResultsScreen() {
                     selected={session.answers[q.id] ?? []}
                     flagged={session.flagged.includes(q.id)}
                     index={i}
+                    caseStudyTitle={
+                      q.caseStudyId
+                        ? (session.caseStudies ?? []).find((cs) => cs.id === q.caseStudyId)?.title
+                        : undefined
+                    }
                   />
                 ))}
               </TabsContent>
@@ -201,6 +206,11 @@ function ResultsScreen() {
                       selected={session.answers[q.id] ?? []}
                       flagged={session.flagged.includes(q.id)}
                       index={session.questions.indexOf(q)}
+                      caseStudyTitle={
+                        q.caseStudyId
+                          ? (session.caseStudies ?? []).find((cs) => cs.id === q.caseStudyId)?.title
+                          : undefined
+                      }
                     />
                   ))
                 )}
@@ -219,6 +229,11 @@ function ResultsScreen() {
                       selected={session.answers[q.id] ?? []}
                       flagged={true}
                       index={session.questions.indexOf(q)}
+                      caseStudyTitle={
+                        q.caseStudyId
+                          ? (session.caseStudies ?? []).find((cs) => cs.id === q.caseStudyId)?.title
+                          : undefined
+                      }
                     />
                   ))
                 )}

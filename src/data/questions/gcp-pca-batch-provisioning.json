@@ -1,0 +1,682 @@
+{
+  "questions": [
+    {
+      "id": "pca-provisioning-001",
+      "question": "A multinational retailer needs a private, dedicated 100 Gbps connection from its on-premises data center to a Google Cloud region for ETL workloads moving 40 TB per night. The data center is located within a Google peering facility. Which hybrid connectivity option best fits this requirement?",
+      "options": [
+        "Provision a Dedicated Interconnect circuit terminating at the colocation facility so the customer establishes a direct physical cross-connect to Google with predictable 100 Gbps bandwidth",
+        "Provision a Partner Interconnect attachment through a service-provider peer because Dedicated Interconnect cannot be ordered at the 100 Gbps tier in colocation facilities",
+        "Deploy two HA VPN gateways with multiple tunnels and BGP to provide an aggregated throughput that approaches 100 Gbps once enough tunnels are active in each gateway",
+        "Use Cross-Cloud Interconnect to deliver a 100 Gbps private circuit from on-premises through another cloud provider's network into the Google Cloud region"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because Dedicated Interconnect provides direct physical 10 Gbps or 100 Gbps circuits at Google peering facilities, which is exactly the customer's location and bandwidth need. Option B is wrong because Partner Interconnect is meant for customers not in a Google peering facility and tops out at 50 Gbps per attachment via service providers. Option C is wrong because HA VPN tunnels are capped at roughly 3 Gbps each over the internet and cannot guarantee 100 Gbps or predictable latency. Option D is wrong because Cross-Cloud Interconnect connects Google Cloud to other cloud providers, not on-premises data centers.",
+      "category": "Configuring network topologies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-provisioning-002",
+      "question": "A regional bank must connect its on-premises core banking system to Google Cloud with 99.99% SLA-backed availability for hybrid traffic. The team cannot install equipment in a Google colocation facility and needs the project ready in six weeks. Which connectivity design meets the SLA and timeline?",
+      "options": [
+        "Order a single Dedicated Interconnect 10 Gbps circuit at the nearest colocation facility and rely on Google's circuit-level redundancy to deliver the 99.99% SLA without any partner involvement",
+        "Provision two Partner Interconnect VLAN attachments through different supported service providers, each terminating at a different metro edge availability domain, and use BGP for failover",
+        "Deploy a single HA VPN gateway with two tunnels to the on-premises VPN concentrator because HA VPN's two-tunnel configuration already provides a 99.99% availability SLA",
+        "Combine Cloud VPN classic tunnels with Cloud NAT to mask on-premises addresses and rely on multiple internet paths to achieve the four-nines availability for hybrid traffic"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Option A is wrong because a single Dedicated Interconnect circuit is rated for 99.9% and requires the customer to be in a colocation facility, which the bank cannot do. Option B is correct because Partner Interconnect can be deployed through two service providers terminating at separate edge availability domains, which Google documents as achieving 99.99% availability without colocation. Option C is wrong because HA VPN provides 99.99% only when configured with two interfaces to separate peer VPN gateways, and it is still inappropriate for sustained core-banking throughput. Option D is wrong because Classic VPN has been deprecated for new SLA-bearing deployments and Cloud NAT does not improve availability.",
+      "category": "Configuring network topologies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-003",
+      "question": "A SaaS provider runs services in europe-west1 and us-central1 and wants client requests routed to the closest healthy region with a single anycast IP, TLS termination at the edge, and support for HTTP path-based routing. Which load balancer should the architect select?",
+      "options": [
+        "A global external Application Load Balancer fronting serverless and Managed Instance Group backends, using a single anycast VIP with edge TLS, URL maps for path routing, and automatic failover between regions",
+        "A regional external Application Load Balancer in each region with public IPs managed by a third-party global DNS provider that performs geo-steering and latency-based DNS responses",
+        "A global external proxy Network Load Balancer using TCP proxying with backend services in both regions, since proxy NLBs are the only global load balancer Google offers for HTTPS workloads",
+        "A pair of internal Application Load Balancers in each region exposed through Cloud NAT with static external IPs and routed via Cloud DNS health-checked records to the nearest backend"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because the global external Application Load Balancer offers a single anycast IP, edge TLS, URL maps for path-based routing, and automatic cross-region failover with health checks. Option B is wrong because DNS-based geo-steering does not provide a single anycast VIP and adds DNS TTL latency during failover. Option C is wrong because proxy Network Load Balancers do not parse HTTP and cannot perform path-based URL routing. Option D is wrong because internal load balancers cannot serve external clients and Cloud NAT does not expose them publicly.",
+      "category": "Configuring network topologies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-004",
+      "question": "A platform team operates a Shared VPC host project for the entire organization and must apply egress firewall rules that no service-project owner can override or delete. The rules must apply consistently across all current and future projects under a specific folder. Which approach satisfies the requirement?",
+      "options": [
+        "Add high-priority deny egress rules in the Shared VPC host project's VPC firewall and instruct service-project owners to leave them alone via an organizational policy that locks the rule names",
+        "Create a hierarchical firewall policy attached to the folder with explicit egress deny rules and goto_next semantics so that lower-priority VPC firewall rules cannot override the policy",
+        "Use VPC firewall rule logging and Cloud Audit Logs to detect any change to egress deny rules and trigger a Cloud Function that restores rules from a Terraform pipeline within minutes",
+        "Apply network tags to every VM and use VPC firewall rules scoped to tags, granting only platform admins the role roles/compute.securityAdmin in each service project to manage them"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Option A is wrong because VPC firewall rules in the host project can be modified by anyone with appropriate IAM on the host project, and instructions are not an enforcement mechanism. Option B is correct because hierarchical firewall policies attached to an organization or folder are evaluated before VPC firewall rules and cannot be overridden by project-level firewalls. Option C is wrong because detection-and-remediation leaves a window of insecure state and is operationally fragile. Option D is wrong because granting securityAdmin still allows project owners to alter VPC firewall rules in their projects.",
+      "category": "Configuring network topologies",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-005",
+      "question": "A media company wants Cloud IDS to inspect traffic between two service VPCs that are connected through VPC Network Peering. Which TWO statements about deploying Cloud IDS in this topology are correct?",
+      "options": [
+        "Cloud IDS automatically inspects packets that traverse VPC Network Peering without any additional Packet Mirroring configuration once the endpoint is created in either peered network",
+        "Packet Mirroring across VPC Network Peering is not supported, so traffic between peered VPCs cannot be inspected by a Cloud IDS endpoint located in the other peered VPC",
+        "Cloud IDS endpoints must be created per region in the VPC where the traffic to inspect originates, and Packet Mirroring policies must reference the IDS endpoint as the collector destination",
+        "Cloud IDS endpoints use a private service connection consuming a /24 from the customer-allocated range and require the servicenetworking.googleapis.com API to be enabled"
+      ],
+      "correctAnswers": [
+        2,
+        3
+      ],
+      "explanation": "Option A is wrong because traffic is mirrored only when a Packet Mirroring policy is configured for the source subnets, networks, or instances. Option B is wrong because Packet Mirroring does support peered VPCs as long as the policy and endpoint are configured in the same VPC. Option C is correct because Cloud IDS is regional and relies on Packet Mirroring policies that explicitly designate the IDS endpoint as the collector. Option D is correct because Cloud IDS requires Private Services Access through servicenetworking.googleapis.com and reserves an internal range for the managed endpoint.",
+      "category": "Configuring network topologies",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-006",
+      "question": "An analytics workload runs GKE pods in us-central1 that must call Cloud SQL and Vertex AI APIs without sending traffic over the public internet, even when the egress public IP is removed from the cluster. Which combination of features should be configured?",
+      "options": [
+        "Disable the cluster's external endpoints, enable Cloud NAT for egress, and route Google API traffic through Cloud NAT public IPs so that traffic remains within Google's network even without private connectivity",
+        "Enable VPC Flow Logs and Cloud Armor edge rules so that Google API traffic from the cluster is allow-listed at the perimeter and inspected for sensitive data before leaving the VPC",
+        "Connect the cluster to a peered VPC owned by Google by accepting a Cloud DNS managed zone called googleapis.com that resolves all APIs to internal addresses within the customer VPC range",
+        "Enable Private Google Access on the subnet, use Private Service Connect endpoints for googleapis.com, and configure Private Services Access so Cloud SQL is reachable over an internal IP"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Option A is wrong because Cloud NAT egresses to public IPs of Google APIs over the internet, not via private connectivity, and is unnecessary when Private Google Access is enabled. Option B is wrong because Flow Logs and Cloud Armor describe visibility and edge protection, not private API connectivity. Option C is wrong because customers cannot peer with a Google-owned VPC; there is no such mechanism. Option D is correct because Private Google Access plus Private Service Connect for Google APIs and Private Services Access for Cloud SQL keep all traffic within Google's network using internal IPs.",
+      "category": "Configuring network topologies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-007",
+      "question": "A startup is choosing between an internal passthrough Network Load Balancer and an internal Application Load Balancer for a microservice that needs URL path routing, gRPC support, and HTTP/2 to backend Managed Instance Groups inside one region. Which option correctly describes the right choice?",
+      "options": [
+        "Choose the internal Application Load Balancer because it is a regional proxy load balancer that supports HTTP, HTTP/2, gRPC, and URL maps for path-based routing to backend services",
+        "Choose the internal passthrough Network Load Balancer because passthrough preserves the original client IP, which is required for any HTTP/2 or gRPC backend on Google Cloud",
+        "Choose the internal Application Load Balancer because it is now a global load balancer that automatically replicates traffic across all regions where the backend MIG is deployed",
+        "Choose the internal passthrough Network Load Balancer with TCP health checks because internal Application Load Balancers do not support gRPC or HTTP/2 to Compute Engine backends"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because the internal Application Load Balancer is a regional proxy LB that supports HTTP, HTTP/2, gRPC, and URL maps. Option B is wrong because passthrough NLBs do not understand HTTP and cannot do URL routing; preserving client IP is unrelated to HTTP/2 support. Option C is wrong because the internal Application Load Balancer is regional in this scenario, not multi-region. Option D is wrong because internal Application Load Balancers do support HTTP/2 and gRPC to Compute Engine backends.",
+      "category": "Configuring network topologies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-provisioning-008",
+      "question": "A team must expose a third-party SaaS backend, hosted in another Google Cloud organization and published as a Private Service Connect producer, to a private internal Application Load Balancer in the consumer VPC. Which backend type should the URL map reference?",
+      "options": [
+        "A Private Service Connect NEG that targets the published producer service, allowing the load balancer to forward traffic privately to the cross-org service attachment",
+        "An internet network endpoint group (NEG) configured with the FQDN of the third-party SaaS endpoint, since cross-organization private connectivity uses internet NEGs for resolution",
+        "A serverless NEG that lists the Cloud Run service the SaaS provider exposes publicly, allowing the consumer VPC to reach the producer endpoint through Google's serverless backplane",
+        "A zonal GCE_VM_IP NEG that lists the IP addresses of producer VMs, since cross-organization Private Service Connect uses VM-level IP allocation in the consumer project"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because Private Service Connect NEGs let a load balancer privately reach a producer service published as a service attachment in another VPC or organization. Option B is wrong because internet NEGs send traffic out over the public internet, not through Private Service Connect. Option C is wrong because serverless NEGs target the consumer's own Cloud Run, Cloud Run functions, or App Engine services, not a producer SaaS in another org. Option D is wrong because PSC consumers see only a forwarding rule, not producer VM IPs.",
+      "category": "Configuring network topologies",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-009",
+      "question": "An enterprise is designing multicloud connectivity for analytics workloads that run in AWS us-east-1 and read from BigQuery in us-east4. The team needs private, layer-3 connectivity with predictable 10 Gbps throughput and a Google-supported SLA. Which approach should the architect recommend?",
+      "options": [
+        "Establish an HA VPN connection from the AWS Transit Gateway to a Cloud Router, accept the public-internet path, and rely on jumbo frames to provide steady 10 Gbps for cross-cloud traffic",
+        "Peer the customer VPCs across Google Cloud and AWS using VPC Network Peering with shared IP space, since peering is the recommended cross-cloud private path for analytics workloads",
+        "Tunnel AWS traffic through a third-party SD-WAN appliance hosted in a partner network and rely on Cloud Interconnect at the Google end without ordering circuits on the AWS side",
+        "Order a Cross-Cloud Interconnect 10 Gbps circuit between Google Cloud and AWS to provide a dedicated layer-3 connection with the supported Cross-Cloud Interconnect availability SLA"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Option A is wrong because HA VPN over the internet does not deliver predictable 10 Gbps and lacks a multicloud SLA-bearing path. Option B is wrong because VPC Network Peering only works within Google Cloud and cannot extend to AWS. Option C is wrong because SD-WAN appliances introduce unsupported third-party paths and Cross-Cloud Interconnect requires ordering circuits on both clouds. Option D is correct because Cross-Cloud Interconnect provides dedicated 10 Gbps or 100 Gbps circuits directly between Google Cloud and supported clouds with a documented availability SLA.",
+      "category": "Configuring network topologies",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-010",
+      "question": "A logistics platform needs to expose hundreds of regional internal services to thousands of partner VPCs without sharing CIDR space, and producers must control which consumers can connect. Which design best meets this requirement?",
+      "options": [
+        "Use VPC Network Peering with custom route exchange between every producer and consumer VPC, relying on hierarchical firewall policies to restrict access between partners and producers",
+        "Use Shared VPC across the organization with each producer service published in the host project, granting partners IAM access only to specific subnets where the producer services run",
+        "Expose each producer service through an internet-facing global Application Load Balancer protected by Cloud Armor allow lists referencing each partner's egress IP address ranges",
+        "Publish each producer service through Private Service Connect using service attachments and allow listing only approved consumer projects, exposing the service via a stable PSC endpoint"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Option A is wrong because pairwise VPC peering is non-transitive, hits per-VPC peering limits, and would require overlapping addresses to be impossible. Option B is wrong because Shared VPC is intra-organization and is not designed for cross-partner production exposure. Option C is wrong because internet-facing LBs with IP allow lists are public exposure and weaker than private connectivity. Option D is correct because Private Service Connect with service attachments lets producers expose services privately via consumer-side endpoints with explicit allow listing and no CIDR overlap concerns.",
+      "category": "Configuring network topologies",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-011",
+      "question": "An analytics team stores 800 TB of raw logs in Cloud Storage. Files are queried heavily for 30 days, occasionally for the next 60 days, and almost never afterward, but must remain available for 7 years. Which lifecycle configuration minimizes storage cost?",
+      "options": [
+        "Keep the bucket in Standard storage and create a Cloud Scheduler job that deletes files older than 30 days, since retention beyond a month adds disproportionate cost compared to processing",
+        "Apply an object lifecycle rule that transitions objects from Standard to Nearline at 30 days, then to Coldline at 90 days, then to Archive at 365 days, with a delete action at 7 years",
+        "Store all data in Archive storage from creation, retrieve via temporary Standard copies during the active period, and rely on Archive's read-API throughput to satisfy the 30-day workload",
+        "Use Autoclass on a Standard bucket so Cloud Storage manages tier transitions, but disable lifecycle deletion and rely on bucket-level retention policies to remove data after 7 years"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Option A is wrong because deleting after 30 days violates the 7-year retention requirement. Option B is correct because the lifecycle pattern matches the access curve described, taking advantage of Nearline, Coldline, and Archive minimum storage durations and lower at-rest costs while retaining the data for 7 years. Option C is wrong because Archive incurs early-deletion fees and retrieval costs that dominate during the hot 30-day window. Option D is wrong because Autoclass does not delete data and retention policies prevent deletion rather than enforcing it after 7 years.",
+      "category": "Configuring storage",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-012",
+      "question": "A financial services regulator requires that trade-audit objects be immutable for 10 years after creation; even bucket owners must not be able to delete or overwrite them. Which Cloud Storage configuration meets the requirement?",
+      "options": [
+        "Apply a customer-managed encryption key (CMEK) with a 10-year rotation period so any deletion attempt would render the data unreadable and effectively immutable for the retention window",
+        "Configure a 10-year locked retention policy on the bucket along with object lifecycle rules that block deletion, ensuring even project owners cannot remove or overwrite objects",
+        "Enable Object Versioning with a noncurrent-time-before condition set to 10 years and use Cloud Audit Logs to track all object deletions for the retention window",
+        "Set per-object holds using event-based holds programmatically and grant only the audit team the roles/storage.admin role on the bucket to delete objects after 10 years"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Option A is wrong because key rotation does not make data immutable; old object versions remain readable and CMEK does not prevent deletion. Option B is correct because a locked retention policy on the bucket prevents deletion or overwrite of any object until the retention period elapses, including by project owners. Option C is wrong because Object Versioning alone does not prevent deletion of noncurrent versions unless paired with a locked retention policy. Option D is wrong because event-based holds release when the event triggers, and granting storage.admin still allows deletion before 10 years.",
+      "category": "Configuring storage",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-013",
+      "question": "A research lab needs to transfer 600 TB of genomics data from an on-premises NAS to Cloud Storage within two weeks. The site has 200 Mbps of available internet bandwidth and cannot be upgraded. Which transfer mechanism is most appropriate?",
+      "options": [
+        "Use Storage Transfer Service for on-premises data with a fleet of agents and rely on Google's network to absorb the load, scaling agents up to compensate for the limited site bandwidth",
+        "Use gcloud storage cp with parallel composite uploads and a long-lived service-account key to maximize throughput against the existing 200 Mbps internet link from the data center",
+        "Set up a Dedicated Interconnect circuit and use gsutil rsync to push the data over the new connection, sized to handle the 600 TB load within the two-week project window",
+        "Order a Transfer Appliance, copy the data to the appliance over the local network, ship it to Google, and have Google ingest the data into the destination Cloud Storage bucket"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Option A is wrong because Storage Transfer Service is bottlenecked by the on-prem upload link, which would require months at 200 Mbps. Option B is wrong because parallel uploads cannot exceed the egress capacity of the site, so 600 TB would not complete in two weeks. Option C is wrong because Dedicated Interconnect ordering, install, and provisioning typically exceeds two weeks. Option D is correct because Transfer Appliance is purpose-built for large offline data ingest and Google handles the upload from its facility once shipped.",
+      "category": "Configuring storage",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-014",
+      "question": "An external partner needs to upload a single object up to 10 GB to a private Cloud Storage bucket every week without being granted IAM. Which TWO mechanisms allow this with the least standing privilege?",
+      "options": [
+        "Send the partner a long-lived service-account JSON key with roles/storage.admin on the bucket and instruct them to rotate it manually whenever they suspect compromise",
+        "Use a custom Cloud Function with a public HTTP trigger that proxies the upload after validating a shared secret in the request header and writes the object as a service account",
+        "Generate a V4 signed URL for a PUT request scoped to the specific object name, expiring after 24 hours and signed by a service account that has roles/storage.objectCreator on the bucket",
+        "Use a signed policy document that constrains the upload to a fixed key prefix, content-type, and size limit, enabling the partner to POST the file directly from a browser form"
+      ],
+      "correctAnswers": [
+        2,
+        3
+      ],
+      "explanation": "Option A is wrong because handing out long-lived keys with admin scope is the opposite of least privilege. Option B is wrong because a public HTTP function with a shared secret introduces a custom trust path and weaker auditability than Google-signed credentials. Option C is correct because V4 signed URLs grant time-limited, object-scoped permissions and require no IAM for the partner. Option D is correct because signed policy documents enable browser-based POST uploads with strict policy constraints on key, content-type, and size.",
+      "category": "Configuring storage",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-015",
+      "question": "A SaaS analytics tenant runs OLTP workloads on a single regional Cloud SQL for PostgreSQL instance and must withstand the loss of an entire region with an RPO under 5 minutes. Which design satisfies the requirement?",
+      "options": [
+        "Enable point-in-time recovery on the existing regional instance and rely on automated daily backups stored in the multi-region location to rebuild the database after a regional outage",
+        "Configure a cross-region read replica of the Cloud SQL instance, enable replica failover with managed automatic failover during a regional outage, and verify replication lag remains under 5 minutes",
+        "Provision Cloud SQL with high availability in a single region and enable cross-region snapshot scheduling every 5 minutes so snapshots are restorable in any region within RPO",
+        "Migrate to AlloyDB Omni hosted on Compute Engine in two regions and configure asynchronous replication between the two clusters with a custom failover script using Pub/Sub for coordination"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Option A is wrong because daily backups give an RPO of up to 24 hours, far above 5 minutes. Option B is correct because Cloud SQL for PostgreSQL cross-region read replicas can be promoted during a regional failover and asynchronous lag is typically well under 5 minutes for moderate workloads. Option C is wrong because Cloud SQL does not support 5-minute cross-region snapshot scheduling natively. Option D is wrong because AlloyDB Omni on Compute Engine is self-managed and replacing managed Cloud SQL with custom replication is unnecessary and operationally riskier.",
+      "category": "Configuring storage",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-016",
+      "question": "A team must back up persistent disks attached to Compute Engine VMs across multiple regions with consistent application state. Which Backup and DR Service capability should be selected?",
+      "options": [
+        "Application-aware Compute Engine snapshot policies that quiesce only the file system using fsfreeze, then capture per-disk snapshots that the team mounts during recovery for restoration",
+        "Cloud Storage transfer jobs that copy block-level disk images to a Coldline bucket every hour and rely on object lifecycle rules to age out the images after their retention window",
+        "Cross-region Persistent Disk synchronous replication via regional persistent disks so the data is always available in two zones, providing the equivalent of a regional backup",
+        "Backup and DR Service backup plans with consistency groups so multi-disk VMs are snapshotted as a single recoverable unit using Backup Vault for cross-region recovery"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Option A is wrong because file-system freeze alone does not produce application-consistent backups across multiple disks; ordering is needed. Option B is wrong because hourly block image copies are slow, lack application consistency, and require custom restore tooling. Option C is wrong because regional persistent disks replicate within one region only and are not a backup mechanism. Option D is correct because Backup and DR Service supports consistency groups for multi-disk VMs and Backup Vault provides governed, cross-region retention with application-aware recovery.",
+      "category": "Configuring storage",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-017",
+      "question": "A team must select storage for a workload that ingests 5 TB of small binary objects per day, requires consistent single-digit-millisecond read latency from web frontends, and needs strong consistency on writes. Which storage system is most appropriate?",
+      "options": [
+        "Cloud Storage with the Standard storage class, fronted by a Cloud CDN distribution and presigned URLs for direct reads to minimize the latency between web frontends and object retrieval",
+        "BigQuery with object table references over a Cloud Storage bucket so the binary content is accessible by SQL while the actual bytes are served from the bucket on demand",
+        "Filestore Enterprise tier with NFS clients on the web frontends, providing block-level small-object reads with sub-millisecond latency and full POSIX compliance for binary payloads",
+        "Cloud Spanner with the BYTES column type and regional configuration to keep data in one region while benefiting from Spanner's globally consistent reads for binary blobs"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Option A is wrong because Cloud Storage has higher per-request latency than block or file storage and is optimized for throughput, not single-digit-millisecond consistent reads. Option B is wrong because object tables expose Cloud Storage metadata for SQL and do not improve binary read latency. Option C is correct because Filestore Enterprise delivers single-digit-millisecond NFS read latency, strong consistency, and POSIX semantics suitable for small-object reads. Option D is wrong because Spanner is not optimized for binary blob storage and BYTES columns are expensive at multi-TB scale.",
+      "category": "Configuring storage",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-018",
+      "question": "An ML team needs a Cloud Storage bucket whose data growth is unpredictable but cost-sensitive; access patterns flip between hot and cold without warning. They want Google to manage tier transitions automatically without lifecycle rules. Which feature should they enable?",
+      "options": [
+        "Object lifecycle management with a complex set of conditional rules that transition objects between Standard, Nearline, Coldline, and Archive based on age, size, and read counters per object",
+        "Bucket-level Object Versioning with automatic noncurrent-time transitions to Coldline so older versions move down the tiers and current versions stay where they were written initially",
+        "Autoclass on the bucket so Cloud Storage automatically moves objects between Standard, Nearline, Coldline, and Archive based on access patterns, with no early-deletion charges",
+        "Use a dual-region bucket so reads are served from the closest region and write costs are absorbed by the multi-region replication infrastructure independent of lifecycle policies"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Option A is wrong because lifecycle rules require predictable patterns and rules; this is what Autoclass eliminates. Option B is wrong because Object Versioning addresses retention of past versions, not tiering of current data based on access frequency. Option C is correct because Autoclass automates transitions across all four classes based on observed access, with no early-deletion fees for class transitions made by Autoclass. Option D is wrong because dual-region buckets address regional availability, not cost management for unpredictable access.",
+      "category": "Configuring storage",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-provisioning-019",
+      "question": "A trading platform must run latency-sensitive market-data analytics on a 96-vCPU machine with very high memory bandwidth and AVX-512 support. The workload is non-fault-tolerant and runs 24x7. Which Compute Engine machine family fits best?",
+      "options": [
+        "Use a C3 machine type with the requested 96 vCPUs and high memory bandwidth, complementing it with a 3-year committed use discount to reduce sustained cost for the always-on workload",
+        "Use an N2D machine type because AMD-based instances always provide higher AVX-512 throughput than equivalent Intel-based families for AVX-512 floating-point trading workloads",
+        "Use an E2 machine type sized to 96 vCPUs because E2 offers the strongest single-thread performance among general-purpose families and the lowest sustained-use cost on Google Cloud",
+        "Use a T2D machine type because Tau VMs offer the highest AVX-512 instruction throughput for memory-bandwidth-bound trading analytics in Google's general-purpose lineup"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because the C3 family uses Intel Sapphire Rapids with AVX-512 and DDR5 memory, ideal for latency-sensitive analytics, and a 3-year CUD optimizes 24x7 cost. Option B is wrong because AMD N2D EPYC chips do not implement AVX-512 for the indicated workload; only specific Intel families support it. Option C is wrong because E2 trades performance for cost and is not aimed at latency-sensitive trading. Option D is wrong because T2D uses AMD EPYC Milan, which lacks the broad AVX-512 instruction set the workload requires.",
+      "category": "Configuring compute",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-020",
+      "question": "A batch image-processing pipeline needs the lowest cost on Google Cloud and tolerates being interrupted at any time with a 30-second grace period. Which compute configuration should be used?",
+      "options": [
+        "A Managed Instance Group of E2 standard VMs sized to the worst-case demand and scaled in only when CPU usage falls below 20% for sustained periods to avoid restart overhead",
+        "A Cloud Run service with concurrency set to 1 so each image gets a dedicated container instance and minimum instances set to 0 to avoid charges while idle",
+        "A GKE Standard cluster with default node pools using on-demand N2 instances and the Cluster Autoscaler set to scale to zero between batches once the pipeline completes",
+        "A Managed Instance Group of Spot VMs with the pipeline structured to checkpoint frequently, plus a shutdown script that gracefully drains work within the 30-second preemption notice"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Option A is wrong because on-demand E2 sized for worst-case demand is far more expensive than Spot for an interruption-tolerant batch workload. Option B is wrong because Cloud Run with concurrency 1 is suited to request/response, not large-scale batch image processing, and it is not the cheapest option per CPU-hour. Option C is wrong because on-demand N2 nodes still cost much more than Spot VMs. Option D is correct because Spot VMs offer up to roughly 60-91% discount and the workload's interruption tolerance and 30-second shutdown handling fit Spot's preemption model.",
+      "category": "Configuring compute",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-provisioning-021",
+      "question": "A platform team is hardening a Cloud Run service that must read from Filestore over NFS and call Cloud SQL privately. Which TWO Cloud Run configurations are required to support both backends?",
+      "options": [
+        "Use Cloud Run jobs and a separate Cloud Storage Fuse mount per invocation so each job sees the Filestore data through a sidecar proxy that translates POSIX calls to object operations",
+        "Use Cloud Run for Anthos on a GKE cluster so the underlying nodes can mount the Filestore share via DaemonSet and the Cloud Run services can read the mount through hostPath bindings",
+        "Use the second-generation Cloud Run execution environment so that kernel features required for NFS volume mounts and IPv4 transport for Cloud SQL Private IP are available",
+        "Configure Direct VPC egress or a Serverless VPC Access connector so that the service can reach the Filestore and Cloud SQL Private IPs inside the customer VPC"
+      ],
+      "correctAnswers": [
+        2,
+        3
+      ],
+      "explanation": "Option A is wrong because Cloud Run jobs are for batch and Cloud Storage Fuse mounts buckets, not Filestore. Option B is wrong because Cloud Run for Anthos was renamed and hostPath bindings are not exposed as described. Option C is correct because the second-generation execution environment provides the kernel features needed for NFS volume mounts and supports VPC connectivity. Option D is correct because Direct VPC egress or a Serverless VPC Access connector is required for Cloud Run to reach Filestore and Cloud SQL Private IPs.",
+      "category": "Configuring compute",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-022",
+      "question": "An enterprise running 600 Compute Engine VMs needs to apply OS-level security patches on a defined maintenance window across Windows and Linux fleets, with rollback if a patch causes service errors. Which Google Cloud service should be used?",
+      "options": [
+        "Use Cloud Build to package OS images monthly, store them in Artifact Registry, then rebuild every VM from the latest image during the maintenance window so all patches are baked into the image",
+        "Use Cloud Scheduler to invoke a Cloud Function that runs gcloud compute ssh and apt-get upgrade or Windows Update commands across all instances, then redeploys via Deployment Manager if anything fails",
+        "Use VM Manager patch management to define patch jobs across selected zones, pre-patch and post-patch scripts for rollback, and patch deployments aligned to maintenance windows for the fleet",
+        "Use Config Connector custom resources that declare desired patch baselines and have the operator reconcile each VM weekly through SSH automation managed by the Anthos Config Management agent"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Option A is wrong because monthly image rebakes do not provide on-demand patch jobs or rollback hooks and are operationally heavy at fleet scale. Option B is wrong because Cloud Function-based SSH at hundreds of VMs is fragile, not designed for OS patching, and lacks structured pre/post checks. Option C is correct because VM Manager patch management is purpose-built for OS patching across Windows and Linux, supports pre/post-patch scripts, and integrates with maintenance windows. Option D is wrong because Config Connector targets Google Cloud resources, not OS-level patching on VMs.",
+      "category": "Configuring compute",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-023",
+      "question": "A FinTech application requires a GKE cluster where pods are isolated to dedicated hardware not shared with other Google Cloud customers for compliance with a regulator's tenancy clause. Which configuration meets the requirement with the least operational burden?",
+      "options": [
+        "Use GKE Standard with node pools running on sole-tenant nodes configured with a node affinity label, and bind workload Pod scheduling to those nodes via taints, tolerations, and nodeSelectors",
+        "Use GKE Autopilot in the regulated region because Autopilot automatically reserves dedicated hardware for any pod that requests guaranteed QoS class through resource requests and limits",
+        "Use a private GKE cluster with shielded nodes and Workload Identity, since the regulator's tenancy clause is satisfied as long as the nodes are encrypted with customer-managed keys",
+        "Use GKE Standard with confidential VMs as nodes, ensuring memory encryption is active so the regulator considers the workload tenancy-isolated for compliance purposes"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because sole-tenant nodes provide dedicated physical hardware, and node pools with affinity labels along with taints and tolerations bind pods to those nodes in GKE Standard. Option B is wrong because Autopilot does not run on sole-tenant nodes and QoS class does not imply hardware isolation. Option C is wrong because CMEK addresses key custody, not hardware tenancy. Option D is wrong because Confidential VMs encrypt memory but still run on shared physical hardware.",
+      "category": "Configuring compute",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-024",
+      "question": "A team wants the simplest GKE option for running stateless web services without managing nodes, node pools, or cluster autoscaling. They are willing to follow Google's opinionated defaults in exchange for less operational overhead. Which option is best?",
+      "options": [
+        "GKE Autopilot, where Google manages nodes, scaling, security defaults, and bin-packing, charging per pod resource requests rather than per node, with a SLA on pod uptime",
+        "GKE Standard with the node auto-provisioning feature enabled and the Cluster Autoscaler tuned to scale to zero so node management cost is minimized between bursts",
+        "Anthos clusters on bare metal, since on-prem clusters provide stronger defaults than managed GKE and reduce the team's need to operate nodes through declarative configuration",
+        "GKE Edge clusters running on Google Distributed Cloud, where Google maintains the hardware and the team only manages the control plane configuration through Cloud Console"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because GKE Autopilot fully manages nodes, scaling, security, and bin-packing while billing per pod resource requests, fitting the request for least operational burden. Option B is wrong because GKE Standard still requires the team to manage node pools, machine types, and patch windows even with autoscaling. Option C is wrong because Anthos on bare metal increases operational responsibility rather than reducing it. Option D is wrong because Distributed Cloud Edge is for on-premises and edge deployments, not the simplest cloud GKE option.",
+      "category": "Configuring compute",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-provisioning-025",
+      "question": "A microservices platform on GKE must give each Kubernetes ServiceAccount least-privilege access to Google Cloud APIs without distributing service-account keys to pods. Which feature should be configured?",
+      "options": [
+        "Workload Identity Federation for GKE, which lets Kubernetes ServiceAccounts impersonate Google service accounts using short-lived tokens issued by the cluster's identity provider",
+        "Bind a single Google service account JSON key as a Kubernetes secret mounted into all pods, restricting access through Kubernetes RBAC over the secret to minimize blast radius",
+        "Use node service accounts attached to each node pool and rely on pod-level NetworkPolicies to constrain which pods can call which Google APIs based on pod-source IPs",
+        "Run a sidecar in each pod that performs Application Default Credentials login against the metadata server every minute and caches Google OAuth tokens for the workload"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because Workload Identity Federation for GKE binds Kubernetes ServiceAccounts to Google service accounts with short-lived tokens and no static keys. Option B is wrong because distributing a long-lived JSON key to all pods is the opposite of least privilege and has no per-ServiceAccount scoping. Option C is wrong because node service accounts grant the same identity to every pod on the node and NetworkPolicies do not authenticate to Google APIs. Option D is wrong because side cars cannot meaningfully scope per-Kubernetes-ServiceAccount access without Workload Identity.",
+      "category": "Configuring compute",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-026",
+      "question": "A workload running on Cloud Run handles webhook events spiking from 0 to 10,000 requests per second within seconds and must respond with sub-200ms p99 latency. The team observes excessive cold starts. Which configuration changes will most effectively reduce cold start impact?",
+      "options": [
+        "Switch the service to first-generation execution environment, disable CPU boost, and set concurrency to 1 to ensure each container only handles one event at a time during cold starts",
+        "Migrate the workload to Cloud Run jobs and trigger jobs from a Pub/Sub push subscription per webhook event so each job runs in an isolated container that does not experience cold starts",
+        "Move the entire workload to Compute Engine MIGs because Cloud Run does not provide sufficient performance for webhook receivers handling spikes of more than a few thousand requests per second",
+        "Set minimum instances to a warm pool, enable startup CPU boost, raise concurrency above 1 to amortize containers, and ensure HTTP/2 end-to-end so connections are reused efficiently"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Option A is wrong because first-generation environment is being deprecated and concurrency of 1 maximizes container count rather than minimizing cold start impact. Option B is wrong because Cloud Run jobs are not request-driven and per-event jobs incur the same or worse startup cost. Option C is wrong because Cloud Run scales to thousands of containers within seconds, and rewriting to MIGs adds significant operational burden. Option D is correct because minimum instances provide a warm pool, CPU boost shortens cold starts, concurrency above 1 reuses warm containers, and HTTP/2 reuses connections.",
+      "category": "Configuring compute",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-027",
+      "question": "A legacy enterprise application stack uses VMware ESXi with proprietary vSphere features such as DRS, vCenter, and VMware NSX. The company wants to lift-and-shift to Google Cloud with minimal application changes while retaining the VMware toolchain. Which solution is appropriate?",
+      "options": [
+        "Use Google Cloud VMware Engine, a fully managed VMware-as-a-service running on dedicated bare-metal hardware in Google Cloud regions with vSphere, vSAN, and NSX preserved",
+        "Use Migrate to Containers to convert each VMware VM into a Kubernetes deployment on GKE Autopilot, retaining only the application binaries while discarding the VMware control plane",
+        "Use Compute Engine with sole-tenant nodes running a custom nested VMware ESXi image, allowing the team to manage vCenter and NSX themselves on top of Compute Engine VMs",
+        "Use Cloud VMware DR Service, which mirrors on-premises ESXi clusters into Google Cloud and exposes them as Compute Engine instances after failover with a vSphere-compatible API"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because Google Cloud VMware Engine runs full VMware stacks (vSphere, vSAN, NSX) on dedicated bare-metal in Google Cloud regions, supporting lift-and-shift with no rewriting. Option B is wrong because Migrate to Containers requires application changes and discards VMware-specific features. Option C is wrong because nested ESXi on Compute Engine is unsupported for production and lacks vendor support. Option D is wrong because there is no Google product named Cloud VMware DR Service; VMware DR is built on top of VMware Engine.",
+      "category": "Configuring compute",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-provisioning-028",
+      "question": "An e-commerce platform expects predictable steady-state Compute Engine usage of 200 vCPUs N2 across two regions for the next three years, with bursty traffic peaks above that baseline. Which commitment model minimizes cost while preserving burst capacity?",
+      "options": [
+        "Buy 3-year resource-based committed use discounts covering 300 vCPUs total to ensure even surge traffic is covered by the discount, then let unused commitment apply during off-peak hours",
+        "Buy 1-year flexible committed use discounts (flex CUDs) for 300 vCPUs across all N2 SKUs in both regions, since flex CUDs cover sustained and bursty usage with the deepest discounts available",
+        "Buy 3-year resource-based committed use discounts for the 200 vCPU steady-state baseline and pay on-demand for burst above the baseline, taking advantage of sustained-use discounts on bursts",
+        "Buy 1-year spend-based committed use discounts equal to twice the steady-state spend so most of the burst traffic is also covered by the commitment with no on-demand cost overruns"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Option A is wrong because over-committing to 300 vCPUs wastes spend when bursts are infrequent. Option B is wrong because flex CUDs offer smaller discounts than resource-based 3-year CUDs and are best for variable workloads, not steady-state. Option C is correct because 3-year resource-based CUDs on the baseline maximize discount on guaranteed usage, while on-demand with sustained-use discounts covers the burst above the baseline economically. Option D is wrong because over-committing 1-year spend at twice the baseline still wastes capital and offers shallower discounts than 3-year resource-based CUDs.",
+      "category": "Configuring compute",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-029",
+      "question": "A data science team wants to automate an ML lifecycle that includes data preparation, training, evaluation, and deployment using a managed, portable, and version-controlled workflow. Which Vertex AI capability should they use?",
+      "options": [
+        "Vertex AI Workbench notebooks chained together via scheduled execution so each notebook produces artifacts that the next notebook reads from a Cloud Storage staging bucket",
+        "BigQuery scheduled queries combined with BigQuery ML CREATE MODEL statements that run training and prediction directly inside BigQuery, eliminating the need for a workflow tool",
+        "Vertex AI Pipelines, which lets teams author KFP or TFX components and Google manages execution, lineage, metadata, and artifact storage across the ML lifecycle",
+        "Cloud Composer DAGs that orchestrate Vertex AI custom training jobs by invoking the gcloud ai custom-jobs API directly from BashOperators on a recurring schedule"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Option A is wrong because chained notebooks are not portable, not version controlled as a workflow, and lack lineage and artifact tracking. Option B is wrong because BigQuery ML covers training inside BigQuery but does not orchestrate broader ML lifecycle steps such as deployment to Vertex AI endpoints. Option C is correct because Vertex AI Pipelines is the managed orchestrator for KFP and TFX workflows with lineage, metadata, and artifact tracking. Option D is wrong because Composer with Bash operators is a heavier-weight orchestration with no built-in ML lineage or component reusability.",
+      "category": "Vertex AI workflows",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-030",
+      "question": "A team is training a 70B-parameter LLM and needs to choose accelerators that maximize tensor-throughput-per-dollar for large dense matmul training while integrating with Google's AI Hypercomputer stack. Which option best fits this requirement?",
+      "options": [
+        "Use Compute Engine A2 VMs with multiple NVIDIA A100 GPUs and per-GPU NVLink, since A100 remains Google's recommended accelerator for training models larger than 50B parameters",
+        "Use Cloud TPU v5p pods through Vertex AI training, leveraging AI Hypercomputer's optimized ICI interconnect, MaxText, and accelerator-aware schedulers for dense LLM training",
+        "Use Cloud Run jobs with GPU enabled and burst across regions to take advantage of fractional GPU pricing for large training runs across L4 accelerators in multiple zones",
+        "Use Compute Engine N2 VMs with high-memory configurations and rely on CPU-based MKL-optimized PyTorch to perform the training, since LLMs above 50B parameters benefit from large RAM more than GPU compute"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Option A is wrong because A100 is older than current options like H100, B200, and TPU v5p for large dense training and is no longer the recommended path. Option B is correct because TPU v5p with AI Hypercomputer provides optimized ICI fabric, MaxText, and accelerator-aware scheduling that is well suited to dense large-model training. Option C is wrong because Cloud Run jobs are not designed for multi-host distributed LLM training at scale. Option D is wrong because dense LLM training on CPUs is dramatically slower and more expensive than accelerator-based training.",
+      "category": "Vertex AI workflows",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-031",
+      "question": "An ML team needs to ingest, transform, and version training data from BigQuery, Cloud Storage, and Pub/Sub for a Vertex AI pipeline. They want managed metadata tracking and reproducibility. Which TWO Vertex AI components should they use?",
+      "options": [
+        "Build a custom Dataflow pipeline that writes feature tables to Cloud Storage parquet files and rely on object versioning for reproducibility without using Vertex AI tooling for tracking",
+        "Use Vertex AI Feature Store to serve and persist managed feature data and use Vertex ML Metadata to record artifact lineage and runtime parameters across pipeline executions",
+        "Persist all training data inside Cloud SQL with foreign keys back to source IDs and use database triggers to record lineage every time data is mutated by the pipeline",
+        "Use Vertex AI Datasets for managed training data versioning across image, text, tabular, and video modalities, with consistent annotation and split tracking inside Vertex AI"
+      ],
+      "correctAnswers": [
+        1,
+        3
+      ],
+      "explanation": "Option A is wrong because Cloud Storage object versioning does not provide ML-aware lineage or feature definitions. Option B is correct because Vertex AI Feature Store manages versioned feature data for training and serving, and Vertex ML Metadata stores lineage and runtime metadata. Option C is wrong because Cloud SQL with triggers is not an ML metadata or feature management system. Option D is correct because Vertex AI Datasets provide managed dataset versioning across modalities with annotation and split tracking.",
+      "category": "Vertex AI workflows",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-032",
+      "question": "A research team wants to fine-tune a Gemini model using parameter-efficient fine-tuning on customer support transcripts. The fine-tuned model must then be deployed as an autoscaling endpoint that supports per-second billing. Which managed pattern fits?",
+      "options": [
+        "Export the customer support transcripts to BigQuery, train a BigQuery ML logistic regression model on them, then expose the model through BigQuery remote functions for production serving",
+        "Run the fine-tuning as a custom training job on Compute Engine A3 instances with NVIDIA H100 GPUs and write a custom Flask serving wrapper exposed through an external load balancer",
+        "Build a Vertex AI custom training job using PyTorch and TensorRT-LLM to fine-tune the base Gemini weights, then serve the model from Cloud Run with GPU and HTTP endpoints",
+        "Use Vertex AI tuning for Gemini to perform supervised fine-tuning on the dataset and deploy the resulting model to a Vertex AI endpoint, which autoscales and bills per machine-hour"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Option A is wrong because BigQuery ML logistic regression is not a Gemini fine-tuning path. Option B is wrong because building custom GPU training and serving infrastructure reimplements managed Vertex AI capabilities. Option C is wrong because Vertex AI custom training cannot directly fine-tune proprietary Gemini weights; tuning is offered through Vertex AI tuning. Option D is correct because Vertex AI tuning for Gemini supports parameter-efficient fine-tuning workflows and the resulting model deploys to a managed, autoscaling Vertex AI endpoint.",
+      "category": "Vertex AI workflows",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-033",
+      "question": "A team is operating a Vertex AI training run across 1,024 TPU v5p chips using AI Hypercomputer. They want to maximize accelerator utilization and reduce idle time during preemption or hardware faults. Which feature should they use?",
+      "options": [
+        "Configure each TPU pod slice as a separate Vertex AI custom job with manual scheduling and use Cloud Scheduler to restart any pod slice that fails during the training run",
+        "Train with reduced batch sizes and chip count so failures are statistically less likely, accepting longer wall-clock training time as the cost of higher per-step reliability",
+        "Use Vertex AI custom training with the AI Hypercomputer-managed resource scheduler and Dynamic Workload Scheduler to provision and reschedule large blocks of accelerators atomically",
+        "Run the training on Compute Engine GPU VMs instead of TPUs because Vertex AI managed training does not support large TPU v5p pod slices for jobs with more than 256 chips"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Option A is wrong because manual scheduling across 1,024 chips defeats AI Hypercomputer's coordinated scheduling and is error prone. Option B is wrong because reducing chip count and batch size penalizes throughput and is not how Google recommends maximizing utilization. Option C is correct because Dynamic Workload Scheduler in AI Hypercomputer schedules large accelerator blocks atomically and handles hardware faults to reduce idle time. Option D is wrong because Vertex AI managed training supports TPU v5p pods well beyond 256 chips through AI Hypercomputer.",
+      "category": "Vertex AI workflows",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-034",
+      "question": "A team must optimize inference cost for a Gemini-powered text-classification API that handles 50 QPS during business hours and near-zero traffic at night. Which TWO Vertex AI tactics best reduce idle cost while preserving steady-state performance?",
+      "options": [
+        "Deploy the model to a Vertex AI endpoint with dedicated provisioned throughput sized for peak QPS so that the team can lock in capacity even during idle hours for predictable cost",
+        "Use Vertex AI Model Garden pay-as-you-go API endpoints for Gemini, which bill per input and output token only when requests are sent and incur no idle-time cost overnight",
+        "Run the workload on a fixed-size GKE cluster with three GPU nodes that handle the peak load and remain provisioned at night to avoid GPU acquisition delays in the morning",
+        "Enable a minimum-replica count of zero on the Vertex AI online endpoint and configure autoscaling to scale up during business hours so capacity follows actual request traffic"
+      ],
+      "correctAnswers": [
+        1,
+        3
+      ],
+      "explanation": "Option A is wrong because provisioned throughput sized for peak guarantees idle cost overnight, which is not optimal for spiky traffic. Option B is correct because pay-as-you-go Gemini API endpoints bill per token only on actual requests, ideal for spiky traffic with near-zero idle. Option C is wrong because a fixed three-GPU cluster wastes resources at night and adds management overhead. Option D is correct because configuring autoscaling with a minimum-replica count of zero allows the endpoint to scale down during idle hours and back up under business-hour load.",
+      "category": "Vertex AI workflows",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-035",
+      "question": "An MLOps team must ensure every Vertex AI Pipeline run produces auditable lineage of input datasets, transformations, and resulting model artifacts so a regulator can trace any prediction back to its training data. Which TWO mechanisms should they rely on?",
+      "options": [
+        "Manually export Vertex AI Pipelines DAG definitions to Git and require pull requests for every change, since Git history is the only auditable source for regulatory traceability",
+        "Cloud Storage object hashes computed manually after each run and stored in a separate BigQuery table, since Vertex AI does not provide lineage tracking for non-tabular datasets",
+        "Vertex ML Metadata, which automatically records artifacts, executions, and lineage edges for KFP components run on Vertex AI Pipelines, including dataset and model artifact identifiers",
+        "Cloud Audit Logs for the Vertex AI API along with the Pipelines run metadata that tracks resource creation and parameters, providing tamper-evident audit records of pipeline activity"
+      ],
+      "correctAnswers": [
+        2,
+        3
+      ],
+      "explanation": "Option A is wrong because Git history captures code changes but not runtime artifact lineage or dataset versions. Option B is wrong because Vertex AI does track artifact lineage across modalities, including non-tabular data. Option C is correct because Vertex ML Metadata records artifacts, executions, and lineage edges automatically for pipeline runs. Option D is correct because Cloud Audit Logs combined with pipeline run metadata provide tamper-evident audit trails of API actions and execution context.",
+      "category": "Vertex AI workflows",
+      "difficulty": "hard"
+    },
+    {
+      "id": "pca-provisioning-036",
+      "question": "A retail chatbot must understand multi-turn customer conversations in natural language and integrate with the website and Genesys IVR. Which Google AI API best meets this requirement?",
+      "options": [
+        "Vertex AI Search with a website data store providing keyword search responses and basic ranking, surfaced through a chat widget that calls the Search API on every customer message",
+        "Conversational Agents (Dialogflow CX), which provides multi-turn natural language understanding, integrations to web and telephony channels, and stateful conversation design",
+        "Cloud Translation API combined with Cloud Natural Language entity extraction so the chatbot understands user intent based on entity coverage rather than dialog state",
+        "Speech-to-Text streaming API used standalone to transcribe customer messages, then routing transcripts to a custom-coded keyword-rules engine running on Cloud Run"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Option A is wrong because Vertex AI Search is for search and retrieval, not stateful multi-turn dialog management. Option B is correct because Conversational Agents (Dialogflow CX) is purpose-built for multi-turn dialog with stateful design and integrations to web and telephony channels including Genesys. Option C is wrong because intent inference from entity extraction alone misses dialog state. Option D is wrong because Speech-to-Text only transcribes audio and offers no language understanding or dialog management.",
+      "category": "AI APIs",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-provisioning-037",
+      "question": "A media company needs to generate marketing imagery from text prompts, including brand-safe images suitable for a regulated advertising campaign. Which Google AI service should be used?",
+      "options": [
+        "Cloud Vision API in conjunction with Cloud Storage to detect labels and faces, then build a composite image from existing brand photography by stitching labeled regions together",
+        "Cloud Translation API to translate text prompts into structured tags that downstream marketing tools convert into stock images through their own creative-asset libraries",
+        "Vertex AI Search with media-grounding so that any text prompt is mapped to the most relevant pre-existing brand asset, ensuring images are reused rather than generated newly",
+        "Vertex AI Imagen models accessed through the Model Garden, which generate brand-safe images from text prompts with SynthID watermarking and configurable safety filters"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Option A is wrong because Vision API analyzes images but does not generate them. Option B is wrong because Translation does not generate marketing imagery. Option C is wrong because Vertex AI Search retrieves existing assets and does not generate new images on demand. Option D is correct because Imagen on Vertex AI generates brand-safe images from text prompts with configurable safety filters and SynthID watermarking for compliance use cases.",
+      "category": "AI APIs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-038",
+      "question": "A call-center operator needs sub-second streaming transcription of inbound calls into multiple languages with speaker diarization for analytics. Which Google AI service is most appropriate?",
+      "options": [
+        "Speech-to-Text v2 streaming API with multilingual recognition and speaker diarization, delivering low-latency transcripts suitable for real-time analytics and downstream NLU systems",
+        "Cloud Translation Hub, which is the Google-recommended path for real-time multilingual call transcription with built-in diarization and speaker labels for telephony streams",
+        "Conversational Agents (Dialogflow CX), which provides streaming transcription as a side effect of its dialog handling pipeline and is preferred over Speech-to-Text for call centers",
+        "Vertex AI Search with a contact-center data store and live transcription handlers, since Search is the canonical Google API for streaming voice analytics at sub-second latency"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because Speech-to-Text v2 streaming supports low-latency multilingual transcription with speaker diarization for telephony workloads. Option B is wrong because Translation Hub focuses on managed text translation, not real-time speech transcription. Option C is wrong because Dialogflow CX is for dialog management, and using it solely for transcription is the wrong abstraction. Option D is wrong because Vertex AI Search is a retrieval system, not a streaming speech transcription API.",
+      "category": "AI APIs",
+      "difficulty": "easy"
+    },
+    {
+      "id": "pca-provisioning-039",
+      "question": "An enterprise wants employees to chat with internal documents stored in Google Drive, Confluence, and SharePoint, with answers grounded in proprietary content, source citations, and enterprise-grade access controls. Which Google solution should the architect propose?",
+      "options": [
+        "Cloud Storage backed search using BigQuery external tables and SQL prompts written by employees, since Gemini through SQL provides the strongest internal document chat experience",
+        "Gemini Enterprise (with NotebookLM and AI Agents) connected to the enterprise data sources, providing grounded chat over the user's permitted documents with citations and enterprise controls",
+        "Open-source LangChain agents deployed on GKE with custom OAuth integrations into Drive, Confluence, and SharePoint, since Google does not provide a managed enterprise chat-over-docs product",
+        "Vertex AI custom training on a copy of all documents to produce a fine-tuned model and serve it via Vertex AI endpoints, with a custom UI for employees to ask questions"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Option A is wrong because writing SQL to chat with documents is impractical, ignores access controls, and is not the recommended pattern for enterprise document chat. Option B is correct because Gemini Enterprise (including NotebookLM and AI Agents) provides grounded enterprise chat over connected data sources with citations and access-aware retrieval. Option C is wrong because Google does offer a managed enterprise chat product, and building from scratch on GKE adds significant operational burden. Option D is wrong because fine-tuning on all documents lacks freshness, citations, and per-document access controls.",
+      "category": "AI APIs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-040",
+      "question": "A team wants to inspect, evaluate, and deploy first-party and open-source foundation models such as Gemini, Llama, and Mistral from a single managed catalog inside Google Cloud. Which capability should they use?",
+      "options": [
+        "Maintain a private Artifact Registry of model containers and write internal documentation that engineers must follow when selecting which open-source models to deploy on Vertex AI",
+        "Use Vertex AI Model Garden, which provides a curated catalog of first-party and open-source foundation models with one-click deploy, evaluation tooling, and managed serving on Vertex AI",
+        "Browse Hugging Face manually, download model weights to Cloud Storage, then build custom Vertex AI training and serving containers per model selected by the data science team",
+        "Use Cloud Marketplace's model section to install foundation models into a project, since Marketplace is the official Google Cloud catalog for first-party and third-party model artifacts"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Option A is wrong because a private Artifact Registry does not provide evaluation, deployment, or curated catalog capabilities. Option B is correct because Vertex AI Model Garden is the curated catalog of first-party and open-source models with one-click deploy, evaluation, and managed serving. Option C is wrong because manual Hugging Face workflows discard the managed catalog, evaluation, and deployment features Model Garden provides. Option D is wrong because Cloud Marketplace is for solutions and software, not foundation-model curation.",
+      "category": "AI APIs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-041",
+      "question": "A team needs to deploy a virtual agent that handles natural language requests, takes actions in third-party SaaS systems through APIs, and uses Gemini for reasoning. Which Google product should be used?",
+      "options": [
+        "Cloud Functions, which can be wired together with HTTP triggers to call Gemini and the third-party APIs, providing the simplest path to a working virtual agent without additional platforms",
+        "Gemini Enterprise AI Agents (Agent Builder / Agentspace), which combine Gemini reasoning with declarative tools and connectors to take actions in SaaS systems on behalf of the user",
+        "Vertex AI Vision, which analyzes images and video and is the standard Google solution for building agents that interact with both customers and back-end SaaS systems",
+        "Apigee X with custom JavaScript policies that orchestrate API calls and prompt Gemini through the Vertex AI REST API on every inbound user interaction with the agent"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Option A is wrong because Cloud Functions can run code but lack the managed agent framework, tool integrations, and identity-aware connectors expected for enterprise agents. Option B is correct because Gemini Enterprise AI Agents (Agent Builder/Agentspace) combine Gemini reasoning with managed tools and connectors to take actions in SaaS systems. Option C is wrong because Vertex AI Vision is for image and video analysis, not agentic SaaS automation. Option D is wrong because Apigee X is an API management product, not an agent framework.",
+      "category": "AI APIs",
+      "difficulty": "medium"
+    },
+    {
+      "id": "pca-provisioning-042",
+      "question": "A team needs to ingest large training corpora that include video and audio, generate embeddings, and run grounded retrieval inside a Vertex AI pipeline. Which combination of AI APIs is most appropriate?",
+      "options": [
+        "Use Video Intelligence and Speech-to-Text to extract structured signals from raw media, then call Vertex AI Embeddings to generate vector embeddings stored in Vertex AI Vector Search for retrieval",
+        "Use Cloud Translation to convert all media into English transcripts and store the transcripts directly in BigQuery, performing retrieval via SQL LIKE queries during pipeline execution",
+        "Use Vertex AI Search with a tabular data store containing the file URIs and rely on Search to extract text from media at query time, without any prior embedding generation step",
+        "Use Cloud Vision API on each video frame at training time and store the labels in Cloud Storage, then use a custom regex retrieval service for grounded retrieval at inference time"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Option A is correct because Video Intelligence and Speech-to-Text extract structured content from video and audio, Vertex AI Embeddings generate vector representations, and Vertex AI Vector Search provides scalable grounded retrieval. Option B is wrong because Translation does not solve embeddings or retrieval, and SQL LIKE is not vector search. Option C is wrong because Vertex AI Search does not transcribe video and audio at query time as described. Option D is wrong because frame-level Vision labels lose audio context and regex retrieval is not semantic search.",
+      "category": "AI APIs",
+      "difficulty": "medium"
+    }
+  ]
+}

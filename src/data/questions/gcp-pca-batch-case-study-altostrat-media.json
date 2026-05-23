@@ -1,0 +1,319 @@
+{
+  "questions": [
+    {
+      "id": "pca-cs-altostrat-media-001",
+      "question": "Altostrat Media wants a centralized platform to operate their existing GKE cluster in Google Cloud and a new Kubernetes footprint on-premises for legacy content ingestion. Which approach best meets their technical requirement for a centralized management platform that spans both environments?",
+      "options": [
+        "Stand up an independent kubeadm cluster on-premises and federate it with the cloud GKE cluster using a self-managed multi-cluster ingress controller and a hand-rolled GitOps pipeline that pushes manifests to each cluster",
+        "Deploy GKE Enterprise, registering the on-premises cluster as a GKE on-prem cluster and managing both clusters from a single fleet with Config Sync, Policy Controller, and Connect Gateway as the unified control plane",
+        "Migrate all on-premises ingestion workloads to Cloud Run jobs immediately and decommission the on-premises Kubernetes environment, removing the hybrid requirement before any platform investment is even made",
+        "Run OpenShift Container Platform on-premises and continue using GKE in the cloud, bridging them through a custom service mesh built on Istio that the Altostrat platform team will deploy and operate themselves"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because a self-managed multi-cluster approach forces Altostrat to build the centralized management plane themselves, which contradicts the requirement and increases operational burden. Option B is correct because GKE Enterprise provides a single fleet view, consistent policy via Config Sync and Policy Controller, and Connect Gateway for unified access across the cloud GKE cluster and the on-prem cluster, directly meeting the centralized management requirement. Option C is wrong because the case study explicitly states Altostrat will keep some legacy on-prem ingestion workflows in the near term; eliminating Kubernetes on-prem ignores stated requirements. Option D is wrong because operating two unrelated Kubernetes distributions with a self-managed mesh increases complexity and does not deliver a single management surface.",
+      "optionExplanations": [
+        "Option A is wrong because a self-managed multi-cluster approach forces Altostrat to build the centralized management plane themselves, which contradicts the requirement and increases operational burden.",
+        "Option B is correct because GKE Enterprise provides a single fleet view, consistent policy via Config Sync and Policy Controller, and Connect Gateway for unified access across the cloud GKE cluster and the on-prem cluster, directly meeting the centralized management requirement.",
+        "Option C is wrong because the case study explicitly states Altostrat will keep some legacy on-prem ingestion workflows in the near term; eliminating Kubernetes on-prem ignores stated requirements.",
+        "Option D is wrong because operating two unrelated Kubernetes distributions with a self-managed mesh increases complexity and does not deliver a single management surface."
+      ],
+      "category": "Designing for business requirements",
+      "difficulty": "easy",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-002",
+      "question": "Altostrat's Cloud Storage media library is growing rapidly and contains current masters, working files, and decades-old documentary footage that is rarely accessed but must remain restorable. The business requirement is to optimize storage cost without sacrificing availability for popular media. Which strategy fits best?",
+      "options": [
+        "Keep every object in Standard storage and rely on Cloud CDN cache hits to reduce egress, accepting the at-rest storage spend as the cost of guaranteed low-latency access for all assets in the library",
+        "Move all assets including current masters to Archive storage immediately and use signed URLs to retrieve them on demand, accepting retrieval latency and minimum-storage-duration fees in exchange for the lowest per-GB price",
+        "Replicate the entire bucket to a dual-region bucket in Standard storage so popular and archival content are both highly available, treating the doubled storage cost as an acceptable trade-off for resilience",
+        "Apply Object Lifecycle Management with rules that transition objects to Nearline after 30 days without access, Coldline after 90 days, and Archive after 365 days, while keeping recently published media in Standard"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because keeping cold archival content in Standard wastes money; Cloud CDN reduces egress but does not reduce at-rest storage cost, which is the stated optimization target. Option B is wrong because forcing all assets including popular media into Archive imposes retrieval costs and minimum-storage-duration penalties whenever new content is accessed. Option C is wrong because dual-region replication doubles storage cost and works against the cost optimization goal, while access patterns do not require it for the entire library. Option D is correct because Object Lifecycle Management with tiered transitions across Standard, Nearline, Coldline, and Archive aligns storage class with actual access frequency for a deep media library and is Google's recommended cost-optimization pattern.",
+      "optionExplanations": [
+        "Option A is wrong because keeping cold archival content in Standard wastes money; Cloud CDN reduces egress but does not reduce at-rest storage cost, which is the stated optimization target.",
+        "Option B is wrong because forcing all assets including popular media into Archive imposes retrieval costs and minimum-storage-duration penalties whenever new content is accessed.",
+        "Option C is wrong because dual-region replication doubles storage cost and works against the cost optimization goal, while access patterns do not require it for the entire library.",
+        "Option D is correct because Object Lifecycle Management with tiered transitions across Standard, Nearline, Coldline, and Archive aligns storage class with actual access frequency for a deep media library and is Google's recommended cost-optimization pattern."
+      ],
+      "category": "Designing a solution infrastructure that meets technical requirements",
+      "difficulty": "medium",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-003",
+      "question": "Altostrat's BigQuery warehouse already holds user behavior, content consumption, and demographic data. Product leadership wants natural language interaction with the platform plus content trend analytics on this corpus, with minimal model-training effort. Which Google Cloud combination should the architect propose?",
+      "options": [
+        "Train a custom transformer on Vertex AI from scratch using exported BigQuery rows, host the model on a GKE inference cluster, and write a bespoke retrieval layer to ground the model in Altostrat's catalog",
+        "Use Cloud Natural Language API for sentiment scoring on user reviews and stop there, on the basis that the existing BigQuery dashboards already satisfy the trend-analytics requirement on their own",
+        "Stream BigQuery rows into a Dataflow pipeline that calls AutoML Tables every minute to forecast consumption, then surface results through Looker dashboards without any conversational interface for end users",
+        "Build conversational experiences with Gemini in Vertex AI grounded on BigQuery via BigQuery vector search and remote model functions, and run trend analytics with BigQuery ML's built-in forecasting and segmentation"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because training a transformer from scratch is high-effort and ignores Google's managed foundation models, which already meet the conversational requirement. Option B is wrong because sentiment scoring alone does not provide natural language interaction with the platform, which is an explicit business requirement. Option C is wrong because AutoML Tables is for tabular prediction, not conversational interfaces, and Looker dashboards do not satisfy the chatbot requirement. Option D is correct because Gemini in Vertex AI delivers the conversational layer, BigQuery vector search and remote model functions let it ground answers in Altostrat's actual warehouse, and BigQuery ML covers forecasting and segmentation with minimal data movement.",
+      "optionExplanations": [
+        "Option A is wrong because training a transformer from scratch is high-effort and ignores Google's managed foundation models, which already meet the conversational requirement.",
+        "Option B is wrong because sentiment scoring alone does not provide natural language interaction with the platform, which is an explicit business requirement.",
+        "Option C is wrong because AutoML Tables is for tabular prediction, not conversational interfaces, and Looker dashboards do not satisfy the chatbot requirement.",
+        "Option D is correct because Gemini in Vertex AI delivers the conversational layer, BigQuery vector search and remote model functions let it ground answers in Altostrat's actual warehouse, and BigQuery ML covers forecasting and segmentation with minimal data movement."
+      ],
+      "category": "Designing a solution infrastructure that meets business requirements",
+      "difficulty": "medium",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-004",
+      "question": "Altostrat's content delivery platform on GKE must remain available during a regional outage so podcasts and news broadcasts keep streaming. Which deployment topology best supports this business-continuity requirement at the lowest reasonable cost?",
+      "options": [
+        "Run a regional GKE cluster spanning three zones in one region with multi-cluster ingress extending to a warm-standby regional cluster in a second region, both fronted by a global external Application Load Balancer",
+        "Run a single zonal GKE cluster in the primary region and rely on Cloud Storage's multi-region buckets to recover state from a different region when the primary zone becomes unreachable to end users",
+        "Run a fleet of stand-alone Compute Engine instances with a startup script that pulls container images from Artifact Registry on boot, configured behind a regional internal Application Load Balancer for streaming",
+        "Deploy three independent GKE Autopilot clusters in three different continents and have each one serve its own static content with no shared state, accepting any cross-region catalog inconsistency that arises"
+      ],
+      "correctAnswers": [0],
+      "explanation": "Option A is correct because a regional GKE cluster survives single-zone failures and multi-cluster ingress plus a warm second-region cluster behind a global Application Load Balancer keeps traffic flowing during a full region outage at predictable cost. Option B is wrong because a zonal cluster has no zone-failure tolerance and multi-region buckets only solve storage availability, not compute availability for the streaming platform. Option C is wrong because hand-rolled VM fleets sacrifice GKE's existing automation and a regional internal load balancer does not serve public streaming traffic. Option D is wrong because three independent clusters with no shared state cannot maintain a coherent global catalog and would create inconsistent user experiences.",
+      "optionExplanations": [
+        "Option A is correct because a regional GKE cluster survives single-zone failures and multi-cluster ingress plus a warm second-region cluster behind a global Application Load Balancer keeps traffic flowing during a full region outage at predictable cost.",
+        "Option B is wrong because a zonal cluster has no zone-failure tolerance and multi-region buckets only solve storage availability, not compute availability for the streaming platform.",
+        "Option C is wrong because hand-rolled VM fleets sacrifice GKE's existing automation and a regional internal load balancer does not serve public streaming traffic.",
+        "Option D is wrong because three independent clusters with no shared state cannot maintain a coherent global catalog and would create inconsistent user experiences."
+      ],
+      "category": "Designing for business continuity and disaster recovery",
+      "difficulty": "easy",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-005",
+      "question": "Altostrat needs to extract rich metadata from podcasts, interviews, and documentaries using NLP and computer vision. The team wants prebuilt models so they can ship in weeks, not months. Which TWO Google Cloud services should be the primary building blocks for this pipeline?",
+      "options": [
+        "Cloud Video Intelligence API for shot detection, label detection, object tracking, and speech transcription on video assets such as documentaries and news broadcasts in the Altostrat library",
+        "Cloud Natural Language API for entity extraction, syntactic analysis, and content classification on podcast transcripts, articles, and other text artifacts Altostrat publishes alongside its media",
+        "Cloud Translation Hub's terminology service, used as the primary entity extractor on transcribed podcast text instead of NLP-specific services, with custom glossaries replacing any prebuilt entity models",
+        "Anthos Service Mesh telemetry export, which surfaces application latency and error metrics about the streaming platform itself rather than producing any metadata about the media content"
+      ],
+      "correctAnswers": [0, 1],
+      "explanation": "Option A is correct because Cloud Video Intelligence API delivers prebuilt models for shot, label, object, and speech analysis on video, exactly the metadata Altostrat needs for documentaries and news broadcasts. Option B is correct because Cloud Natural Language API provides entity extraction, syntax analysis, and content classification on text transcripts and articles, covering the NLP side of the requirement. Option C is wrong because Translation Hub focuses on translation glossaries, not entity extraction; Natural Language API is the right tool. Option D is wrong because Anthos Service Mesh produces telemetry about service behavior, not metadata about media content.",
+      "optionExplanations": [
+        "Option A is correct because Cloud Video Intelligence API delivers prebuilt models for shot, label, object, and speech analysis on video, exactly the metadata Altostrat needs for documentaries and news broadcasts.",
+        "Option B is correct because Cloud Natural Language API provides entity extraction, syntax analysis, and content classification on text transcripts and articles, covering the NLP side of the requirement.",
+        "Option C is wrong because Translation Hub focuses on translation glossaries, not entity extraction; Natural Language API is the right tool.",
+        "Option D is wrong because Anthos Service Mesh produces telemetry about service behavior, not metadata about media content."
+      ],
+      "category": "Configuring services with appropriate APIs and tools",
+      "difficulty": "medium",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-006",
+      "question": "Altostrat wants to automate concise summarization of long-form documentaries and interviews using LLMs. The platform team needs reproducible, versioned workflows that can be rerun whenever the source corpus is refreshed. What is the best Google Cloud foundation for this requirement?",
+      "options": [
+        "A single Cloud Run function that calls a Gemini model on demand, triggered by Eventarc whenever an object is created in the media bucket, with no orchestration, evaluation, or lineage step in between",
+        "Vertex AI Pipelines that orchestrate Gemini summarization steps, prompt-template versioning, evaluation, and BigQuery writes as a DAG, with artifacts tracked in Vertex ML Metadata for reproducibility",
+        "A standing Dataproc cluster running Spark NLP, scheduled by Cloud Composer to summarize new media nightly, with checkpoint files written to HDFS on the persistent worker disks rather than Cloud Storage",
+        "GKE CronJobs that exec into a long-lived debug pod, run a Python script invoking the Vertex AI SDK, and write outputs back to Cloud Storage via the pod's mounted credentials with no versioned pipeline"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because a single function with no orchestration or evaluation step is brittle and does not give Altostrat reproducible, versioned workflows. Option B is correct because Vertex AI Pipelines provide DAG-based orchestration, parameterization, ML Metadata tracking, and tight integration with Gemini and BigQuery, directly meeting the reproducible and versioned requirement. Option C is wrong because Spark NLP and standing Dataproc clusters with HDFS checkpoints are heavy and not needed for LLM summarization. Option D is wrong because GKE CronJobs with debug-pod exec is an anti-pattern and lacks pipeline versioning, lineage, and evaluation.",
+      "optionExplanations": [
+        "Option A is wrong because a single function with no orchestration or evaluation step is brittle and does not give Altostrat reproducible, versioned workflows.",
+        "Option B is correct because Vertex AI Pipelines provide DAG-based orchestration, parameterization, ML Metadata tracking, and tight integration with Gemini and BigQuery, directly meeting the reproducible and versioned requirement.",
+        "Option C is wrong because Spark NLP and standing Dataproc clusters with HDFS checkpoints are heavy and not needed for LLM summarization.",
+        "Option D is wrong because GKE CronJobs with debug-pod exec is an anti-pattern and lacks pipeline versioning, lineage, and evaluation."
+      ],
+      "category": "Vertex AI workflows",
+      "difficulty": "medium",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-007",
+      "question": "Altostrat plans to fine-tune a multimodal foundation model on its proprietary podcast and documentary catalog to power recommendation and summarization at scale. The workload requires sustained, low-latency interconnect between accelerators. Which platform should the architect provision?",
+      "options": [
+        "A self-managed GKE cluster with N1 GPU node pools using preemptible nodes, relying on Kubernetes scheduling defaults to colocate workers and accepting whatever network topology the cluster autoscaler produces",
+        "Cloud Run services scaled to high concurrency, each running a worker process that participates in distributed training through Pub/Sub gradient broadcasts coordinated via Firestore documents per shard",
+        "A fleet of independent Vertex AI Workbench notebooks where each researcher trains a shard of the model in isolation, with weights merged manually at the end of each epoch by the platform team",
+        "AI Hypercomputer using a Cluster Toolkit-provisioned Slurm or GKE cluster with TPU v5p or A3 GPU machines wired through high-bandwidth ICI and NVLink fabrics, optimized for tightly-coupled training"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because N1 GPUs are not designed for high-bandwidth interconnect training and preemptible nodes interrupt long jobs; this is not Google's recommended large-training platform. Option B is wrong because Cloud Run is for stateless request-driven workloads, not gradient-synchronized distributed training; Pub/Sub gradient broadcast is not viable for large models. Option C is wrong because manual weight merges across independent notebooks is not real distributed training and cannot scale to a foundation-model fine-tune. Option D is correct because AI Hypercomputer combines TPU v5p or A3 accelerators with ICI and NVLink fabrics and orchestration (Slurm or GKE) tuned for tightly-coupled training, which is Google's recommended foundation for large multimodal fine-tuning.",
+      "optionExplanations": [
+        "Option A is wrong because N1 GPUs are not designed for high-bandwidth interconnect training and preemptible nodes interrupt long jobs; this is not Google's recommended large-training platform.",
+        "Option B is wrong because Cloud Run is for stateless request-driven workloads, not gradient-synchronized distributed training; Pub/Sub gradient broadcast is not viable for large models.",
+        "Option C is wrong because manual weight merges across independent notebooks is not real distributed training and cannot scale to a foundation-model fine-tune.",
+        "Option D is correct because AI Hypercomputer combines TPU v5p or A3 accelerators with ICI and NVLink fabrics and orchestration (Slurm or GKE) tuned for tightly-coupled training, which is Google's recommended foundation for large multimodal fine-tuning."
+      ],
+      "category": "Provisioning AI infrastructure",
+      "difficulty": "hard",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-008",
+      "question": "Altostrat wants to filter inappropriate uploads (harmful imagery and unsafe text prompts) before they reach the recommendation model or the public site. The trust-and-safety team needs a Google Cloud capability designed specifically to inspect prompts and model responses for unsafe content. What should the architect recommend?",
+      "options": [
+        "Rely on the underlying foundation model's built-in refusals and add a thin profanity-word allowlist in front of the chatbot endpoint, on the basis that this approach is the lowest-cost way to satisfy moderation requirements",
+        "Run a self-hosted open-source moderation model on a single Cloud Run instance and forward every user prompt to it before any LLM call, with no service-level moderation backstop in place for image uploads",
+        "Send moderation events to Pub/Sub for batch review and let a nightly Dataflow job decide which prior chat sessions were unsafe, then act on findings the following day after the content has already been served",
+        "Place Model Armor in front of generative AI endpoints to screen prompts and responses for jailbreaks, prompt injection, PII, malicious URLs, and harmful content, combined with Cloud Vision SafeSearch on imagery"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because relying on model self-refusal plus a word list misses prompt injection, jailbreaks, PII leaks, and image-borne harms; Altostrat's requirement is explicit detection. Option B is wrong because a single Cloud Run moderation instance is a single point of failure and does not cover image safety or model-output checks. Option C is wrong because batch moderation lets harmful content reach users in real time, defeating the purpose of the requirement. Option D is correct because Model Armor is purpose-built to screen prompts and model responses for unsafe content, jailbreaks, prompt injection, PII, and URLs, and Cloud Vision SafeSearch handles inappropriate imagery; together they satisfy the requirement end-to-end.",
+      "optionExplanations": [
+        "Option A is wrong because relying on model self-refusal plus a word list misses prompt injection, jailbreaks, PII leaks, and image-borne harms; Altostrat's requirement is explicit detection.",
+        "Option B is wrong because a single Cloud Run moderation instance is a single point of failure and does not cover image safety or model-output checks.",
+        "Option C is wrong because batch moderation lets harmful content reach users in real time, defeating the purpose of the requirement.",
+        "Option D is correct because Model Armor is purpose-built to screen prompts and model responses for unsafe content, jailbreaks, prompt injection, PII, and URLs, and Cloud Vision SafeSearch handles inappropriate imagery; together they satisfy the requirement end-to-end."
+      ],
+      "category": "Securing AI",
+      "difficulty": "medium",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-009",
+      "question": "Altostrat's auditors require that AI decisions affecting personalization and harmful-content filtering be auditable and explainable. Which combination of Vertex AI features should the architect adopt to satisfy this technical requirement?",
+      "options": [
+        "Disable model logging entirely to avoid storing any PII, document the prompt templates in a Confluence page, and rely on engineer recollection if a regulator later asks how a specific decision was made",
+        "Forward all model output to BigQuery without lineage, then handwrite SQL queries on demand whenever an auditor requests a justification for any specific recommendation that was served to a user",
+        "Wrap every model call in a Cloud Run middleware that prints structured logs to stdout, store them in a Cloud Storage bucket, and treat that as the full audit trail for AI behavior across the platform",
+        "Enable Vertex AI Model Registry for model versioning, Vertex Explainable AI for prediction feature attributions, and Vertex AI Model Monitoring together with Cloud Audit Logs for access and drift records"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because disabling logging and relying on memory directly contradicts auditability; regulators expect durable, queryable evidence. Option B is wrong because BigQuery outputs alone with no lineage cannot answer why the model produced a particular result; that requires explainability features, not raw outputs. Option C is wrong because stdout logging captures requests and responses but does not explain model reasoning, and a Cloud Storage bucket is not a managed audit system. Option D is correct because Vertex AI Model Registry provides versioning, Vertex Explainable AI provides per-prediction feature attributions and example-based explanations, and Model Monitoring plus Cloud Audit Logs cover drift and access, meeting both auditable and explainable requirements.",
+      "optionExplanations": [
+        "Option A is wrong because disabling logging and relying on memory directly contradicts auditability; regulators expect durable, queryable evidence.",
+        "Option B is wrong because BigQuery outputs alone with no lineage cannot answer why the model produced a particular result; that requires explainability features, not raw outputs.",
+        "Option C is wrong because stdout logging captures requests and responses but does not explain model reasoning, and a Cloud Storage bucket is not a managed audit system.",
+        "Option D is correct because Vertex AI Model Registry provides versioning, Vertex Explainable AI provides per-prediction feature attributions and example-based explanations, and Model Monitoring plus Cloud Audit Logs cover drift and access, meeting both auditable and explainable requirements."
+      ],
+      "category": "Securing AI",
+      "difficulty": "medium",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-010",
+      "question": "Altostrat currently authenticates users with a mix of Google Identity and third-party identity providers. They want a single, secure mechanism for granting Google Cloud access to external workforce users and external workloads (such as the on-prem ingestion service) without storing long-lived service account keys. What should the architect propose?",
+      "options": [
+        "Issue one long-lived service account JSON key per third-party IdP federation and rotate the keys manually every 90 days, storing the active key in Secret Manager and distributing copies to all on-prem agents",
+        "Create a Cloud Identity user for every employee at every third-party IdP-managed company that Altostrat partners with, then synchronize them nightly through Google Cloud Directory Sync into a shared org",
+        "Configure Workforce Identity Federation for external users from each third-party IdP via OIDC or SAML, and Workload Identity Federation for the on-prem ingestion workload via trusted token exchange",
+        "Run a Cloud VPN tunnel from each partner's identity provider into a shared VPC and authorize traffic purely by source IP range, treating network presence as the authentication boundary for users and workloads"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because long-lived service account keys are exactly what Google recommends eliminating; rotation reduces but does not remove exfiltration risk. Option B is wrong because creating Cloud Identity users for every partner employee and syncing nightly does not solve the workload-credentials problem and creates identity sprawl that is hard to govern. Option C is correct because Workforce Identity Federation maps users from external IdPs via OIDC or SAML directly to Google Cloud, and Workload Identity Federation lets the on-prem ingestion workload exchange a trusted token for short-lived credentials, removing the need for long-lived keys. Option D is wrong because IP-based trust is not authentication and creates a flat, brittle perimeter.",
+      "optionExplanations": [
+        "Option A is wrong because long-lived service account keys are exactly what Google recommends eliminating; rotation reduces but does not remove exfiltration risk.",
+        "Option B is wrong because creating Cloud Identity users for every partner employee and syncing nightly does not solve the workload-credentials problem and creates identity sprawl that is hard to govern.",
+        "Option C is correct because Workforce Identity Federation maps users from external IdPs via OIDC or SAML directly to Google Cloud, and Workload Identity Federation lets the on-prem ingestion workload exchange a trusted token for short-lived credentials, removing the need for long-lived keys.",
+        "Option D is wrong because IP-based trust is not authentication and creates a flat, brittle perimeter."
+      ],
+      "category": "Designing for security and compliance",
+      "difficulty": "hard",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-011",
+      "question": "Altostrat is modernizing CI/CD for containerized GKE deployments across cloud and on-prem clusters. The requirement is a centralized, secure-by-default platform with built-in vulnerability scanning and signed artifact provenance. Which TWO Google Cloud capabilities should the architect adopt together?",
+      "options": [
+        "Cloud Source Repositories used as the sole authoritative artifact store, with no vulnerability scanning and no signed-attestation flow at any stage of the pipeline that promotes images to production",
+        "GitHub Actions self-hosted runners on long-lived Compute Engine VMs in the default network, pushing images directly to Docker Hub for distribution to all Altostrat clusters with no native scanning",
+        "Artifact Registry for centralized container image storage with built-in vulnerability scanning and Binary Authorization that enforces signed attestations at admission across the cloud and on-prem fleet",
+        "Cloud Build and Cloud Deploy integrated to provide automated, code-reviewed build and progressive delivery pipelines into GKE clusters managed under the same fleet as the on-prem environment"
+      ],
+      "correctAnswers": [2, 3],
+      "explanation": "Option A is wrong because Cloud Source Repositories is a Git host, not an artifact registry, and contains no scanning or attestation features. Option B is wrong because Docker Hub as the distribution path lacks Google Cloud's integrated scanning and IAM, and long-lived self-hosted runners on default networks is not a secure-by-default posture. Option C is correct because Artifact Registry centralizes images, runs built-in vulnerability scanning, and integrates with Binary Authorization to enforce signed-attestation policies at admission across the GKE fleet. Option D is correct because Cloud Build plus Cloud Deploy delivers code-reviewed builds, progressive delivery, and integration with fleet-managed clusters, directly meeting the centralized CI/CD requirement.",
+      "optionExplanations": [
+        "Option A is wrong because Cloud Source Repositories is a Git host, not an artifact registry, and contains no scanning or attestation features.",
+        "Option B is wrong because Docker Hub as the distribution path lacks Google Cloud's integrated scanning and IAM, and long-lived self-hosted runners on default networks is not a secure-by-default posture.",
+        "Option C is correct because Artifact Registry centralizes images, runs built-in vulnerability scanning, and integrates with Binary Authorization to enforce signed-attestation policies at admission across the GKE fleet.",
+        "Option D is correct because Cloud Build plus Cloud Deploy delivers code-reviewed builds, progressive delivery, and integration with fleet-managed clusters, directly meeting the centralized CI/CD requirement."
+      ],
+      "category": "Analyzing and optimizing technical and business processes",
+      "difficulty": "medium",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-012",
+      "question": "Altostrat's existing observability is a mix of Cloud Monitoring and self-hosted Prometheus, with email-only alerting. Leadership wants unified dashboards, retained PromQL investment, and richer alert routing to on-call rotations. What is the best evolution path?",
+      "options": [
+        "Replace Prometheus with a separate Datadog deployment in a peered VPC and forward Cloud Monitoring metrics to Datadog by exporting JSON logs to a Cloud Storage bucket every five minutes for ingestion",
+        "Decommission Prometheus entirely on day one, rewrite every dashboard from PromQL to MQL by hand, and continue sending alerts via email since the existing email workflow already reaches the right people",
+        "Run two parallel observability stacks indefinitely (Prometheus on GKE and Cloud Monitoring) with no consolidation plan, on the basis that more dashboards always equals better visibility for the engineering org",
+        "Adopt Google Cloud Managed Service for Prometheus to retain PromQL dashboards and rules, federate metrics with Cloud Monitoring, and route alerts via Notification Channels to PagerDuty or Slack and email"
+      ],
+      "correctAnswers": [3],
+      "explanation": "Option A is wrong because adding a third-party SaaS does not address Altostrat's direction toward Google Cloud-native tooling, and JSON-to-bucket export every five minutes is not a real observability integration. Option B is wrong because a one-day rewrite of every PromQL dashboard wastes existing investment, and keeping email-only alerting fails the on-call routing requirement. Option C is wrong because indefinite duplication doubles cost and creates conflicting truths without solving the consolidation requirement. Option D is correct because Managed Service for Prometheus preserves Prometheus and PromQL investment, Cloud Monitoring provides unified dashboards and alerts, and Notification Channels route to PagerDuty, Slack, and email on-call rotations.",
+      "optionExplanations": [
+        "Option A is wrong because adding a third-party SaaS does not address Altostrat's direction toward Google Cloud-native tooling, and JSON-to-bucket export every five minutes is not a real observability integration.",
+        "Option B is wrong because a one-day rewrite of every PromQL dashboard wastes existing investment, and keeping email-only alerting fails the on-call routing requirement.",
+        "Option C is wrong because indefinite duplication doubles cost and creates conflicting truths without solving the consolidation requirement.",
+        "Option D is correct because Managed Service for Prometheus preserves Prometheus and PromQL investment, Cloud Monitoring provides unified dashboards and alerts, and Notification Channels route to PagerDuty, Slack, and email on-call rotations."
+      ],
+      "category": "Managing observability and operations",
+      "difficulty": "hard",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-013",
+      "question": "Altostrat plans to publish its content APIs (catalog, recommendations, summaries) to partner broadcasters with rate limits, monetization, and developer onboarding. Which Google Cloud service should the architect choose to manage these APIs as products?",
+      "options": [
+        "Cloud Endpoints with an OpenAPI spec deployed in front of Cloud Run, accepting that there is no developer portal, no monetization, and no per-partner quotas in this configuration for partner broadcasters",
+        "Apigee API Management for full API product management including a developer portal, rate-limit and quota policies, monetization, OAuth and JWT enforcement, and analytics across all Altostrat partner APIs",
+        "An internal Application Load Balancer with custom Lua scripts on a self-managed NGINX layer that the platform team operates themselves and updates manually for each new partner that is onboarded",
+        "API Gateway alone, on the assumption that an externally exposed gateway with API keys is functionally equivalent to a partner-facing API product platform with developer portal and monetization"
+      ],
+      "correctAnswers": [1],
+      "explanation": "Option A is wrong because Cloud Endpoints lacks a developer portal, monetization, and the rich partner-management features Altostrat needs to publish APIs as products. Option B is correct because Apigee is Google Cloud's full API management product, providing a developer portal, quotas and rate limits, OAuth and JWT, monetization, and analytics, which is exactly what the partner broadcaster use case requires. Option C is wrong because self-managed NGINX with Lua scripts shifts operational burden onto the platform team and lacks productization features. Option D is wrong because API Gateway is a lightweight gateway, not a product-management platform; it has no developer portal or monetization.",
+      "optionExplanations": [
+        "Option A is wrong because Cloud Endpoints lacks a developer portal, monetization, and the rich partner-management features Altostrat needs to publish APIs as products.",
+        "Option B is correct because Apigee is Google Cloud's full API management product, providing a developer portal, quotas and rate limits, OAuth and JWT, monetization, and analytics, which is exactly what the partner broadcaster use case requires.",
+        "Option C is wrong because self-managed NGINX with Lua scripts shifts operational burden onto the platform team and lacks productization features.",
+        "Option D is wrong because API Gateway is a lightweight gateway, not a product-management platform; it has no developer portal or monetization."
+      ],
+      "category": "Managing implementation",
+      "difficulty": "easy",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-014",
+      "question": "Altostrat's platform team wants every Google Cloud environment (dev, stage, prod) to be reproducible and tied to a code review, so dev cannot drift from prod and ad-hoc clicks in the console are eliminated. What is the recommended implementation approach?",
+      "options": [
+        "Maintain a single shared gcloud-runbook.md file in a wiki with copy-paste commands for each environment, and accept that drift between environments will be resolved manually at the end of each quarter",
+        "Have each team manage its own environment from the Cloud Console UI and reconcile differences by running gcloud commands captured in shell-history files at the end of each sprint planning meeting",
+        "Provision Google Cloud resources with Terraform stored in Git, code-reviewed via pull requests, applied through Cloud Build pipelines, and managed by Infrastructure Manager or Config Controller for state",
+        "Build a custom Python framework that wraps the Google Cloud REST API and is invoked from a Jenkins job, recreating Terraform functionality in-house so the team can avoid learning a declarative IaC tool"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because a wiki of copy-paste commands has no enforcement, no review trail, and no state, which is exactly the situation Altostrat is trying to leave behind. Option B is wrong because console-driven changes with shell-history reconciliation guarantees drift and is the opposite of code-reviewed IaC. Option C is correct because Terraform in Git with PR review, Cloud Build for applies, and Infrastructure Manager or Config Controller for managed state is Google's recommended IaC pattern that ties every change to code review and reproducibility. Option D is wrong because reinventing Terraform with a Python wrapper is wasted effort and produces a one-team tool with no community support.",
+      "optionExplanations": [
+        "Option A is wrong because a wiki of copy-paste commands has no enforcement, no review trail, and no state, which is exactly the situation Altostrat is trying to leave behind.",
+        "Option B is wrong because console-driven changes with shell-history reconciliation guarantees drift and is the opposite of code-reviewed IaC.",
+        "Option C is correct because Terraform in Git with PR review, Cloud Build for applies, and Infrastructure Manager or Config Controller for managed state is Google's recommended IaC pattern that ties every change to code review and reproducibility.",
+        "Option D is wrong because reinventing Terraform with a Python wrapper is wasted effort and produces a one-team tool with no community support."
+      ],
+      "category": "Managing implementation",
+      "difficulty": "medium",
+      "caseStudyId": "altostrat-media"
+    },
+    {
+      "id": "pca-cs-altostrat-media-015",
+      "question": "Altostrat's SRE lead wants to define meaningful Service Level Objectives for the streaming experience that reflect what users actually feel (playback reliability and quick first-frame) so the team can manage with error budgets. Which SLO design best fits this goal?",
+      "options": [
+        "An availability SLO based solely on the percentage of minutes Cloud Monitoring's uptime check returned 200 against the streaming API endpoint, treating each minute equally regardless of actual viewer load",
+        "A composite SLO that pegs CPU utilization on the GKE node pools to remain below 80% in steady state, on the basis that lower utilization implies a healthier user experience for the streaming platform overall",
+        "Two SLIs measured from real user traffic (successful-playback ratio of non-5xx requests delivering first byte within 800ms, and ad-stitching-success ratio) each with a 28-day rolling SLO and burn-rate alerts",
+        "A single 99.999% blanket SLO across every Altostrat service end-to-end, set high enough that it almost never burns, so the on-call team is rarely paged regardless of actual user impact during real incidents"
+      ],
+      "correctAnswers": [2],
+      "explanation": "Option A is wrong because uptime checks measure synthetic probe reachability, not real user experience; latency is also part of playback quality. Option B is wrong because CPU utilization is a saturation signal, not a user-facing SLI; high CPU does not necessarily harm playback and vice versa. Option C is correct because user-centric SLIs measured from real traffic, with explicit good-event criteria (non-5xx within a latency budget) and burn-rate alerts on a rolling window, follow Google's SRE workbook and reflect what Altostrat's viewers actually perceive. Option D is wrong because a blanket five-nines SLO set so high it never burns is not a usable error budget; it conveys no signal and discourages engineering tradeoffs.",
+      "optionExplanations": [
+        "Option A is wrong because uptime checks measure synthetic probe reachability, not real user experience; latency is also part of playback quality.",
+        "Option B is wrong because CPU utilization is a saturation signal, not a user-facing SLI; high CPU does not necessarily harm playback and vice versa.",
+        "Option C is correct because user-centric SLIs measured from real traffic, with explicit good-event criteria (non-5xx within a latency budget) and burn-rate alerts on a rolling window, follow Google's SRE workbook and reflect what Altostrat's viewers actually perceive.",
+        "Option D is wrong because a blanket five-nines SLO set so high it never burns is not a usable error budget; it conveys no signal and discourages engineering tradeoffs."
+      ],
+      "category": "Ensuring solution and operations excellence",
+      "difficulty": "hard",
+      "caseStudyId": "altostrat-media"
+    }
+  ]
+}

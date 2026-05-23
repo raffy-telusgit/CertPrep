@@ -31,6 +31,21 @@ test-results/
 .env.local
 .env.*.local
 
+# Secrets — never commit credentials, keys, or certificates
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ed25519*
+credentials.json
+.aws/
+.gcp/
+
+# Claude local settings (machine-specific, not shared)
+.claude/settings.local.json
+
 # Editor
 .vscode/*
 !.vscode/extensions.json

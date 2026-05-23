@@ -233,6 +233,23 @@ npm run preview  # preview production build
  
 After any substantive change, run `npm run build` and `npm run lint`. Fix all errors before declaring done.
  
+### 9.1 Deployment (Gizmos)
+ 
+CertPrep deploys to Gizmos as a **static site** — no Worker, no D1, no `/api/*` routes. Section 11 still applies: this app stays fully client-side.
+ 
+- Config lives in `wrangler.toml` at the repo root. It contains only `name = "certprep"`. Do NOT add a `main = "worker.ts"` entry or a `[[d1_databases]]` block — the Gizmos backend-app guide does not apply here.
+- The push tool lives at `skills/gizmos-push.mjs`. It reads `wrangler.toml` for the app name and uploads a directory.
+- The standard deploy flow runs in a GitHub Codespace (not locally), using the `GIZMOS_API_KEY` and `GIZMOS_URL` configured on that Codespace:
+ 
+```bash
+git pull origin main
+npm install
+npm run build
+node skills/gizmos-push.mjs dist/
+```
+ 
+After the first deploy, the app is reachable at `https://certprep.gizmos.run`. Skip Step 9 (`/api/init`) from the Gizmos guide — there is no database to seed.
+ 
 ---
  
 ## 10. Things to ALWAYS do

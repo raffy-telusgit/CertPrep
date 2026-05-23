@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import RobotIcon from '@/components/CertBot/RobotIcon'
 
 interface RobotButtonProps {
@@ -12,17 +13,13 @@ function RobotButton({ vendorColor, isOpen, onClick }: RobotButtonProps) {
       type="button"
       onClick={onClick}
       aria-label={isOpen ? 'Close CertBot' : 'Open CertBot study assistant'}
-      className="fixed bottom-4 right-4 z-50 w-16 h-16 rounded-full text-white shadow-lg hover:shadow-xl transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 flex items-center justify-center relative"
+      aria-expanded={isOpen}
+      className="fixed bottom-4 right-4 z-50 w-16 h-16 rounded-full text-white shadow-lg hover:shadow-xl transition-shadow hover:scale-110 active:scale-95 transition-transform duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 flex items-center justify-center relative"
       style={{ backgroundColor: vendorColor }}
     >
       <RobotIcon className="w-7 h-7" />
       {isOpen && (
-        <span
-          aria-hidden="true"
-          className="absolute top-0.5 right-1 text-white font-bold text-base leading-none select-none"
-        >
-          ×
-        </span>
+        <X className="absolute top-1.5 right-1.5 h-4 w-4 text-white" aria-hidden="true" />
       )}
     </button>
   )

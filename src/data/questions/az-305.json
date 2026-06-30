@@ -1,148 +1,1211 @@
 {
   "examId": "az-305",
-  "version": 0,
-  "placeholder": true,
-  "generatedAt": "2026-05-08",
+  "version": 1,
+  "placeholder": false,
+  "generatedAt": "2026-06-30",
   "questions": [
     {
-      "id": "az305-ph-001",
-      "question": "Placeholder question 1 about identity and governance design. Which placeholder architecture pattern is recommended?",
+      "id": "az305-idgm-001",
+      "question": "A company has multiple Azure subscriptions across three business units. The security team requires that all subscriptions enforce a policy preventing the creation of public IP addresses. The policy must be applied centrally and cannot be overridden by subscription owners. What is the most efficient approach?",
       "options": [
-        "Placeholder Architecture Pattern A",
-        "Placeholder Architecture Pattern B",
-        "Placeholder Architecture Pattern C",
-        "Placeholder Architecture Pattern D"
+        "Apply an Azure Policy directly to each subscription individually",
+        "Create a Management Group hierarchy and assign the Azure Policy at the root management group level",
+        "Use Azure Blueprints to assign the policy to each subscription",
+        "Configure the policy in Microsoft Defender for Cloud and enable it per subscription"
       ],
-      "correctAnswers": [2],
-      "explanation": "Placeholder explanation: Pattern C aligns with the governance requirements. Pattern A lacks the required compliance controls.",
-      "category": "Design identity, governance, and monitoring solutions",
-      "difficulty": "medium"
-    },
-    {
-      "id": "az305-ph-002",
-      "question": "Placeholder question 2 about data storage design. Which placeholder storage solution best fits this workload?",
-      "options": [
-        "Placeholder Storage Solution 1",
-        "Placeholder Storage Solution 2",
-        "Placeholder Storage Solution 3",
-        "Placeholder Storage Solution 4"
+      "correctAnswers": [
+        1
       ],
-      "correctAnswers": [0],
-      "explanation": "Placeholder explanation: Solution 1 provides the right balance of performance and cost. Solution 2 would be over-engineered.",
-      "category": "Design data storage solutions",
-      "difficulty": "easy"
-    },
-    {
-      "id": "az305-ph-003",
-      "question": "Placeholder question 3 about business continuity. Which placeholder DR strategy meets the RTO requirement?",
-      "options": [
-        "Placeholder DR Strategy A",
-        "Placeholder DR Strategy B",
-        "Placeholder DR Strategy C",
-        "Placeholder DR Strategy D"
-      ],
-      "correctAnswers": [1],
-      "explanation": "Placeholder explanation: Strategy B meets the specified RTO. Strategy A would take longer to recover.",
-      "category": "Design business continuity solutions",
-      "difficulty": "hard"
-    },
-    {
-      "id": "az305-ph-004",
-      "question": "Placeholder question 4 about infrastructure design. Which TWO placeholder components should be included?",
-      "options": [
-        "Placeholder Component X",
-        "Placeholder Component Y",
-        "Placeholder Component Z",
-        "Placeholder Component W"
-      ],
-      "correctAnswers": [0, 3],
-      "explanation": "Placeholder explanation: Components X and W together provide the required functionality. Component Y is redundant in this design.",
-      "category": "Design infrastructure solutions",
-      "difficulty": "hard"
-    },
-    {
-      "id": "az305-ph-005",
-      "question": "Placeholder question 5 about monitoring solutions. Which placeholder monitoring design is appropriate?",
-      "options": [
-        "Placeholder Monitoring Design 1",
-        "Placeholder Monitoring Design 2",
-        "Placeholder Monitoring Design 3",
-        "Placeholder Monitoring Design 4"
-      ],
-      "correctAnswers": [2],
-      "explanation": "Placeholder explanation: Design 3 provides comprehensive monitoring. Design 1 only monitors a subset of components.",
-      "category": "Design identity, governance, and monitoring solutions",
-      "difficulty": "medium"
-    },
-    {
-      "id": "az305-ph-006",
-      "question": "Placeholder question 6 about data storage. This easy placeholder tests basic storage tier knowledge.",
-      "options": [
-        "Placeholder Storage Tier A",
-        "Placeholder Storage Tier B",
-        "Placeholder Storage Tier C",
-        "Placeholder Storage Tier D"
-      ],
-      "correctAnswers": [0],
-      "explanation": "Placeholder explanation: Tier A is the most cost-effective for this access pattern. Higher tiers provide lower latency but at higher cost.",
-      "category": "Design data storage solutions",
-      "difficulty": "easy"
-    },
-    {
-      "id": "az305-ph-007",
-      "question": "Placeholder question 7 about business continuity. Which placeholder backup approach meets compliance needs?",
-      "options": [
-        "Placeholder Backup Approach 1",
-        "Placeholder Backup Approach 2",
-        "Placeholder Backup Approach 3",
-        "Placeholder Backup Approach 4"
-      ],
-      "correctAnswers": [3],
-      "explanation": "Placeholder explanation: Approach 4 satisfies the retention and compliance requirements. Approach 1 lacks the required audit logging.",
-      "category": "Design business continuity solutions",
-      "difficulty": "medium"
-    },
-    {
-      "id": "az305-ph-008",
-      "question": "Placeholder question 8 about infrastructure. Which TWO placeholder network design principles apply?",
-      "options": [
-        "Placeholder Network Principle A",
-        "Placeholder Network Principle B",
-        "Placeholder Network Principle C",
-        "Placeholder Network Principle D"
-      ],
-      "correctAnswers": [1, 2],
-      "explanation": "Placeholder explanation: Principles B and C are both applicable to this network design. Principle A contradicts the security requirements.",
-      "category": "Design infrastructure solutions",
-      "difficulty": "hard"
-    },
-    {
-      "id": "az305-ph-009",
-      "question": "Placeholder question 9 about governance. This placeholder tests policy design knowledge.",
-      "options": [
-        "Placeholder Policy Design 1",
-        "Placeholder Policy Design 2",
-        "Placeholder Policy Design 3",
-        "Placeholder Policy Design 4"
-      ],
-      "correctAnswers": [0],
-      "explanation": "Placeholder explanation: Policy Design 1 enforces the governance requirements at the right scope. Designs 2 and 3 apply at wrong levels.",
+      "explanation": "Assigning an Azure Policy at the root management group level automatically applies it to all subscriptions and resource groups beneath it, and subscription owners cannot override policies inherited from parent management groups. Applying the policy to each subscription individually is inefficient at scale and requires manual effort for each new subscription.",
       "category": "Design identity, governance, and monitoring solutions",
       "difficulty": "easy"
     },
     {
-      "id": "az305-ph-010",
-      "question": "Placeholder question 10 about infrastructure solutions. This hard placeholder tests advanced design decisions.",
+      "id": "az305-idgm-002",
+      "question": "An organization uses Azure Active Directory (Entra ID) and wants to ensure that users in the 'Finance' group can only access the Azure portal from managed, compliant devices within the corporate network. Which solution should the architect recommend?",
       "options": [
-        "Placeholder Design Decision A",
-        "Placeholder Design Decision B",
-        "Placeholder Design Decision C",
-        "Placeholder Design Decision D"
+        "Configure Azure RBAC to restrict Finance group access to specific IP ranges",
+        "Implement a Conditional Access policy requiring compliant device and named location conditions for the Finance group",
+        "Enable Multi-Factor Authentication for all Finance group members",
+        "Use Azure AD Identity Protection risk policies to block access from unknown locations"
       ],
-      "correctAnswers": [2],
-      "explanation": "Placeholder explanation: Decision C is optimal for this complex scenario. Decision A would create performance bottlenecks.",
-      "category": "Design infrastructure solutions",
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Conditional Access policies can combine multiple conditions—device compliance state and named locations (IP ranges)—and apply them to specific groups, precisely meeting this requirement. RBAC controls what users can do within Azure, not the conditions under which they can authenticate.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-003",
+      "question": "A solutions architect needs to grant an Azure Virtual Machine access to Azure Key Vault secrets without storing any credentials in the application code or configuration files. What is the recommended approach?",
+      "options": [
+        "Create a service principal with a client secret and store it in an environment variable on the VM",
+        "Use a system-assigned managed identity on the VM and grant it access to Key Vault via an access policy",
+        "Create a shared access signature (SAS) token for Key Vault and embed it in the application",
+        "Store the Key Vault client ID and secret in Azure App Configuration"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A system-assigned managed identity eliminates the need to manage credentials—Azure automatically handles the identity lifecycle and provides tokens for authentication. Storing credentials anywhere (environment variables, SAS tokens, or App Configuration) introduces secrets management risk and defeats the purpose of Key Vault.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-004",
+      "question": "A company needs to implement just-in-time privileged access for Global Administrator roles in Entra ID. Administrators should only have elevated access for a maximum of 4 hours per activation, and all activations must be approved by a designated approver. Which service meets these requirements?",
+      "options": [
+        "Azure RBAC with time-limited role assignments",
+        "Entra ID Privileged Identity Management (PIM)",
+        "Conditional Access with session controls",
+        "Entra ID Identity Governance access reviews"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Entra ID PIM provides just-in-time privileged access with configurable activation duration, approval workflows, and MFA requirements before activation. Azure RBAC supports time-limited assignments but does not provide approval workflows or activation controls for on-demand elevation.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-005",
+      "question": "An organization wants to enforce a tagging policy that automatically adds a 'CostCenter' tag to all new resource groups that don't already have one, using the value 'Unassigned'. The policy should not block resource group creation. Which Azure Policy effect should be used?",
+      "options": [
+        "Deny",
+        "Audit",
+        "Append",
+        "Modify"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "The Modify effect can add or update tags on resources during create or update operations without blocking the operation. The Append effect adds fields to a resource but cannot modify existing tags on resource groups, while Deny would block creation and Audit only logs non-compliance without taking action.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-006",
+      "question": "A financial services company must ensure all Azure SQL Databases have Advanced Threat Protection enabled. New databases deployed without this setting should have it automatically enabled. Which Azure Policy effect should the architect configure?",
+      "options": [
+        "AuditIfNotExists",
+        "DeployIfNotExists",
+        "Modify",
+        "Append"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "DeployIfNotExists triggers an ARM template deployment to remediate non-compliant resources when the specified condition (Advanced Threat Protection not enabled) is not met. AuditIfNotExists only logs the non-compliance but does not automatically remediate it.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-007",
+      "question": "A global enterprise is designing its Azure management group hierarchy. They have three subsidiaries in different countries with distinct compliance requirements. The central IT team needs to enforce baseline security policies across all subsidiaries, while each subsidiary needs to apply its own regional compliance policies. Which hierarchy design is most appropriate?",
+      "options": [
+        "Create a flat hierarchy with one management group per subsidiary directly under the tenant root",
+        "Create a root management group with baseline policies, then child management groups per subsidiary with regional policies",
+        "Use separate Entra ID tenants for each subsidiary to enforce isolation",
+        "Apply all policies at the subscription level to give subsidiaries maximum flexibility"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A hierarchical management group structure allows baseline policies at the root (inherited by all) while subsidiary-level management groups can have additional regional policies applied. Separate tenants create management complexity and prevent centralized governance. A flat hierarchy cannot differentiate subsidiary-specific policies from baseline policies.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-008",
+      "question": "A company wants to review whether external users still need access to specific SharePoint sites and Azure resources every 90 days. Access that is not reviewed should be automatically removed. Which Entra ID feature provides this capability?",
+      "options": [
+        "Privileged Identity Management (PIM) eligible assignments",
+        "Conditional Access policies with session lifetime controls",
+        "Entra ID Identity Governance access reviews",
+        "Entra ID entitlement management access packages"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Entra ID access reviews allow periodic reviews of user access to resources, with auto-removal of access when reviewers do not respond within the review period. Entitlement management handles initial access provisioning but is not primarily designed for recurring periodic reviews with auto-revocation.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-009",
+      "question": "An architect is designing identity federation for a company that uses on-premises Active Directory. The company has a poor internet connection and cannot risk authentication failures if cloud connectivity is interrupted. Which Entra ID hybrid identity method should be recommended?",
+      "options": [
+        "Password Hash Synchronization (PHS)",
+        "Pass-through Authentication (PTA)",
+        "Active Directory Federation Services (ADFS)",
+        "Entra ID seamless SSO with PHS"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Password Hash Synchronization copies hashed password hashes to Entra ID, so authentication occurs in the cloud without requiring connectivity to on-premises. Pass-through Authentication requires on-premises agents to be reachable, so connectivity failures would block authentication. ADFS also depends on on-premises infrastructure availability.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-010",
+      "question": "A development team needs to register an application in Entra ID that will call Microsoft Graph API on behalf of users. The application should request only the minimum required permissions. The team asks what type of permissions they should request. Which permission type is appropriate for delegated user context access?",
+      "options": [
+        "Application permissions, because the app needs persistent access",
+        "Delegated permissions, because the app acts on behalf of a signed-in user",
+        "Owner permissions configured via Azure RBAC",
+        "Service principal permissions assigned through PIM"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Delegated permissions allow the application to act on behalf of a signed-in user, inheriting the user's access rights to resources. Application permissions grant the app access independent of any user and are appropriate for background services without a signed-in user, which would grant broader access than required here.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-011",
+      "question": "A company wants to create a custom Azure RBAC role that allows users to start, stop, and restart virtual machines but not create or delete them. The role should apply only to virtual machines. Which actions should be included in the custom role definition? Select TWO.",
+      "options": [
+        "Microsoft.Compute/virtualMachines/read",
+        "Microsoft.Compute/virtualMachines/start/action",
+        "Microsoft.Compute/virtualMachines/write",
+        "Microsoft.Compute/virtualMachines/powerOff/action"
+      ],
+      "correctAnswers": [
+        1,
+        3
+      ],
+      "explanation": "The start/action and powerOff/action permissions are needed to start and stop VMs respectively. The write permission would allow creating and modifying VMs which is explicitly excluded. The read permission is needed to view VMs but is not sufficient alone for the start/stop/restart operations.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-012",
+      "question": "An organization deploys a new Azure subscription every time a new project starts. They need to ensure each new subscription automatically gets a Log Analytics workspace, required RBAC assignments, and specific Azure policies applied. Which Azure service is best suited for this repeatable, consistent subscription configuration?",
+      "options": [
+        "Azure Policy initiative (policy set)",
+        "Azure Blueprints",
+        "ARM templates deployed via Azure DevOps",
+        "Azure Automation runbooks"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Blueprints are designed to package artifacts including ARM templates, policy assignments, and RBAC assignments into a repeatable definition that can be assigned to subscriptions. While ARM templates can deploy resources, they do not natively handle policy assignments and RBAC in a unified, versioned blueprint artifact.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-013",
+      "question": "A company needs to monitor all Azure resource deletions across 15 subscriptions and send alerts to the security team within 5 minutes of detection. The solution must also retain the activity log data for 2 years for compliance. What should the architect design?",
+      "options": [
+        "Enable Microsoft Defender for Cloud on all subscriptions and configure email notifications",
+        "Create diagnostic settings on each subscription to send Activity Logs to a central Log Analytics workspace, configure an alert rule, and archive to a Storage Account",
+        "Use Azure Monitor activity log alerts at the management group level and store logs in Event Hub",
+        "Deploy Microsoft Sentinel with a custom analytics rule and connect subscription activity logs"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Diagnostic settings on subscriptions forward Activity Logs to Log Analytics for alerting and querying, while Storage Account archival satisfies the 2-year retention requirement at lower cost than Log Analytics retention. Management group-level activity log alerts do not currently support all subscription activity events, and Sentinel adds cost and complexity beyond the stated requirements.",
+      "category": "Design identity, governance, and monitoring solutions",
       "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-014",
+      "question": "A healthcare company must detect and investigate suspicious sign-in patterns across their Entra ID tenant, including impossible travel, anonymous IP usage, and leaked credential detection. Which service provides these built-in risk detections?",
+      "options": [
+        "Microsoft Sentinel with Azure AD connector",
+        "Entra ID Identity Protection",
+        "Microsoft Defender for Cloud Apps",
+        "Conditional Access sign-in risk policies"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Entra ID Identity Protection is the dedicated service that provides built-in risk detections including impossible travel, anonymous IP, malware-linked IP, and leaked credentials, with risk scores for users and sign-ins. While Sentinel can ingest these signals, Identity Protection is the source of these detections and is purpose-built for this scenario.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-015",
+      "question": "An enterprise has 500 Azure subscriptions and needs to query resource configuration data across all subscriptions to identify all storage accounts with public blob access enabled. The query must return results within seconds. Which service should be used?",
+      "options": [
+        "Azure Monitor Logs with a multi-workspace query",
+        "Azure Resource Graph",
+        "Azure Policy compliance reports",
+        "Microsoft Defender for Cloud inventory"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Resource Graph is designed for large-scale resource queries across subscriptions and management groups, returning results in seconds using a Kusto-based query language against a cached index of Azure resources. Azure Policy compliance reports are slower and less flexible for ad-hoc resource property queries.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-016",
+      "question": "A company is deploying a multi-tier web application on Azure. The operations team wants to capture performance metrics and custom application events (such as page views, exceptions, and dependency calls) and visualize them in a unified dashboard. Which service is most appropriate for application-level telemetry?",
+      "options": [
+        "Azure Monitor Metrics",
+        "Log Analytics workspace with custom logs",
+        "Application Insights",
+        "Azure Network Watcher"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Application Insights is designed for application performance monitoring (APM), automatically capturing request rates, response times, exceptions, dependency tracking, and custom events with minimal code instrumentation. Azure Monitor Metrics captures infrastructure-level metrics but does not natively track application-level telemetry like page views or dependency calls.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-017",
+      "question": "A company wants to enable security information and event management (SIEM) capabilities in Azure to detect, investigate, and respond to cyber threats across their entire Azure estate and on-premises systems. They want built-in AI-powered threat detection. Which service should the architect recommend?",
+      "options": [
+        "Microsoft Defender for Cloud",
+        "Azure Monitor with alert rules",
+        "Microsoft Sentinel",
+        "Entra ID Identity Protection"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Microsoft Sentinel is Azure's cloud-native SIEM and SOAR platform with built-in AI/ML-based threat detection, investigation workbooks, and automated response playbooks. Microsoft Defender for Cloud focuses on security posture management and workload protection but is not a full SIEM solution.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-018",
+      "question": "An organization needs its Log Analytics workspace to store security logs for 7 years to comply with regulatory requirements. The logs beyond 90 days are rarely queried but must be retained and searchable. What is the most cost-effective retention configuration?",
+      "options": [
+        "Set Log Analytics workspace retention to 7 years (2555 days)",
+        "Set Log Analytics workspace retention to 90 days and export older data to a Storage Account",
+        "Use Log Analytics workspace with 90 days interactive retention and configure archive tier for the remaining period",
+        "Deploy Microsoft Sentinel with data retention policies"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Log Analytics supports tiered retention where data beyond the interactive period can be moved to a low-cost archive tier (up to 12 years) where it remains searchable via search jobs. Keeping all data in interactive retention is significantly more expensive. Exporting to a Storage Account makes data harder to query interactively.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-019",
+      "question": "A company uses on-premises Active Directory and is migrating to Azure. They need users to authenticate with their existing AD credentials without replicating passwords to the cloud. However, they do not want to deploy ADFS infrastructure. Which hybrid identity method meets these requirements?",
+      "options": [
+        "Password Hash Synchronization (PHS)",
+        "Pass-through Authentication (PTA)",
+        "Active Directory Federation Services (ADFS)",
+        "Entra ID native authentication"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Pass-through Authentication validates passwords directly against on-premises Active Directory via lightweight agents, without replicating password hashes to the cloud and without requiring ADFS. PHS syncs hashed passwords to the cloud, which is excluded by the requirement not to replicate passwords.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-020",
+      "question": "A multinational company needs to enforce that all Azure resources are deployed only in the 'West Europe' and 'North Europe' regions. Resources deployed to other regions should be blocked. Which combination of Azure Policy effect and policy type is correct?",
+      "options": [
+        "Audit effect with a custom policy checking the location field",
+        "Deny effect using the built-in 'Allowed locations' policy initiative",
+        "DeployIfNotExists to redeploy non-compliant resources to allowed regions",
+        "Modify effect to change the region of deployed resources"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The Deny effect prevents resource creation in disallowed regions at the time of deployment. The built-in 'Allowed locations' policy uses Deny to block deployments outside specified regions. Audit would log violations but not prevent them, and DeployIfNotExists/Modify cannot move deployed resources to different regions.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-021",
+      "question": "An organization wants to provide new employees in the 'Marketing' department access to a set of Azure resources, Microsoft 365 groups, and SharePoint sites through a self-service request portal with manager approval. Which Entra ID feature should be used?",
+      "options": [
+        "Entra ID PIM with eligible group memberships",
+        "Entra ID entitlement management with access packages",
+        "Conditional Access policies with terms of use",
+        "Entra ID access reviews for Marketing group"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Entitlement management allows creation of access packages that bundle multiple resources (Azure groups, M365 groups, SharePoint sites), with configurable approval workflows and self-service request portals. PIM is designed for privileged role elevation, not initial access provisioning across multiple resource types.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-022",
+      "question": "A company's security policy requires that service accounts used by Azure automation runbooks cannot have their passwords expire and must authenticate using certificates. The accounts must be Entra ID identities. What should the architect configure?",
+      "options": [
+        "Create user accounts with 'Password never expires' set and assign them to Automation accounts",
+        "Use a system-assigned managed identity on the Azure Automation account",
+        "Create a service principal with certificate-based authentication in Entra ID",
+        "Use a shared access signature on the Automation account"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A system-assigned managed identity on the Automation account eliminates credential management entirely—Azure handles authentication automatically using certificates under the hood, and there are no passwords to expire. Creating a service principal with certificates would work but requires manual certificate rotation; managed identities are the preferred modern approach.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-023",
+      "question": "A company needs to monitor the health of all Azure resources across 20 subscriptions and receive alerts when any resource enters an unhealthy state (e.g., VM deallocated unexpectedly, App Service plan in degraded state). Which Azure Monitor feature addresses this?",
+      "options": [
+        "Azure Monitor metric alerts",
+        "Azure Monitor activity log alerts",
+        "Azure Service Health alerts",
+        "Azure Monitor resource health alerts"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Azure Monitor resource health alerts trigger when individual resources change health state (Available, Unavailable, Degraded, Unknown), covering unexpected unavailability of specific resource instances. Azure Service Health alerts cover Azure platform-level incidents and maintenance, not individual resource health state changes.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-024",
+      "question": "An architect is designing a Log Analytics workspace strategy for a company with three regions and a strict data residency requirement that log data must not leave its originating region. The company also wants centralized security monitoring via Microsoft Sentinel. What design should be recommended?",
+      "options": [
+        "Create one central Log Analytics workspace and one Sentinel workspace, accepting cross-region data transfer",
+        "Create one Log Analytics workspace per region, deploy Sentinel on each, and use Sentinel workspace manager for cross-workspace views",
+        "Create one Log Analytics workspace per region and forward all logs to a central Event Hub for Sentinel",
+        "Use Azure Monitor cross-workspace queries to avoid moving data"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "To meet data residency requirements, separate Log Analytics workspaces per region keep data in-region. Microsoft Sentinel can be deployed on each workspace, and Sentinel workspace manager provides a unified multi-workspace view without moving data across regions. Forwarding to a central Event Hub would violate data residency requirements.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-025",
+      "question": "A company wants to enforce that all new Azure resources are tagged with 'Environment' (allowed values: Dev, Test, Prod) and 'Owner' tags at creation time. Resources missing these tags should be blocked. What is the most efficient way to implement this across all subscriptions?",
+      "options": [
+        "Create two custom Azure Policies with Deny effect and assign them to each subscription individually",
+        "Create a policy initiative containing both tag policies with Deny effect and assign it at the management group level",
+        "Use Azure Cost Management + Billing tag inheritance to enforce tags",
+        "Configure Azure Blueprints with tag policies for each subscription"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A policy initiative (policy set) groups related policies and can be assigned at the management group level, automatically applying to all child subscriptions. This is more manageable than individual policy assignments per subscription. Cost Management tag inheritance does not block resource creation; it only applies tags for billing purposes.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-026",
+      "question": "A developer needs to build a daemon application that reads emails from all users' mailboxes in the organization using Microsoft Graph API, running as a background service without user interaction. Which permission model is required?",
+      "options": [
+        "Delegated permissions with a service account user",
+        "Application permissions with admin consent",
+        "Delegated permissions with client credentials flow",
+        "Managed identity with Graph API access"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Daemon applications use the client credentials OAuth flow and require application permissions (not delegated), which grant access to data across all users in the organization. Application permissions require admin consent due to their broad scope. Managed identities cannot currently be assigned Microsoft Graph application permissions directly.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-027",
+      "question": "A company uses Azure Monitor and wants to be notified when CPU utilization on any VM in a resource group exceeds 90% for more than 5 minutes. They want the alert to automatically scale out the VM Scale Set. What combination of Azure Monitor features should be used? Select TWO.",
+      "options": [
+        "Azure Monitor metric alert rule targeting the resource group",
+        "Azure Autoscale configured on the VM Scale Set with CPU metric",
+        "Azure Monitor action group with Azure Function action",
+        "Log Analytics alert rule querying performance data"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "Azure Monitor metric alerts can target a resource group scope and fire when CPU exceeds the threshold. Azure Autoscale on VMSS is the native way to automatically scale based on CPU metrics without requiring a separate alert-action chain. These two together provide monitoring notification and automatic scale-out respectively.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-028",
+      "question": "An enterprise needs to ensure that all PIM role activations for Global Administrator are logged and that alerts are sent when more than 3 activations occur within a 24-hour period. Which combination of services should be used?",
+      "options": [
+        "Entra ID audit logs sent to Log Analytics, with a scheduled alert rule querying PIM events",
+        "Microsoft Sentinel with Entra ID connector and a custom analytics rule for PIM activations",
+        "Entra ID PIM email notifications combined with Azure Monitor activity log alerts",
+        "Microsoft Defender for Cloud Apps with anomaly detection policies"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Sentinel with the Entra ID connector ingests audit logs including PIM activations and allows custom analytics rules with threshold conditions (more than 3 events in 24 hours) and automated alerts/incidents. Log Analytics scheduled alerts can also work but Sentinel provides richer investigation context for security scenarios.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-029",
+      "question": "A company's Azure environment has resources spread across 10 subscriptions. The security team wants a single view of security posture, vulnerability assessments, and security recommendations across all subscriptions. Which service provides this unified view?",
+      "options": [
+        "Azure Monitor Workbooks with a multi-subscription dashboard",
+        "Microsoft Defender for Cloud",
+        "Microsoft Sentinel",
+        "Azure Advisor"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Defender for Cloud provides a unified security posture score (Secure Score), vulnerability assessments, and actionable security recommendations across all connected subscriptions and hybrid resources. Azure Advisor provides general best practice recommendations but is not security-focused and does not assess vulnerabilities.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-030",
+      "question": "A company wants to enable break-glass emergency access to Azure in case all Global Administrators are locked out. Which design pattern is recommended for emergency access accounts?",
+      "options": [
+        "Create a standard Global Administrator account with MFA enforced and store credentials in a password manager",
+        "Create two emergency access accounts excluded from all Conditional Access policies, with strong passwords stored in physically secured locations",
+        "Use Azure AD B2B to invite an external emergency admin account",
+        "Configure PIM with a permanently active Global Administrator assignment for an emergency account"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft recommends at least two emergency access (break-glass) accounts that are excluded from Conditional Access policies (including MFA requirements) so they can always be used, with long random passwords stored in physically secured offline locations. Including MFA requirements could prevent access in MFA infrastructure failures.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-031",
+      "question": "A company is implementing Azure Policy to automatically deploy Azure Monitor Agent to all Windows VMs. The policy should install the agent on existing non-compliant VMs and on newly deployed VMs. Which policy effect accomplishes both?",
+      "options": [
+        "Append",
+        "AuditIfNotExists",
+        "Modify",
+        "DeployIfNotExists"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "DeployIfNotExists triggers an ARM deployment to install the agent when the condition is not met, and remediation tasks can be created to fix existing non-compliant resources. The policy also fires at deployment time for new resources. AuditIfNotExists only detects non-compliance without deploying anything.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-032",
+      "question": "An organization needs to set a maximum number of vCPUs that can be used across all subscriptions in a management group to control cloud spend. Resources exceeding the quota should be blocked. Which service should be used?",
+      "options": [
+        "Azure Policy with a Deny effect to block VM sizes above a threshold",
+        "Azure subscription resource quotas configured per subscription",
+        "Azure Cost Management budgets with action groups to block spending",
+        "Azure Policy to restrict allowed VM SKUs at the management group level"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "Assigning an Azure Policy with Deny effect that restricts allowed VM SKUs at the management group level prevents deployment of high-vCPU VM sizes across all child subscriptions. Subscription resource quotas are set per subscription and require support requests to change; they cannot be centrally managed across subscriptions from a management group.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-033",
+      "question": "A company uses Azure Monitor to collect logs from 50 VMs into a single Log Analytics workspace. The security team reports that queries are slow when running across all 50 VMs over a 30-day period. The architect needs to improve query performance without losing data. What should be recommended?",
+      "options": [
+        "Split the logs into multiple Log Analytics workspaces",
+        "Reduce the Log Analytics workspace retention period to 7 days",
+        "Use Log Analytics summary rules to pre-aggregate frequently queried data",
+        "Export raw logs to Azure Storage and use Synapse Analytics for querying"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Summary rules (previously called workspace transformation rules) pre-aggregate frequently queried data into a new table, reducing query scan time dramatically for known query patterns. Splitting workspaces would complicate cross-VM queries and not necessarily improve performance for individual workspace queries.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-034",
+      "question": "A multinational company must comply with GDPR and needs proof that their Azure governance controls are operating effectively. They need automated compliance reports showing which resources are compliant with their Azure Policies. Where should the architect direct the compliance team?",
+      "options": [
+        "Microsoft Defender for Cloud regulatory compliance dashboard",
+        "Azure Policy compliance view in the Azure portal",
+        "Azure Monitor Workbooks with policy compliance data",
+        "Microsoft Purview compliance portal"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The Azure Policy compliance view provides real-time compliance state for all assigned policies and initiatives, showing compliant and non-compliant resource counts with drill-down capability. Microsoft Defender for Cloud's regulatory compliance dashboard maps Azure security controls to compliance frameworks like GDPR but is more security-focused than general policy compliance reporting.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-035",
+      "question": "A company wants to ensure that developers can only create resources within their designated resource groups and cannot escalate their own privileges. Which Azure RBAC principle should be applied?",
+      "options": [
+        "Assign the Contributor role at the resource group level and the User Access Administrator role at the subscription level",
+        "Assign the Contributor role at the resource group scope only, and do not assign User Access Administrator",
+        "Assign the Owner role at the resource group level to allow full management",
+        "Assign custom roles at the resource group level that include write but not authorization actions"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "A custom role with resource write permissions but excluding Microsoft.Authorization/* actions prevents privilege escalation—developers can create resources but cannot modify role assignments. The Contributor role at resource group scope does not include authorization actions, but option D is more precise because it makes the constraint explicit in the role definition.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-036",
+      "question": "A company wants to track all changes to Azure resources (create, update, delete) in their production subscription over the past 90 days for an audit. What is the primary source for this information in Azure?",
+      "options": [
+        "Azure Monitor Metrics",
+        "Azure Resource Graph change history",
+        "Azure Activity Log",
+        "Log Analytics VM performance counters"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "The Azure Activity Log records all control-plane operations (create, update, delete) on Azure resources and is retained for 90 days by default. Azure Resource Graph change history provides point-in-time resource configuration snapshots but is a secondary tool; the Activity Log is the authoritative audit trail for resource operations.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-037",
+      "question": "An enterprise is designing RBAC for a shared Azure Kubernetes Service (AKS) cluster used by multiple teams. Each team should only see and manage their own workloads (namespaces) but cannot access other teams' resources. Which approach is recommended?",
+      "options": [
+        "Assign the Azure Kubernetes Service Cluster User Role to all teams at the cluster level",
+        "Enable Azure RBAC for Kubernetes authorization and assign namespace-scoped roles per team",
+        "Use separate AKS clusters for each team",
+        "Configure network policies in AKS to restrict team access"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure RBAC for Kubernetes authorization allows Entra ID identities to be assigned Kubernetes RBAC roles scoped to specific namespaces, providing namespace-level isolation using familiar Azure IAM tooling. Network policies control network traffic between pods but do not restrict which users can manage Kubernetes resources.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-038",
+      "question": "A company's application uses Azure App Service and needs to access Azure SQL Database without connection strings in the application configuration. The app and database are in the same subscription. Which authentication approach is recommended?",
+      "options": [
+        "Store the SQL connection string in Azure Key Vault and access it using a Key Vault reference in App Service",
+        "Configure the App Service with a system-assigned managed identity and grant it access to SQL using Entra ID authentication",
+        "Use Azure SQL firewall rules to restrict access to the App Service outbound IP addresses",
+        "Configure SQL Server authentication with a strong password stored in Azure Key Vault"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A system-assigned managed identity allows the App Service to authenticate to Azure SQL Database using Entra ID tokens, eliminating connection strings entirely. Using Key Vault references for connection strings is better than inline config, but still involves a connection string with credentials—managed identity authentication avoids passwords entirely.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-039",
+      "question": "An organization needs to implement a policy that audits all Azure Storage Accounts that do not have 'Secure transfer required' enabled, and generates a compliance report monthly. They do not want to block deployments. Which policy effect should be used?",
+      "options": [
+        "Deny",
+        "Modify",
+        "Audit",
+        "AuditIfNotExists"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "The Audit effect evaluates resources against the policy condition and marks non-compliant resources in the compliance report without blocking any operations. AuditIfNotExists is used when you need to check for the existence of a related resource (like a diagnostic setting), not for checking a property on the resource itself.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-040",
+      "question": "A company wants to give their DevOps team the ability to manage Azure resources but explicitly prevent them from reading secrets in Azure Key Vault. They have the Contributor role on the subscription. What is the correct approach?",
+      "options": [
+        "Create a custom role that excludes the Key Vault secrets read action and replace the Contributor assignment",
+        "Add a NotActions entry for Key Vault secrets to the Contributor role definition",
+        "Use Azure Policy to deny the DevOps team's access to Key Vault secrets",
+        "Configure a Key Vault access policy excluding the DevOps team's group"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Creating a custom role with NotActions that excludes Microsoft.KeyVault/vaults/secrets/read prevents the action even if another role would grant it. You cannot modify built-in roles like Contributor—you must create a custom role. Key Vault access policies are configured per vault and would need to be applied to every vault individually.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-041",
+      "question": "A company is migrating to Entra ID and needs to ensure that all applications using legacy authentication protocols (SMTP, IMAP, POP3) are identified and blocked. Which approach accomplishes this?",
+      "options": [
+        "Configure Conditional Access policies to block legacy authentication client apps",
+        "Enable Security Defaults in Entra ID to automatically block legacy authentication",
+        "Use Entra ID Identity Protection to flag legacy authentication sign-ins as risky",
+        "Configure Microsoft Defender for Cloud Apps policies to block legacy protocols"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Conditional Access policies with the 'Client apps' condition set to legacy authentication clients (Exchange ActiveSync and other clients) allow granular control over blocking legacy authentication while excluding specific applications or users if needed. Security Defaults also block legacy auth but offer no exceptions for migration scenarios.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-042",
+      "question": "An architect needs to design a monitoring solution for a company's hybrid environment including Azure VMs and on-premises servers. All telemetry should be collected in a single place for unified analysis. Which agent and workspace design is recommended?",
+      "options": [
+        "Deploy MMA (Microsoft Monitoring Agent) on all servers and connect to a Log Analytics workspace",
+        "Deploy Azure Monitor Agent (AMA) on Azure VMs and MARS agent on on-premises servers",
+        "Deploy Azure Monitor Agent (AMA) on all servers (Azure and on-premises via Azure Arc) and connect to a Log Analytics workspace",
+        "Use Azure Diagnostics Extension on Azure VMs and Syslog forwarding from on-premises"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Monitor Agent is the current recommended agent that works on both Azure VMs and on-premises servers (via Azure Arc enrollment), collecting data into Log Analytics workspaces with Data Collection Rules for centralized configuration. MMA (Log Analytics Agent) is being deprecated and should not be used for new deployments.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-043",
+      "question": "A company requires that the Azure subscription owners cannot delete or modify specific policies that enforce baseline security controls. How can the architect prevent this?",
+      "options": [
+        "Use Azure Policy deny assignments to prevent policy deletion by subscription owners",
+        "Apply policies at the management group level above the subscription—child scopes inherit and cannot override parent policy assignments",
+        "Set the policy assignment to 'enforcement mode: disabled' to prevent modifications",
+        "Configure Azure RBAC to remove the Policy Contributor role from subscription owners"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Policies assigned at a parent management group scope are inherited by child subscriptions, and subscription owners cannot delete or override policies assigned at a higher scope. Deny assignments (option A) prevent specific Azure actions but are not used for protecting policy assignments themselves.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-044",
+      "question": "A financial services firm needs to meet a regulatory requirement to review all privileged role assignments in Entra ID quarterly and automatically remove access that is not re-approved. Which solution is most appropriate?",
+      "options": [
+        "Configure PIM to set role assignments to expire after 90 days",
+        "Set up Entra ID access reviews for privileged roles with auto-apply results",
+        "Use Conditional Access to limit privileged role usage to specific time windows",
+        "Configure scheduled PIM approval workflows that expire quarterly"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Entra ID access reviews can be configured for privileged roles on a recurring schedule (quarterly) with auto-apply results that remove access when reviewers do not approve or do not respond. PIM expiring assignments require manual renewal but do not provide a review-and-decide workflow with automatic cleanup.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-045",
+      "question": "A company needs to deploy an Azure workload that requires a specific custom Azure Policy not available as a built-in policy. The policy must deny creation of VM SKUs larger than Standard_D8s_v3 in the Production subscription. What is the correct resource to create?",
+      "options": [
+        "A policy set definition (initiative) with a built-in policy parameter",
+        "A custom policy definition with a Deny effect and an allowedValues constraint on the VM SKU property",
+        "A management group lock preventing VM creation",
+        "An Azure Policy exemption on the Production subscription"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A custom policy definition allows specifying a Deny effect with conditions matching the VM SKU property (Microsoft.Compute/virtualMachines/sku.name) and using a list of allowed values. Management group locks prevent all resource modifications, not specific SKU restrictions. Policy exemptions exclude resources from policy scope, which is the opposite of what is needed.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-046",
+      "question": "A company has deployed Azure Monitor and wants to receive alerts in Microsoft Teams when a VM's available memory drops below 1 GB. Which Azure Monitor components are needed? Select TWO.",
+      "options": [
+        "A metric alert rule targeting the VM's available memory metric",
+        "An action group with a Teams webhook or Logic App action",
+        "A Log Analytics scheduled query alert for memory performance counters",
+        "An Azure Automation runbook triggered by the alert"
+      ],
+      "correctAnswers": [
+        0,
+        1
+      ],
+      "explanation": "A metric alert rule detects when the metric threshold is breached, and an action group defines what happens when the alert fires—in this case, sending a message to Teams via a webhook or Logic App. The action group is a required component that decouples alert detection from alert notification.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-047",
+      "question": "An organization is designing an Azure environment for a highly regulated industry. The risk team requires that no new role assignments can be made at the subscription level without approval from the security team. How should this be implemented?",
+      "options": [
+        "Enable Azure AD PIM for subscription-level Azure resource roles with approval workflow",
+        "Remove all users from the User Access Administrator role at the subscription level",
+        "Configure Azure Policy to audit all role assignments",
+        "Use Azure Blueprints to lock role assignment resources"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "PIM for Azure resources supports eligible role assignments with approval workflows, requiring designated approvers to authorize activation before a user gets subscription-level access. Removing User Access Administrator prevents anyone from making role assignments, which is too restrictive for operational needs.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-048",
+      "question": "A company's compliance team needs to ensure all Azure Key Vaults have purge protection and soft delete enabled. New vaults without these settings should be automatically remediated. Which Azure Policy effect should be used?",
+      "options": [
+        "Deny — prevent creating Key Vaults without these settings",
+        "Modify — update the Key Vault properties to enable purge protection and soft delete",
+        "DeployIfNotExists — deploy a remediation template to configure the settings",
+        "AuditIfNotExists — report non-compliant vaults"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The Modify effect can update resource properties (like enabling soft delete and purge protection) on existing and new resources during create or update operations. For Key Vault specifically, Modify can set these properties. DeployIfNotExists deploys a separate resource, which is unnecessary when modifying properties of the existing resource.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-049",
+      "question": "An organization using Entra ID needs to implement password protection to prevent users from setting passwords that include the company name, product names, or common weak passwords. Which feature should be enabled?",
+      "options": [
+        "Entra ID Identity Protection with password breach policies",
+        "Entra ID Password Protection with custom banned password lists",
+        "Conditional Access requiring password complexity via session controls",
+        "Microsoft Defender for Identity password policy monitoring"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Entra ID Password Protection allows defining custom banned password lists (company name, product names) in addition to the global banned password list maintained by Microsoft. This applies both to cloud accounts and on-premises AD when the on-premises agent is deployed. Identity Protection detects breached passwords but does not prevent specific words from being used.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-050",
+      "question": "A solutions architect is designing a monitoring strategy for a company's Azure-hosted SaaS application. The team needs to detect performance degradation that affects end users before the helpdesk receives complaints. Which Application Insights feature provides proactive detection of performance anomalies?",
+      "options": [
+        "Application Insights availability tests (ping tests)",
+        "Smart Detection (Proactive Detection)",
+        "Application Insights Live Metrics",
+        "Azure Monitor baseline metric alerts"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Smart Detection (Proactive Detection) in Application Insights uses machine learning to automatically detect unusual changes in performance and failure rates without requiring manual threshold configuration, alerting before patterns become visible as user complaints. Availability tests check endpoint reachability but do not detect performance degradation across the application.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-051",
+      "question": "A company is deploying a new multi-subscription Azure environment and needs to ensure that a designated owner tag is applied to every resource group at creation time, using the creating user's UPN as the value. Which approach supports dynamic tag values at deployment time?",
+      "options": [
+        "Azure Policy Modify effect to add a static 'Owner' tag",
+        "Azure Policy Append effect using a policy parameter for the owner value",
+        "Azure Policy Modify effect using the requestContext() policy function to capture the calling user's UPN",
+        "Azure Blueprints artifact to apply tags based on deployment inputs"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Policy supports policy functions including requestContext() which can retrieve the requesting user's identity at deployment time, allowing dynamic tag values. The Append effect adds tag values statically or with parameters, but cannot dynamically capture the deploying user's identity. Blueprints would require manual input per deployment.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-052",
+      "question": "A company has multiple teams sharing an Azure subscription. The infrastructure team should be able to manage network resources, the app team should manage web apps only, and neither should access the other's resources. What is the most precise way to implement this separation?",
+      "options": [
+        "Put network resources and web apps in separate resource groups and assign network-specific and web-specific built-in roles at the resource group scope",
+        "Assign the Contributor role to each team at the subscription level and rely on team discipline",
+        "Use management groups to separate network and app resources",
+        "Create separate subscriptions for network and application resources"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Resource groups provide the appropriate scope for team-level isolation within a subscription. Assigning built-in roles like Network Contributor and Website Contributor at the resource group scope gives precise access without subscription-wide permissions. Using separate subscriptions adds overhead and is excessive for this use case.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-053",
+      "question": "An architect is designing Entra ID tenant-level settings for a new Azure environment. The company policy states that non-administrator users should not be able to register applications in Entra ID. How should this be configured?",
+      "options": [
+        "Enable a Conditional Access policy blocking app registration for non-admin users",
+        "Set 'Users can register applications' to No in Entra ID User Settings",
+        "Configure an Azure Policy denying application object creation",
+        "Remove the Application Developer role from all non-admin users"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The 'Users can register applications' setting in Entra ID User Settings globally prevents non-administrator users from creating application registrations. This is the designated control for this scenario. Conditional Access policies control authentication conditions but do not restrict application registration permissions.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-054",
+      "question": "A company must implement a solution where users accessing a critical financial application from outside the corporate network are required to use hardware FIDO2 security keys, not just standard MFA methods like SMS or authenticator apps. Which feature enforces this?",
+      "options": [
+        "Conditional Access with MFA requirement for external locations",
+        "Authentication Strengths in Conditional Access requiring FIDO2 security key",
+        "Entra ID Identity Protection with sign-in risk policy requiring MFA",
+        "PIM with MFA on activation for the application role"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Authentication Strengths is a Conditional Access feature that lets you specify which authentication methods are acceptable (e.g., only phishing-resistant methods like FIDO2 or certificate-based authentication). Standard MFA requirements allow any MFA method including SMS, which does not meet the requirement for hardware keys only.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-055",
+      "question": "An organization's Azure subscriptions are audited monthly and the auditors require a full list of all Azure role assignments across all subscriptions, including inherited assignments from management groups. What is the most efficient way to generate this report?",
+      "options": [
+        "Use the Azure portal's IAM blade on each subscription manually",
+        "Run a PowerShell script using Get-AzRoleAssignment across all subscriptions",
+        "Use Azure Resource Graph query to enumerate all role assignments",
+        "Export Azure Activity Log entries for role assignment operations"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "Azure Resource Graph can query the AuthorizationResources table to list all role assignments across all subscriptions in seconds using a single query. PowerShell with Get-AzRoleAssignment works but requires iterating over each subscription and is significantly slower at scale. Activity logs show historical operations, not the current state.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-056",
+      "question": "A company wants to ensure that Azure virtual network resources are only deployed with DDoS Network Protection enabled. Any deployment of a VNet without DDoS protection should be blocked. Which policy effect and resource property should be targeted?",
+      "options": [
+        "Deny effect on Microsoft.Network/virtualNetworks where enableDdosProtection is false",
+        "AuditIfNotExists checking for a linked DDoS protection plan",
+        "DeployIfNotExists to attach a DDoS protection plan to new VNets",
+        "Modify effect to enable DDoS protection on the VNet after creation"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "A Deny policy effect on the VNet resource type checking the enableDdosProtection property prevents VNet creation without DDoS protection at deployment time. AuditIfNotExists would only report non-compliance without blocking. Modify and DeployIfNotExists allow non-compliant resources to be created first and then remediate.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-057",
+      "question": "A company wants to enable single sign-on for their employees to a third-party SaaS application that supports SAML 2.0. The SaaS application should receive user attributes including department and job title. Which Entra ID capability enables this?",
+      "options": [
+        "Entra ID enterprise application with SAML-based SSO and attribute mappings",
+        "Entra ID application proxy for on-premises app publishing",
+        "Entra ID B2C with a custom SAML policy",
+        "Entra ID workload identity with SAML assertion"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Entra ID supports SAML 2.0 SSO for enterprise (gallery and non-gallery) applications with configurable attribute mappings that can send custom user attributes like department and job title in the SAML assertion. Application Proxy is for publishing on-premises applications, not cloud SaaS applications.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-058",
+      "question": "A government agency using Azure needs to ensure that all administrative actions in their Azure environment meet audit trail requirements. They need an immutable, tamper-evident record of all Azure control plane operations retained for 10 years. What design achieves this?",
+      "options": [
+        "Configure Azure Activity Log diagnostic settings to export to an immutable Azure Blob Storage container with WORM policy and 10-year retention",
+        "Store Activity Logs in Log Analytics workspace with 10-year retention setting",
+        "Use Microsoft Sentinel to ingest Activity Logs and configure a 10-year data retention policy",
+        "Archive Activity Logs to Azure Data Lake Storage with lifecycle management"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Azure Blob Storage with immutable storage (WORM - Write Once Read Many) policy and a 10-year time-based retention lock provides a tamper-evident, immutable audit trail. Log Analytics retention does not provide WORM guarantees—data can be deleted by authorized users before the retention period expires.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-059",
+      "question": "An architect is designing monitoring for a company with SLA commitments. The company needs to be alerted if their Azure-hosted web application becomes unavailable from multiple geographic locations simultaneously. Which Azure Monitor feature tests availability from outside Azure?",
+      "options": [
+        "Azure Monitor metric alerts on App Service response time",
+        "Application Insights standard availability tests (URL ping tests from global test locations)",
+        "Azure Network Watcher connection monitor",
+        "Application Insights Live Metrics stream"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Application Insights availability tests (standard tests and classic URL ping tests) run from multiple geographic locations worldwide at configurable intervals, alerting when the endpoint is unreachable or slow from external vantage points. Azure Network Watcher connection monitors test connectivity from within Azure networks, not from the public internet.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-060",
+      "question": "A company needs to implement a central identity governance process where business department managers (not IT admins) can request and approve access to resources for their direct reports. Which Entra ID feature enables this delegation?",
+      "options": [
+        "PIM delegation with non-admin approvers",
+        "Entitlement management with catalog owners and access package managers",
+        "Access reviews assigned to department managers",
+        "Conditional Access policies with manager-based named locations"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Entitlement management allows delegation of catalog and access package management to non-admin users (department managers can be access package managers), enabling them to define what access their team can request and approve requests. This decentralizes governance to business owners without requiring IT admin involvement.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-061",
+      "question": "A company needs to audit all changes to Azure Policy assignments and initiative definitions across their management group hierarchy over the past 30 days for a compliance review. Where should the architect look?",
+      "options": [
+        "Azure Policy compliance history",
+        "Azure Activity Log filtered for Microsoft.Authorization/policyAssignments operations",
+        "Azure Resource Graph querying policy assignment change history",
+        "Microsoft Defender for Cloud change tracking"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Policy assignment creation, modification, and deletion are control-plane operations logged in the Azure Activity Log under the Microsoft.Authorization/policyAssignments resource provider. The Activity Log retains 90 days of data, covering the 30-day requirement. Azure Policy compliance history shows resource compliance state changes, not policy configuration changes.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-062",
+      "question": "An enterprise uses Azure Monitor and wants to correlate application logs, infrastructure metrics, and security events in a single query interface for troubleshooting. Which Azure service acts as the unified data platform?",
+      "options": [
+        "Azure Data Explorer",
+        "Log Analytics workspace (Azure Monitor Logs)",
+        "Azure Synapse Analytics",
+        "Microsoft Sentinel"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Log Analytics workspace is the core data platform for Azure Monitor Logs, ingesting data from Azure resources, VMs, applications, and security sources, all queryable with KQL. Azure Data Explorer is a separate analytics service for high-volume telemetry and is not the default Azure Monitor data store.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-063",
+      "question": "A company needs to implement a policy that prevents users from creating storage accounts with public blob access enabled and must also automatically disable public access on existing non-compliant storage accounts. What is the correct policy effect combination?",
+      "options": [
+        "Deny for new resources only; manually remediate existing ones",
+        "Modify effect to set allowBlobPublicAccess to false on create/update; use remediation tasks for existing resources",
+        "DeployIfNotExists to deploy a template setting allowBlobPublicAccess to false",
+        "Append effect to add the allowBlobPublicAccess property set to false"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "The Modify effect can change resource properties (like allowBlobPublicAccess) during create and update, and remediation tasks trigger the Modify operation on existing non-compliant resources. DeployIfNotExists deploys an ARM template and is better suited for deploying separate child resources, not modifying properties of the existing resource.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-064",
+      "question": "A company's risk team requires that all Entra ID users accessing Azure resources from unknown locations must complete MFA, while users on trusted networks should not be challenged. Which feature defines trusted network locations?",
+      "options": [
+        "Named locations in Entra ID Conditional Access",
+        "Trusted IP ranges in Entra ID Multi-Factor Authentication settings (legacy MFA portal)",
+        "Azure Network Security Group IP rules",
+        "Entra ID Identity Protection network risk policies"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Named locations in Conditional Access define trusted IP ranges or country lists that can be used as conditions (skip MFA for named locations, require MFA for all others). The legacy MFA portal's Trusted IPs feature is being deprecated in favor of Conditional Access named locations for this purpose.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-065",
+      "question": "A company is implementing Microsoft Sentinel and needs to ingest security logs from Azure Active Directory, Azure Activity, and Microsoft 365. Which configuration correctly connects these data sources?",
+      "options": [
+        "Configure diagnostic settings on each resource to send to the Sentinel workspace",
+        "Use Microsoft Sentinel data connectors for Entra ID, Azure Activity, and Microsoft 365 Defender",
+        "Deploy Azure Monitor Agent on all VMs and configure data collection rules pointing to Sentinel",
+        "Use Azure Event Hub as an intermediate to stream data to Sentinel"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Microsoft Sentinel has built-in data connectors for Entra ID (sign-in and audit logs), Azure Activity (Activity Log), and Microsoft 365 Defender that establish one-click or configuration-guided data ingestion. For these Microsoft-native sources, dedicated connectors are simpler and more complete than manual diagnostic settings.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-066",
+      "question": "An organization has both Azure resources and AWS resources. They want a unified identity solution where employees use their Entra ID credentials to access both Azure and AWS resources. Which Entra ID feature enables SSO to AWS?",
+      "options": [
+        "Entra ID B2B collaboration with AWS accounts",
+        "Entra ID enterprise application with SAML SSO configured for AWS IAM Identity Center",
+        "Entra ID application proxy publishing the AWS console",
+        "Entra ID workload identity federation with AWS IAM roles"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "AWS IAM Identity Center (formerly AWS SSO) supports SAML 2.0 federation with external identity providers. Configuring Entra ID as the SAML IdP for AWS IAM Identity Center allows employees to use their Entra ID credentials for SSO to the AWS console and CLI. Workload identity federation is for service-to-service authentication, not human user SSO.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-067",
+      "question": "A company deployed a web application on Azure App Service and wants to monitor all HTTP 5xx errors and generate an alert if the error rate exceeds 1% of requests in any 5-minute window. Which Application Insights feature and alert type should be used?",
+      "options": [
+        "Application Insights failure anomaly smart detection",
+        "Azure Monitor metric alert on the 'Http 5xx' metric of App Service",
+        "Application Insights availability test with HTTP status validation",
+        "Log Analytics scheduled query alert on AppRequests table filtering for result code 5xx"
+      ],
+      "correctAnswers": [
+        3
+      ],
+      "explanation": "A Log Analytics scheduled query alert on the AppRequests table can calculate the ratio of 5xx responses to total requests over a 5-minute window and alert when it exceeds 1%. Azure Monitor metrics for App Service include request counts by status code but calculating percentage thresholds requires a log-based query approach.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-068",
+      "question": "A company wants to prevent accidental deletion of production resource groups. They have already implemented Azure Policy. What additional control provides the strongest protection against accidental deletion?",
+      "options": [
+        "Assign the Reader role to all operations staff on production resource groups",
+        "Apply a CanNotDelete resource lock on all production resource groups",
+        "Configure Azure Policy with a Deny effect to prevent delete operations",
+        "Enable soft delete on all resources within the resource groups"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "A CanNotDelete resource lock prevents deletion of a resource group and all resources within it, even by owners and administrators, until the lock is explicitly removed. Azure Policy cannot prevent deletions (the Deny effect applies to create/update operations through the Azure Resource Manager, not delete operations for most resource types).",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-069",
+      "question": "An architect needs to design a subscription vending process where each new project subscription automatically has a budget alert at $5,000 monthly and a cost anomaly alert configured. Which approach best automates this?",
+      "options": [
+        "Manually configure budgets in Azure Cost Management for each new subscription",
+        "Use Azure Policy DeployIfNotExists to deploy budget and cost anomaly alert resources to new subscriptions",
+        "Configure Azure Blueprints with budget ARM templates assigned to each subscription",
+        "Use Azure Landing Zone accelerator with built-in budget policies"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Policy with DeployIfNotExists can deploy budget and cost alert resources (microsoft.consumption/budgets) to new subscriptions automatically when they are created, without manual intervention. Blueprints would require manual reassignment for each new subscription unless integrated into an automated vending pipeline.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-070",
+      "question": "A company's application team wants to deploy Kubernetes workloads to AKS but the platform team requires that all container images come only from the company's private Azure Container Registry (ACR). Images from Docker Hub or other public registries must be blocked. Which solution enforces this?",
+      "options": [
+        "Azure Policy with the built-in 'Kubernetes cluster containers should only use allowed images' policy",
+        "AKS network policy to block egress traffic to public registries",
+        "ACR Geo-replication to ensure all images are in the private registry",
+        "Entra ID RBAC restricting AKS users from pulling from public registries"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Azure Policy with the OPA Gatekeeper-based policy 'Kubernetes cluster containers should only use allowed images' enforces at admission time that pod specs reference only images from approved registries (e.g., the company's ACR). Network policies control traffic but cannot prevent the Kubernetes API from accepting pod specs with public registry images.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-071",
+      "question": "A company needs to implement self-service password reset (SSPR) for their Azure AD users but requires that users must verify their identity using at least two methods (email and phone) before resetting their password. Which configuration achieves this?",
+      "options": [
+        "Enable SSPR in Entra ID with 'Number of methods required to reset' set to 2",
+        "Configure Conditional Access to require MFA before accessing SSPR",
+        "Enable SSPR with the Security Questions method requiring 5 questions",
+        "Configure PIM to require approval before password reset operations"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "The SSPR 'Number of methods required to reset' setting directly controls how many registered authentication methods users must verify before resetting their password. Setting this to 2 requires both email and phone (or any two registered methods) before completing the password reset.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "easy"
+    },
+    {
+      "id": "az305-idgm-072",
+      "question": "An organization using Microsoft Sentinel wants to automatically isolate a compromised VM from the network when a high-severity security incident is detected. What Sentinel feature should be configured?",
+      "options": [
+        "Analytics rules with automated incident creation",
+        "Sentinel Playbooks (Logic Apps) triggered by incidents with network isolation action",
+        "Microsoft Defender for Cloud auto-provisioning",
+        "Sentinel workbooks with VM management dashboards"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Sentinel Playbooks are Logic Apps that can be triggered by incidents (via automation rules) to perform automated response actions, including calling Azure REST APIs to apply NSG rules or disconnect a VM's network interface. Analytics rules detect threats and create incidents, but the automated response action requires a Playbook.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "az305-idgm-073",
+      "question": "A company has hundreds of Azure subscriptions under a management group. They need to track which subscriptions do not have Microsoft Defender for Cloud's Defender for Servers plan enabled. What is the most efficient query method?",
+      "options": [
+        "Check each subscription's Defender for Cloud settings manually",
+        "Use Azure Resource Graph to query microsoft.security/pricings resources across all subscriptions",
+        "Use Azure Policy compliance to check for the Defender for Servers policy",
+        "Run Get-AzSecurityPricing PowerShell command on each subscription"
+      ],
+      "correctAnswers": [
+        1
+      ],
+      "explanation": "Azure Resource Graph can query microsoft.security/pricings resources across all subscriptions simultaneously, returning pricing tier settings (including whether Defender for Servers is enabled) in a single query. This is orders of magnitude faster than iterating over hundreds of subscriptions with PowerShell.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-074",
+      "question": "An organization needs to ensure that new Azure subscriptions created under their enrollment account are automatically placed under the correct management group based on the subscription's purpose (Dev, Test, or Prod). Which approach automates this?",
+      "options": [
+        "Configure default management group assignment in Azure Portal's tenant settings",
+        "Use Azure Policy to move subscriptions to the correct management group after creation",
+        "Create a subscription vending pipeline using Azure DevOps and ARM/Bicep templates to create subscriptions and assign them to management groups",
+        "Configure subscription policies in the EA portal to auto-assign management groups"
+      ],
+      "correctAnswers": [
+        2
+      ],
+      "explanation": "A subscription vending pipeline using Infrastructure as Code creates subscriptions programmatically (using the Subscription APIs) and immediately places them under the correct management group. The default management group setting places all new subscriptions in one location, requiring manual movement afterward.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "hard"
+    },
+    {
+      "id": "az305-idgm-075",
+      "question": "A company needs to monitor disk read/write latency across 200 Azure VMs and alert the operations team if latency exceeds 20ms for more than 5 minutes. They want minimal configuration overhead. What is the recommended monitoring approach?",
+      "options": [
+        "Deploy Azure Monitor Agent with a Data Collection Rule for disk metrics and create a metric alert rule targeting the resource group",
+        "Install the legacy MMA agent and configure Azure Diagnostics Extension for each VM",
+        "Use Azure Advisor performance recommendations for disk latency",
+        "Configure Log Analytics to collect Perf counter data and create a scheduled query alert"
+      ],
+      "correctAnswers": [
+        0
+      ],
+      "explanation": "Azure Monitor Agent with Data Collection Rules (DCR) provides centralized, at-scale configuration of metric collection, and metric alert rules can target a resource group scope to alert on any VM exceeding the latency threshold. This is the modern, low-overhead approach compared to configuring individual diagnostic extensions per VM.",
+      "category": "Design identity, governance, and monitoring solutions",
+      "difficulty": "medium"
     }
   ]
 }
